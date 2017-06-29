@@ -9,15 +9,25 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Navigator,
+  TouchableOpacity
 } from 'react-native';
-
+import * as firebase from 'firebase'
+import Login from './component/login'
+import Firebase from './lib/firebase'
+import FirebaseBasicService from './lib/firebaseBasicService'
+import Entities from './lib/fireBaseEntities'
 export default class MejengaLegendsApp extends Component {
+  constructor(props){
+  super(props)
+  Firebase.init()
+}
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Welcome to React Native with FireBase!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.android.js
