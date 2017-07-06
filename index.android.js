@@ -11,11 +11,13 @@ import {
   Text,
   View,
   Navigator,
+  ScrollView,
   TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase'
 import Login from './component/login'
 import Firebase from './lib/firebase'
+import TeamComponent from './component/team/teamCmp'
 import FirebaseBasicService from './lib/firebaseBasicService'
 import Entities from './lib/fireBaseEntities'
 export default class MejengaLegendsApp extends Component {
@@ -26,27 +28,25 @@ export default class MejengaLegendsApp extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native with FireBase!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+              <ScrollView style={styles.teamContainer}>
+                    <TeamComponent/>
+              </ScrollView>
+
       </View>
+
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flex: 4,
+    padding:10,
+    backgroundColor: 'white',
+  },
+  teamContainer: {
+
+
   },
   welcome: {
     fontSize: 20,
