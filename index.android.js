@@ -14,48 +14,53 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  ToastAndroid
+  ToastAndroid,
+  Image
 } from 'react-native';
 import * as firebase from 'firebase'
 import Auth from './component/auth/auth'
-import MainMenu from './component/menu/mainMenu'
+import App from './component/app/app'
+import Logo from './component/app/logo'
+import Welcome from './component/app/welcomeScreen'
 import Firebase from './lib/firebase'
+
 // import TeamComponent from './component/team/teamCmp'
 import FirebaseBasicService from './lib/firebaseBasicService'
 import Entities from './lib/fireBaseEntities'
+
 export default class MejengaLegendsApp extends Component {
 
   constructor(props){
     super(props)
     Firebase.init()
     this.state = {
-      initialView : null,
+      initialView : 'Logo',
       userLoaded: false
     }
-    this.getInitialView()
+    setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
     this.getInitialView = this.getInitialView.bind(this)
+    this.showInitialView = this.showInitialView.bind(this)
   }
   async getInitialView(){
-
-    await firebase.auth().onAuthStateChanged((user) => {
-      let initialView = 'Login';
+     await firebase.auth().onAuthStateChanged( async (user) => {
+      let newInitialView = 'Login';
       if(user){
         if (!user.emailVerified) {
           ToastAndroid.show('Verifica tu cuenta en tu correo para poder inciar sesión', ToastAndroid.LONG);
           firebase.auth().signOut().then(function() {
-            initialView = 'Login'
+            newInitialView = 'Login'
           }, function(error) {
             // An error happened.
           });
         }else{
-          initialView = 'App'
+           newInitialView = 'App'
         }
       }else{
         initialView = 'Login'
       }
       this.setState({
         userLoaded: true,
-        initialView
+        initialView: newInitialView
       })
 
     })
@@ -64,10 +69,16 @@ export default class MejengaLegendsApp extends Component {
   showInitialView(){
     switch (this.state.initialView) {
       case 'App':
-      return (<MainMenu/>)
+      return (<App/>)
       break;
       case 'Login':
       return (<Auth/>)
+      break;
+      case 'Logo':
+      return (<Logo showInitialView={()=>{this.setState({initialView:"Welcome"})}}/>)
+      break;
+      case 'Welcome':
+      return (<Welcome showInitialView={()=>this.getInitialView()}/>)
       break;
       default:
 
