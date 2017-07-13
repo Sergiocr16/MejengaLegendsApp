@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Player from '../../services/player'
 import {
   Text,
   View,
@@ -38,6 +39,7 @@ export default class SignUp extends Component {
       this.setState({
         response: 'account created!'
       })
+      Player.new(firebase.auth().currentUser.uid)
       this.sendVerification()
     } catch(error){
       ToastAndroid.show(error.message, ToastAndroid.LONG);
