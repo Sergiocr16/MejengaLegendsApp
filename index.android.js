@@ -11,20 +11,16 @@ import {
   Text,
   View,
   Navigator,
-<<<<<<< HEAD
   ScrollView,
-  TouchableOpacity
-=======
   TouchableOpacity,
   StatusBar,
   ToastAndroid
->>>>>>> bfe386128ae08a211b9ce5220f4d702f4d7cd437
 } from 'react-native';
 import * as firebase from 'firebase'
 import Auth from './component/auth/auth'
 import MainMenu from './component/menu/mainMenu'
 import Firebase from './lib/firebase'
-import TeamComponent from './component/team/teamCmp'
+// import TeamComponent from './component/team/teamCmp'
 import FirebaseBasicService from './lib/firebaseBasicService'
 import Entities from './lib/fireBaseEntities'
 export default class MejengaLegendsApp extends Component {
