@@ -92,7 +92,7 @@ export default class Auth extends Component {
       }
       render(){
         return (
-          <View style={styles.container}>
+          <FadeInView style={styles.container} duration={600}>
           <Image style={styles.bgImage} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
           <View style={styles.maintCointainer}>
           {this.showMenuBar()}
@@ -100,7 +100,7 @@ export default class Auth extends Component {
           {this.showRecoverPasswordButton()}
           </View>
           </Image>
-          </View>
+          </FadeInView>
         )
       }
     }
