@@ -15,6 +15,7 @@ import FirebaseBasicService from '../../lib/firebaseBasicService'
 import CreatePlayer from '../player/createPlayer'
 import Header from './header'
 import Loader from './loading'
+import Menu from './menu'
 
 export default class App extends Component {
   constructor(props){
@@ -48,7 +49,7 @@ export default class App extends Component {
       return(<CreatePlayer style={{flex:10}}/>)
       break;
     case 'menu':
-      return(<Text style={{flex:10}}>Menu</Text>)
+      return(<Menu/>)
       break;
     case 'loading':
         return(<Loader/>)
