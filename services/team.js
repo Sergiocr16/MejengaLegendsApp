@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
-import FirebaseBasicService from '../../lib/firebaseBasicService'
-import Entities from '../../lib/fireBaseEntities'
+import FirebaseBasicService from '../lib/firebaseBasicService'
+import Entities from '../lib/fireBaseEntities'
 class TeamService {
 
     static getAll(callBack){
@@ -10,6 +10,8 @@ class TeamService {
     }
 
     static new(objeto){
+          console.log('aqui 1');
+      console.log(objeto);
       FirebaseBasicService.new(Entities.TEAMS,objeto)
     }
 

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import Player from '../../services/player'
+import CreateTeam from '../team/createTeam'
 import {
   Text,
   View,
@@ -18,16 +19,23 @@ export default class Menu extends Component {
       scene: 'buttons'
     }
       this.setSceneButtons = this.setSceneButtons.bind(this)
+      this.setSceneCreateTeam = this.setSceneCreateTeam.bind(this)
   }
 
   setSceneButtons(){
    this.setState({scene:'buttons'})
+  }
+  setSceneCreateTeam(){
+   this.setState({scene:'createTeam'})
   }
   menuButtons(){
     return(
       <View>
         <TouchableOpacity onPress={this.setSceneButtons}>
          <Text>Mi ruta</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.setSceneCreateTeam}>
+         <Text>Crear equipo</Text>
         </TouchableOpacity>
       </View>
     )
@@ -36,6 +44,9 @@ export default class Menu extends Component {
     switch (this.state.scene) {
       case 'buttons':
         return this.menuButtons();
+        break;
+      case 'createTeam':
+        return (<CreateTeam style={{flex:10}}/>);
         break;
       default:
 
