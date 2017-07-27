@@ -10,9 +10,8 @@ class TeamService {
     }
 
     static new(objeto){
-          console.log('aqui 1');
-      console.log(objeto);
-      FirebaseBasicService.new(Entities.TEAMS,objeto)
+      FirebaseBasicService.new(Entities.TEAMS,objeto);
+      
     }
 
 }

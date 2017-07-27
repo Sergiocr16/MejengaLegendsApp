@@ -16,12 +16,8 @@ var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var Gender = t.enums({
-  Hombre: 'Masculino',
-  Mujer: 'Femenino'
-});
-var foot = t.enums({
-  Derecho: 'Derecho',
-  Izquierdo: 'Izquierdo'
+  Masculino: 'Masculino',
+  Femenino: 'Femenino'
 });
 
 const NewPlayer = t.struct({
@@ -53,19 +49,17 @@ export default class CreateTeam extends Component {
   }
  submit(team){
     if (team) {
-
     Team.new(team);
    }
  }
   render(){
     return (
     <FadeInView style={styles.container} duration={30}>
-    <Text>Bienvenido a Mejenga Legends</Text>
-      <Text>Crea tu perfil de jugador</Text>
+      <Text>Registra un equipo</Text>
     <ScrollView>
     <Form ref="form" type={NewPlayer} options={formOptions}/>
       <TouchableHighlight style={styles.button}  onPress={()=>{this.submit(this.refs.form.getValue())}} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={styles.buttonText}>Registrar equipo</Text>
         </TouchableHighlight>
         </ScrollView>
       </FadeInView>

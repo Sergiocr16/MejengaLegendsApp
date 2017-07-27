@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Player from '../../services/player'
-import CreateTeam from '../team/createTeam'
+import TeamMenu from '../team/teamMenu'
 import {
   Text,
   View,
@@ -26,7 +26,7 @@ export default class Menu extends Component {
    this.setState({scene:'buttons'})
   }
   setSceneCreateTeam(){
-   this.setState({scene:'createTeam'})
+   this.setState({scene:'teamMenu'})
   }
   menuButtons(){
     return(
@@ -35,7 +35,7 @@ export default class Menu extends Component {
          <Text>Mi ruta</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.setSceneCreateTeam}>
-         <Text>Crear equipo</Text>
+         <Text>Equipo</Text>
         </TouchableOpacity>
       </View>
     )
@@ -45,8 +45,8 @@ export default class Menu extends Component {
       case 'buttons':
         return this.menuButtons();
         break;
-      case 'createTeam':
-        return (<CreateTeam style={{flex:10}}/>);
+      case 'teamMenu':
+        return (<TeamMenu style={{flex:10}}/>);
         break;
       default:
 
