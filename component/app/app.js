@@ -46,7 +46,7 @@ export default class App extends Component {
  showView(){
   switch (this.state.scene) {
     case 'firstTime':
-      return(<CreatePlayer style={{flex:10}}/>)
+      return(<CreatePlayer/>)
       break;
     case 'menu':
       return(<Menu/>)
@@ -60,7 +60,7 @@ export default class App extends Component {
 
   render(){
     return (
-      <FadeInView style={styles.flex1} duration={600}>
+      <FadeInView style={styles.column} duration={600}>
       <Header/>
       {this.showView()}
       <TouchableOpacity onPress={this.signOut}><Text>cerrarSesion</Text></TouchableOpacity>
@@ -81,10 +81,10 @@ const styles = StyleSheet.create({
    color:"white"
  },
  column:{
-   flexDirection:"column",
-   flex:1
+    flex:1
  },
  flex1:{
-   flex:5
+   flex:1,
+   flexDirection:"column",
  }
 })

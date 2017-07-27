@@ -32,6 +32,7 @@ export default class MejengaLegendsApp extends Component {
       initialView : 'Logo',
       userLoaded: false
     }
+    console.ignoredYellowBox = [ 'Setting a timer' ]
     setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
@@ -81,7 +82,7 @@ export default class MejengaLegendsApp extends Component {
   }
   render() {
     return (
-      <View style={{flexDirection:'column',flex:1}}>
+      <View style={{flexDirection:'column',flex:1,backgroundColor:'#FAFAFA'}}>
       <StatusBar hidden={true} />
       {this.showInitialView()}
       </View>

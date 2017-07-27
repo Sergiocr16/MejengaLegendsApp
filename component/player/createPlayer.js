@@ -16,12 +16,19 @@ var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var Gender = t.enums({
-  Hombre: 'Hombre',
-  Mujer: 'Mujer'
+  Masculino: 'Masculino',
+  Femenino: 'Femenino'
+});
+var Posiciones = t.enums({
+  Portero: 'Portero',
+  Defensor: 'Defensor',
+  MedioCampista: 'MedioCampista',
+  Delantero: 'Delantero'
 });
 var foot = t.enums({
   Derecho: 'Derecho',
-  Izquierdo: 'Izquierdo'
+  Izquierdo: 'Izquierdo',
+  Ambidiestro: 'Ambidiestro'
 });
 
 
@@ -33,6 +40,8 @@ var NewPlayer = t.struct({
   Fichable: t.Boolean,
   gender: Gender,
   PieDominante: foot,
+  PosiciónPrincipal: Posiciones,
+  PosiciónSecundaria: Posiciones,
   firstTime: t.Boolean
 });
 var defaultValues = {
@@ -43,6 +52,14 @@ auto: 'placeholders',
 fields: {
     gender: {
       nullOption: {value: '', text: 'Selecciona tu genero'},
+      order: 'asc'
+    },
+    PosiciónPrincipal: {
+      nullOption: {value: '', text: 'Selecciona tu posición de juego principal'},
+      order: 'asc'
+    },
+    PosiciónSecundaria: {
+      nullOption: {value: '', text: 'Selecciona tu posición de juego secundaria'},
       order: 'asc'
     },
     PieDominante: {
