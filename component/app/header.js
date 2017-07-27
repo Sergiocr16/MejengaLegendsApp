@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import Player from '../../services/player'
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   Text,
   View,
@@ -15,19 +16,27 @@ export default class Header extends Component {
   constructor(props){
     super(props)
     this.state = {
-      email: '',
-      password: '',
-      response: ''
+       scene:'loading',
+       player:{ nombre: '',liga:'',PrimerApellido:'',score:0}
     }
+   Player.getCurrentPlayer((player)=>{
+    this.setState({player})
+   })
   }
 
 
   render(){
     return (
-      <View >
-      <View >
+      <View>
+      <View style={styles.row}>
         <View style={styles.ligaBar}>
-         <Text style={styles.white}>Header</Text>
+         <Text style={styles.ligaBarText}> <Icon name="diamond" size={16} color="#00BCD4" />  Liga Diamante</Text>
+         <Text style={styles.ligaBarText}><Icon name="trophy" size={16} color="yellow" /> {this.state.player.score}</Text>
+        </View>
+        <View style={styles.accountnfoBox}>
+         <Text  style={styles.home}><Icon name="home" size={22} color="#BDBDBD" /></Text>
+         <Text style={styles.notifications}><Icon name="bell" size={18} color="#BDBDBD" /></Text>
+         <Text style={styles.accountButton}><Icon name="user" size={15} color="#FFFFFF"/>  {this.state.player.nombre}</Text>
         </View>
         </View>
       </View>
@@ -39,7 +48,69 @@ const styles = StyleSheet.create({
   centerItems:{
      alignItems:'center',
      justifyContent:'center',
-    flex:1
   },
+  notifications:{
+    flex:2,
+    alignItems:'center',
+    justifyContent:'center',
+    textAlign:'center',
+    backgroundColor:'white',
+    paddingVertical:5,
+    borderRadius:50,
+    marginRight:10,
+    marginLeft:5
+  },
+  home:{
+    flex:2,
+    alignItems:'center',
+    justifyContent:'center',
+    textAlign:'center',
+    backgroundColor:'white',
+    borderRadius:50,
+    paddingVertical:5,
+    marginRight:5,
+    marginLeft:10
+  },
+  ligaBarText:{
+    color:'white',
+    borderRightColor:'gray',
+    borderWidth:1,
+    flex:1,
+    textAlign:'center',
+  },
+  ligaBar:{
+    flex:6,
+    backgroundColor:'black',
+    height:30,
+    alignItems:'center',
+    justifyContent:'center',
+    borderTopRightRadius:9,
+    borderBottomRightRadius:9,
+    flexDirection:'row',
+  },
+  accountButton:{
+    marginRight:15,
+    paddingHorizontal:10,
+    paddingVertical:5,
+    borderRadius:9,
+    backgroundColor:'green',
+    color:'white',
+    flex:3,
+    textAlign:'center'
+  },
+  accountnfoBox:{
+    height:30,
+    flex:5,
+    flexDirection:'row'
+  },
+  white:{
+    color:'white'
+  },
+  row:{
+    flexDirection:'row',
+    flex:1,
+    height:30,
+    paddingTop:2
+  }
 
 })
