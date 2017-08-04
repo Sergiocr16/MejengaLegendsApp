@@ -9,7 +9,7 @@ import {
   Image,
   ToastAndroid
 } from 'react-native'
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 import FadeInView from 'react-native-fade-in-view';
 export default class Loader extends Component {
   constructor(props){
@@ -25,7 +25,7 @@ export default class Loader extends Component {
   render(){
     return (
     <FadeInView style={styles.centerItems} duration={30}>
-    <Text>Cargando ...</Text>
+    <Icon name="circle-o-notch" size={50} color="white" />
     </FadeInView>
     )
   }

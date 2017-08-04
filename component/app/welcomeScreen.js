@@ -19,7 +19,7 @@ export default class Welcome extends Component {
 
   render(){
     return (
-      <FadeInView style={{flex:1}} duration={300}>
+      <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
       <Image style={styles.bgImage} source={{uri: 'https://i.ytimg.com/vi/qe1CxIA-65A/maxresdefault.jpg'}}>
      <View style={styles.centerItems}>
       <Text style={styles.mainTitle}>Mejenga Legends</Text>
