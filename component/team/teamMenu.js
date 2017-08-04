@@ -26,7 +26,6 @@ export default class TeamMenu extends Component {
   constructor(props){
     super(props)
     TeamService.getTeamsByPlayer((teams)=>{
-      console.log(teams);
         this.setState({scene:"myTeams",teams})
     })
     this.state = {
@@ -48,7 +47,7 @@ export default class TeamMenu extends Component {
                   <View style={{flex:1}}>
                   <View style={{flex:2}}>
                         <Text style={styles.teamName}>{val.nombre}</Text>
-                          <Text style={styles.puntaje}>{val.puntaje} puntos</Text>
+                          <Text style={styles.puntaje}>{val.puntaje} copas</Text>
                   </View>
                     <View style={{flex:1,borderTopWidth:1, margin:15, borderColor:'#BDBDBD'}}>
                       <Text style={styles.ligaName}>{val.liga.nombre}</Text>
