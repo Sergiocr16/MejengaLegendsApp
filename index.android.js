@@ -11,6 +11,7 @@ import {
   Text,
   View,
   Navigator,
+  ScrollView,
   TouchableOpacity,
   StatusBar,
   ToastAndroid,
@@ -23,6 +24,10 @@ import Logo from './component/app/logo'
 import Welcome from './component/app/welcomeScreen'
 import Firebase from './lib/firebase'
 
+// import TeamComponent from './component/team/teamCmp'
+import FirebaseBasicService from './lib/firebaseBasicService'
+import Entities from './lib/fireBaseEntities'
+
 export default class MejengaLegendsApp extends Component {
 
   constructor(props){
@@ -32,6 +37,7 @@ export default class MejengaLegendsApp extends Component {
       initialView : 'Logo',
       userLoaded: false
     }
+    console.ignoredYellowBox = [ 'Setting a timer' ]
     setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
@@ -81,10 +87,11 @@ export default class MejengaLegendsApp extends Component {
   }
   render() {
     return (
-      <View style={{flexDirection:'column',flex:1}}>
-      <StatusBar hidden={true} />
-      {this.showInitialView()}
-      </View>
+      <View style={{flexDirection:'column',flex:1,backgroundColor:'#EEEEEE'}}>
+            <StatusBar hidden={true} />
+            {this.showInitialView()}
+            </View>
+
     );
   }
 }
@@ -102,10 +109,13 @@ export default class MejengaLegendsApp extends Component {
 // </View>
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flex: 4,
+    padding:10,
+    backgroundColor: 'white',
+  },
+  teamContainer: {
+
+
   },
   welcome: {
     fontSize: 20,
