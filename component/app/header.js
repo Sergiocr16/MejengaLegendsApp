@@ -94,9 +94,7 @@ const styles = StyleSheet.create({
     paddingVertical:5,
     borderRadius:9,
     backgroundColor:'#64DD17',
-    color:'white',
     flex:3,
-    fontSize:15,
 
   },
   accountButtonText:{

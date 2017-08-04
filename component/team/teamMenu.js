@@ -14,6 +14,7 @@ import {
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import CreateTeam from '../team/createTeam';
+import TeamDetail from '../team/teamDetail';
 
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
@@ -31,14 +32,14 @@ export default class TeamMenu extends Component {
     this.state = {
       scene: 'loading',
       teams:[],
+      currentTeam: '',
     }
-      this.setSceneRegistrarEquipo = this.setSceneRegistrarEquipo.bind(this)
   }
-
 
   myTeams(){
     let equipos = this.state.teams.map( (val, key) => {
-            return <TouchableOpacity key={key} style={styles.teamContainer}>
+            return <TouchableOpacity onPress={()=>{
+                this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
                   <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
                       <View style={[styles.circularIcon,{margin:-30}]}>
                          <Icon name={"shield"}  size={40} color="#424242" />
@@ -68,7 +69,7 @@ export default class TeamMenu extends Component {
           </ScrollView>
         </View>
         <View style={{flex:1,flexDirection:'row'}}>
-            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+            <TouchableOpacity onPress={()=>{this.setState({scene:'loading'}); this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
               <View style={styles.buttonBackPadre}>
                 <View style={styles.buttonBackHijo}/>
                   <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
@@ -83,7 +84,11 @@ export default class TeamMenu extends Component {
     </FadeInView>
     )
   }
-  setSceneRegistrarEquipo(){
+
+  setMyTeamsMenu = ()=>{
+     this.setState({scene:'myTeams'})
+  }
+  setSceneRegistrarEquipo = () => {
    this.setState({scene:'registrarEquipo'})
   }
   showScene(){
@@ -97,6 +102,9 @@ export default class TeamMenu extends Component {
       case 'registrarEquipo':
         return (<CreateTeam style={{marginTop:35,flex:1}}/>);
         break;
+        case 'detalleEquipo':
+          return (<TeamDetail back={()=> this.setMyTeamsMenu()} team={this.state.currentTeam}/>);
+          break;
       default:
 
     }

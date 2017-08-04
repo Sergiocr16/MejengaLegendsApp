@@ -387,8 +387,7 @@ export default class Menu extends Component {
         return this.menuButtons();
         break;
       case 'menuMisEquipos':
-        return (<TeamMenu back={()=>this.setSceneButtons()
-        } style={{marginTop:35,flex:1}}/>);
+        return (<TeamMenu back={()=>this.setSceneButtons()} style={{marginTop:35,flex:1}}/>);
       case 'profile':
         return <Profile back={()=> this.setSceneButtons()} user={this.props.user}/>;
         break;
