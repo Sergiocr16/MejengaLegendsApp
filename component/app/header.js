@@ -6,7 +6,7 @@ import {
   View,
   StyleSheet,
   TextInput,
-  TouchableHighlight,
+  TouchableOpacity,
   Image,
   ToastAndroid
 } from 'react-native'
@@ -22,21 +22,23 @@ export default class Header extends Component {
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
    })
-  }
 
+  }
 
   render(){
     return (
       <View>
       <View style={styles.row}>
         <View style={styles.ligaBar}>
-         <Text style={styles.ligaBarText}> <Icon name="diamond" size={16} color="#00BCD4" />  Liga Diamante</Text>
+         <Text style={styles.ligaBarText}> <Icon name="diamond" size={16} color="#00BCD4" /> {this.state.player.liga}</Text>
          <Text style={styles.ligaBarText}><Icon name="trophy" size={16} color="yellow" /> {this.state.player.score}</Text>
         </View>
         <View style={styles.accountnfoBox}>
-         <Text  style={styles.home}><Icon name="home" size={22} color="#BDBDBD" /></Text>
-         <Text style={styles.notifications}><Icon name="bell" size={18} color="#BDBDBD" /></Text>
-         <Text style={styles.accountButton}><Icon name="user" size={15} color="#FFFFFF"/>  {this.state.player.nombre}</Text>
+         <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
+         <TouchableOpacity style={styles.notifications}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
+         <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
+         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.state.player.nombre}</Text>
+         </TouchableOpacity>
         </View>
         </View>
       </View>
@@ -53,7 +55,6 @@ const styles = StyleSheet.create({
     flex:2,
     alignItems:'center',
     justifyContent:'center',
-    textAlign:'center',
     backgroundColor:'white',
     paddingVertical:5,
     borderRadius:50,
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
     flex:2,
     alignItems:'center',
     justifyContent:'center',
-    textAlign:'center',
     backgroundColor:'white',
     borderRadius:50,
     paddingVertical:5,
@@ -94,8 +94,10 @@ const styles = StyleSheet.create({
     paddingVertical:5,
     borderRadius:9,
     backgroundColor:'green',
-    color:'white',
     flex:3,
+  },
+  accountButtonText:{
+    color:'white',
     textAlign:'center'
   },
   accountnfoBox:{
