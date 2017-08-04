@@ -13,6 +13,7 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import FirebaseBasicService from '../../lib/firebaseBasicService'
 import CreatePlayer from '../player/createPlayer'
+import Account from '../account/account'
 import Header from './header'
 import Loader from './loading'
 import Menu from './menu'
@@ -24,35 +25,41 @@ export default class App extends Component {
         if(player.firstTime===true){
           this.setState({scene:"firstTime"})
         }else{
-          this.setState({scene:"menu"})
+          this.setState({scene:"account"})
         }
         this.setState({player})
      })
     this.state = {
       user: {},
       scene:'loading',
-      player:''
+      player:{nombre:''}
     }
-    this.signOut = this.signOut.bind(this)
+
   }
 
-  async signOut() {
-    firebase.auth().signOut().then(function() {
-      // Sign-out successful.
-    }, function(error) {
-      // An error happened.
-    });
+
+
+  setSceneAccount = () =>{
+   this.setState({scene:'account'})
   }
+
+  setSceneMenu = () =>{
+   this.setState({scene:'menu'})
+  }
+
  showView(){
   switch (this.state.scene) {
     case 'firstTime':
       return(<CreatePlayer/>)
       break;
     case 'menu':
-      return(<Menu/>)
+      return(<Menu user={this.state.player}/>)
       break;
     case 'loading':
         return(<Loader/>)
+        break;
+    case 'account':
+        return(<Account user={this.state.player}/>)
         break;
     default:
   }

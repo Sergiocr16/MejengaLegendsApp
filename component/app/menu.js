@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FadeInView from 'react-native-fade-in-view';
+import Account from '../account/account';
+import Profile from '../player/profile';
 export default class Menu extends Component {
   constructor(props){
     super(props)
@@ -19,27 +21,32 @@ export default class Menu extends Component {
       scene: 'buttons',
       menuScene: 'partido'
     }
-      
-      this.setScenePartido = this.setScenePartido.bind(this)
-      this.setSceneJugadores = this.setSceneJugadores.bind(this)
-      this.setSceneEquipos = this.setSceneEquipos.bind(this)
-      this.setSceneContratos = this.setSceneContratos.bind(this)
 
   }
 
   setSceneButtons = () => {
    this.setState({scene:'buttons'})
   }
-  setScenePartido(){
+  setSceneProfile = () => {
+   this.setState({scene:'profile'})
+  }
+
+ //SCENES
+
+ //END SCENES
+
+
+  //MENU SCENE BUTTONS
+  setScenePartido = () => {
    this.setState({menuScene:'partido'})
   }
-  setSceneJugadores(){
+  setSceneJugadores = () => {
    this.setState({menuScene:'jugadores'})
   }
-  setSceneEquipos(){
+  setSceneEquipos =() => {
    this.setState({menuScene:'equipos'})
   }
-  setSceneContratos(){
+  setSceneContratos= () =>{
    this.setState({menuScene:'contratos'})
   }
   setSceneMenuMisEquipos = () => {
@@ -190,7 +197,7 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity onPress={this.setSceneProfile} style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://s-media-cache-ak0.pinimg.com/originals/e8/87/44/e88744ba3d249bab71a5a405931c8502.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"user"}  size={30} color="blue" />
@@ -382,9 +389,11 @@ export default class Menu extends Component {
       case 'menuMisEquipos':
         return (<TeamMenu back={()=>this.setSceneButtons()
         } style={{marginTop:35,flex:1}}/>);
+      case 'profile':
+        return <Profile back={()=> this.setSceneButtons()} user={this.props.user}/>;
         break;
       default:
-
+        return this.menuButtons();
     }
   }
   render(){
