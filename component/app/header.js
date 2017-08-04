@@ -93,9 +93,10 @@ const styles = StyleSheet.create({
     paddingHorizontal:10,
     paddingVertical:5,
     borderRadius:9,
-    backgroundColor:'green',
+    backgroundColor:'#64DD17',
     color:'white',
     flex:3,
+    fontSize:15,
     textAlign:'center'
   },
   accountnfoBox:{

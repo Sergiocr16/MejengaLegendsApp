@@ -50,18 +50,22 @@ export default class CreateTeam extends Component {
  submit(team){
     if (team) {
     Team.new(team);
+    var teams = [{nombre:'Cartago',equipoGUID: '1234'},{nombre:'Guadalupe',equipoGUID: '4321'}];
+    Team.newPlayerByTeams(teams);
    }
  }
   render(){
     return (
     <FadeInView style={styles.container} duration={30}>
       <Text>Registra un equipo</Text>
-    <ScrollView>
-    <Form ref="form" type={NewPlayer} options={formOptions}/>
-      <TouchableHighlight style={styles.button}  onPress={()=>{this.submit(this.refs.form.getValue())}} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>Registrar equipo</Text>
-        </TouchableHighlight>
-        </ScrollView>
+      <ScrollView>
+         <View style={{padding:20}}>
+            <Form ref="form" type={NewPlayer} options={formOptions}/>
+            <TouchableHighlight style={styles.button}  onPress={()=>{this.submit(this.refs.form.getValue())}} underlayColor='#99d9f4'>
+               <Text style={styles.buttonText}>Registrar equipo</Text>
+            </TouchableHighlight>
+          </View>
+      </ScrollView>
       </FadeInView>
     )
   }
@@ -70,9 +74,8 @@ export default class CreateTeam extends Component {
 const styles = StyleSheet.create({
   container: {
      justifyContent: 'center',
-     padding: 20,
-     backgroundColor: '#ffffff',
-     flex:1
+     marginTop:35,
+     flex:1,
    },
    title: {
      fontSize: 30,

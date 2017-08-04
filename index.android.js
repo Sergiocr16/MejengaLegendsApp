@@ -87,16 +87,10 @@ export default class MejengaLegendsApp extends Component {
   }
   render() {
     return (
-<<<<<<< HEAD
-
-      <View style={{flexDirection:'column',flex:1}}>
-=======
-      <View style={{flexDirection:'column',flex:1,backgroundColor:'#FAFAFA'}}>
->>>>>>> 091925026ae3a8be405e6b931e02782a5cdb937d
-      <StatusBar hidden={true} />
-      {this.showInitialView()}
-
-      </View>
+      <View style={{flexDirection:'column',flex:1,backgroundColor:'#EEEEEE'}}>
+            <StatusBar hidden={true} />
+            {this.showInitialView()}
+            </View>
 
     );
   }

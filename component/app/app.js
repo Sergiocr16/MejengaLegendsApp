@@ -61,10 +61,11 @@ export default class App extends Component {
   render(){
     return (
       <FadeInView style={styles.column} duration={600}>
-      <Header/>
-      {this.showView()}
-      <TouchableOpacity onPress={this.signOut}><Text>cerrarSesion</Text></TouchableOpacity>
-     </FadeInView>
+        <Image style={{flex:1}} source={{uri: 'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'}}>
+        <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+        {this.showView()}
+        </Image>
+       </FadeInView>
     )
   }
 }

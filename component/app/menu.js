@@ -19,8 +19,7 @@ export default class Menu extends Component {
       scene: 'buttons',
       menuScene: 'partido'
     }
-      this.setSceneButtons = this.setSceneButtons.bind(this)
-
+      
       this.setScenePartido = this.setScenePartido.bind(this)
       this.setSceneJugadores = this.setSceneJugadores.bind(this)
       this.setSceneEquipos = this.setSceneEquipos.bind(this)
@@ -28,7 +27,7 @@ export default class Menu extends Component {
 
   }
 
-  setSceneButtons(){
+  setSceneButtons = () => {
    this.setState({scene:'buttons'})
   }
   setScenePartido(){
@@ -43,7 +42,9 @@ export default class Menu extends Component {
   setSceneContratos(){
    this.setState({menuScene:'contratos'})
   }
-
+  setSceneMenuMisEquipos = () => {
+   this.setState({scene:'menuMisEquipos'})
+  }
   activeMainButton(option) {
     switch (this.state.menuScene) {
       case option: return {
@@ -84,24 +85,24 @@ export default class Menu extends Component {
   }
   mainButtons(){
     return(<View style={{flex:1}}>
-      <View style={styles.mainButtonsContainer}>
-      <TouchableOpacity style={this.activeMainButton('partido')} onPress={this.setScenePartido}>
-       <Text style={this.activeMainText('partido')}>PARTIDO</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={this.activeMainButton('equipos')} onPress={this.setSceneEquipos}>
-       <Text style={this.activeMainText('equipos')} >EQUIPOS</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={this.activeMainButton('jugadores')} onPress={this.setSceneJugadores}>
-       <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={this.activeMainButton('contratos')} onPress={this.setSceneContratos}>
-       <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
-      </TouchableOpacity>
+        <View style={styles.mainButtonsContainer}>
+        <TouchableOpacity style={this.activeMainButton('partido')} onPress={this.setScenePartido}>
+         <Text style={this.activeMainText('partido')}>PARTIDO</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={this.activeMainButton('equipos')} onPress={this.setSceneEquipos}>
+         <Text style={this.activeMainText('equipos')} >EQUIPOS</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={this.activeMainButton('jugadores')} onPress={this.setSceneJugadores}>
+         <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={this.activeMainButton('contratos')} onPress={this.setSceneContratos}>
+         <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
+        </TouchableOpacity>
+        </View>
+        <View style={{flex:6}}>
+        {this.showMenuScene()}
+        </View>
       </View>
-      <View style={{flex:6}}>
-      {this.showMenuScene()}
-      </View>
-</View>
     )
   }
 
@@ -134,7 +135,7 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity onPress={this.setSceneMenuMisEquipos} style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.centrocampista.com/wp-content/uploads/2012/06/Spain-football-team-full-hd-wallpaper-uefa-euro-2012-e1341082560542.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"users"}  size={30} color="blue" />
@@ -378,8 +379,9 @@ export default class Menu extends Component {
       case 'buttons':
         return this.menuButtons();
         break;
-      case 'teamMenu':
-        return (<TeamMenu style={{flex:10}}/>);
+      case 'menuMisEquipos':
+        return (<TeamMenu back={()=>this.setSceneButtons()
+        } style={{marginTop:35,flex:1}}/>);
         break;
       default:
 

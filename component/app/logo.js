@@ -19,7 +19,7 @@ export default class Logo extends Component {
 
   render(){
     return (
-      <FadeInView style={{flex:1}} duration={300}>
+      <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
       <View style={{flex:1}}>
       <FadeInView style={styles.centerItems} duration={600}>
       <Image style={styles.bgImage} source={{uri: 'http://logonoid.com/images/firefly-logo.png'}}>
