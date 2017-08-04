@@ -93,8 +93,9 @@ const styles = StyleSheet.create({
     paddingHorizontal:10,
     paddingVertical:5,
     borderRadius:9,
-    backgroundColor:'green',
+    backgroundColor:'#64DD17',
     flex:3,
+
   },
   accountButtonText:{
     color:'white',

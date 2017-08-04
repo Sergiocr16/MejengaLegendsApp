@@ -68,11 +68,11 @@ export default class App extends Component {
   render(){
     return (
       <FadeInView style={styles.column} duration={600}>
-      <Image style={{flex:1}} source={{uri: 'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'}}>
-      <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
-      {this.showView()}
-      </Image>
-     </FadeInView>
+        <Image style={{flex:1}} source={{uri: 'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'}}>
+        <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+        {this.showView()}
+        </Image>
+       </FadeInView>
     )
   }
 }

@@ -11,6 +11,7 @@ import {
   Text,
   View,
   Navigator,
+  ScrollView,
   TouchableOpacity,
   StatusBar,
   ToastAndroid,
@@ -22,6 +23,10 @@ import App from './component/app/app'
 import Logo from './component/app/logo'
 import Welcome from './component/app/welcomeScreen'
 import Firebase from './lib/firebase'
+
+// import TeamComponent from './component/team/teamCmp'
+import FirebaseBasicService from './lib/firebaseBasicService'
+import Entities from './lib/fireBaseEntities'
 
 export default class MejengaLegendsApp extends Component {
 
@@ -82,10 +87,11 @@ export default class MejengaLegendsApp extends Component {
   }
   render() {
     return (
-      <View style={{flexDirection:'column',flex:1,backgroundColor:'#FAFAFA'}}>
-      <StatusBar hidden={true} />
-      {this.showInitialView()}
-      </View>
+      <View style={{flexDirection:'column',flex:1,backgroundColor:'#EEEEEE'}}>
+            <StatusBar hidden={true} />
+            {this.showInitialView()}
+            </View>
+
     );
   }
 }
@@ -103,10 +109,13 @@ export default class MejengaLegendsApp extends Component {
 // </View>
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flex: 4,
+    padding:10,
+    backgroundColor: 'white',
+  },
+  teamContainer: {
+
+
   },
   welcome: {
     fontSize: 20,
