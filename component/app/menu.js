@@ -63,8 +63,10 @@ export default class Menu extends Component {
         paddingHorizontal:5,
         marginHorizontal:15,
         marginVertical:10,
+        alignItems:'center',
+        justifyContent:'center',
         flex:1,
-        backgroundColor:'blue',
+        backgroundColor:'#1565C0',
         borderRadius:8,
         height:30
       }
@@ -74,6 +76,8 @@ export default class Menu extends Component {
         paddingHorizontal:5,
         marginHorizontal:15,
         marginVertical:10,
+        alignItems:'center',
+        justifyContent:'center',
         flex:1,
         backgroundColor:'white',
         borderRadius:8,
@@ -90,7 +94,7 @@ export default class Menu extends Component {
       break;
       default: return {
         textAlign:'center',
-        color:'blue'
+        color:'#1565C0'
       }
     }
   }
@@ -125,7 +129,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://3a1133d325f0c8a50c77eb21-lapelotonasas.netdna-ssl.com/wp-content/uploads/2017/01/James-Rodr%C3%ADguez-Real-Madrid.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"globe"}  size={30} color="blue" />
+                       <Icon name={"globe"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -136,7 +140,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://cdn-mf0.heartyhosting.com/sites/mensfitness.com/files/soccer-kick-strength-main-1280.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"shield"}  size={20} color="blue" />
+                       <Icon name={"shield"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -149,7 +153,7 @@ export default class Menu extends Component {
                 <TouchableOpacity onPress={this.setSceneMenuMisEquipos} style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.centrocampista.com/wp-content/uploads/2012/06/Spain-football-team-full-hd-wallpaper-uefa-euro-2012-e1341082560542.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"users"}  size={30} color="blue" />
+                       <Icon name={"users"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -160,7 +164,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.unimexsoccerleague.com/wp-content/uploads/2015/03/Awesome-Soccer-Wallpaper.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"trophy"}  size={20} color="blue" />
+                       <Icon name={"trophy"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -180,7 +184,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2017/02/16/sports/16ISRAELSOCCER3/16ISRAELSOCCER3-superJumbo.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"globe"}  size={30} color="blue" />
+                       <Icon name={"globe"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -191,7 +195,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"handshake-o"}  size={30} color="blue" />
+                       <Icon name={"handshake-o"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -204,7 +208,7 @@ export default class Menu extends Component {
                 <TouchableOpacity onPress={this.setSceneProfile} style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://s-media-cache-ak0.pinimg.com/originals/e8/87/44/e88744ba3d249bab71a5a405931c8502.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"user"}  size={30} color="blue" />
+                       <Icon name={"user"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -215,7 +219,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]} onPress={this.setSceneBestPlayers}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm_j9Bg4EtA_h6PvWo0UJrU_VowW6OGFbnnsCtBD9njCysiGC8'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"trophy"}  size={20} color="blue" />
+                       <Icon name={"trophy"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -235,7 +239,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://insider.ticketmaster.com/wp-content/uploads/2014/06/soccer-play-ball.png'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"globe"}  size={30} color="blue" />
+                       <Icon name={"globe"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -246,7 +250,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"handshake-o"}  size={30} color="blue" />
+                       <Icon name={"handshake-o"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -259,7 +263,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"newspaper-o"}  size={20} color="blue" />
+                       <Icon name={"newspaper-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -270,7 +274,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"futbol-o"}  size={20} color="blue" />
+                       <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -281,7 +285,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"futbol-o"}  size={20} color="blue" />
+                       <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -301,7 +305,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://insider.ticketmaster.com/wp-content/uploads/2014/06/soccer-play-ball.png'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"globe"}  size={30} color="blue" />
+                       <Icon name={"globe"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -312,7 +316,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularIcon}>
-                       <Icon name={"handshake-o"}  size={30} color="blue" />
+                       <Icon name={"handshake-o"}  size={30} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -325,7 +329,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://www.thestar.com/content/dam/thestar/sports/soccer/2017/05/29/team-canada-veteran-jose-blanger-retires-from-competitive-soccer/belanger-file.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"newspaper-o"}  size={20} color="blue" />
+                       <Icon name={"newspaper-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -336,7 +340,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"futbol-o"}  size={20} color="blue" />
+                       <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -347,7 +351,7 @@ export default class Menu extends Component {
                 <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
-                       <Icon name={"futbol-o"}  size={20} color="blue" />
+                       <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
@@ -445,12 +449,12 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   buttonBigTitle:{
-    color:'blue',
+    color:'#1565C0',
     textAlign:'center',
     fontSize:17
   },
   buttonSmallTitle:{
-    color:'blue',
+    color:'#1565C0',
     textAlign:'center',
     fontSize:15
   },
@@ -493,12 +497,12 @@ const styles = StyleSheet.create({
     marginHorizontal:15,
     marginVertical:10,
     flex:1,
-    backgroundColor:'blue',
+    backgroundColor:'#1565C0',
     borderRadius:8,
     height:30
   },
-  blueFont:{
-    color:'blue',
+  blue:{
+    color:'#1565C0',
     textAlign:'center'
   },
   whiteFont:{

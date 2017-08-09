@@ -11,6 +11,8 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FadeInView from 'react-native-fade-in-view';
+import * as Animatable from 'react-native-animatable';
+const AnimatedIcon = Animatable.createAnimatableComponent(Icon)
 export default class Loader extends Component {
   constructor(props){
     super(props)
@@ -25,7 +27,7 @@ export default class Loader extends Component {
   render(){
     return (
     <FadeInView style={styles.centerItems} duration={30}>
-    <Icon name="circle-o-notch" size={50} color="white" />
+    <AnimatedIcon animation="rotate" iterationCount="infinite" direction="right" name="futbol-o" size={65} color="white" ></AnimatedIcon>
     </FadeInView>
     )
   }

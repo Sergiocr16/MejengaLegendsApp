@@ -119,6 +119,7 @@ export default class BestPlayers extends Component {
 
   showPlayers(){
     let players =  this.state.players.map( (val, key) => {
+      if(val.nombre!==undefined){
             return <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val}); this.setScenePlayerProfile();   }}
                    key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
                    <View style={{flex:2}}>
@@ -128,12 +129,13 @@ export default class BestPlayers extends Component {
                       <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
                     <Text style={styles.score}><Icon name="trophy" size={20} color="yellow" /> {val.score}</Text>
                    </TouchableOpacity>
+                 }
         });
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
       <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES JUGADORES</Text></View>
-      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualemnte</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
        <View style={styles.basicInfo}>
        <ScrollView>
        {players}
