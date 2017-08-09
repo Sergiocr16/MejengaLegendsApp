@@ -90,8 +90,8 @@ export default class EditPlayer extends Component {
        return <Picker.Item  key={i} value={s} label={s} />
      });
     return (
-   <View style={{flex:1}}>
-  <FadeInView style={styles.container} duration={300}>
+   <View style={styles.container}>
+  <FadeInView style={styles.infoContainer} duration={300}>
   <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.player.nombre.toUpperCase()+" "+this.props.player.primerApellido.toUpperCase()}</Text></View>
   <View style={styles.subtitle}><Text style={styles.whiteFont2}>Edita tu perfil de jugador</Text></View>
     <View style={{flex:1,padding:20}}>
@@ -211,6 +211,12 @@ const styles = StyleSheet.create({
   paddingVertical:4,
   paddingHorizontal:15,
  },
+ infoContainer:{
+   flex:10,
+   backgroundColor:'white',
+   borderRadius:10,
+   margin:20
+ },
  buttonBackHijo:{
    width: 120,
    height: 140,
@@ -275,12 +281,8 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },
   container: {
-     justifyContent: 'center',
-     backgroundColor: '#ffffff',
-     flex:10,
-     marginHorizontal:20,
-     marginBottom:15,
-     borderRadius:10
+      flex:1,
+      borderRadius:20
    },
    title: {
      fontSize: 30,
