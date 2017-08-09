@@ -32,7 +32,7 @@ export default class TeamDetail extends Component {
                   <View style={[styles.circularIcon,{margin:-30}]}>
                        <Icon name={"shield"}  size={40} color="#424242" />
                   </View>
-                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.puntaje}</Text>
+                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.puntaje} copas</Text>
 
                 </View>
                 <View style={{flex:3}}>
@@ -43,11 +43,11 @@ export default class TeamDetail extends Component {
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.liga.nombre}</Text>
+                         <Text style={styles.flexEnd}>{this.props.team.liga}</Text>
                       </View>
                       <View style={styles.info}>
-                         <Text style={styles.flexStart}>Puntaje</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.puntaje}</Text>
+                         <Text style={styles.flexStart}>Copas</Text>
+                         <Text style={styles.flexEnd}>{this.props.team.copas}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Género</Text>

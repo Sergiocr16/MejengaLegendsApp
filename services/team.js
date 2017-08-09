@@ -8,12 +8,19 @@ class TeamService {
           callBack(result);
       })
     }
-
+    static newWithCallback(objeto,callback){
+      FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
+    }
     static new(objeto){
       FirebaseBasicService.new(Entities.TEAMS,objeto);
     }
+
+    static newTeamsByPlayer(objeto){
+      FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
+    }
+
     static getTeamsByPlayer(callBack){
-      FirebaseBasicService.findActiveById("teamsByPlayer",firebase.auth().currentUser.uid,callBack)
+      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack)
     }
     static newPlayerByTeams(objeto){
       FirebaseBasicService.newWithKey(Entities.PLAYERSBYTEAM,'KSRKw0p4P7Vnip26wwAtmF4bRrg2',objeto);

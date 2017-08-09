@@ -19,16 +19,13 @@ import TeamService from '../../services/team';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
-export default class CreateTeam extends Component {
+export default class AddPlayersToTeam extends Component {
   constructor(props){
     super(props)
 
     this.state = {
       nombre: '',
-      lema: '',
-      genero:'Masculino',
-      genders:['Masculino','Femenino'],
-      player:{ nombre: '',liga:'',PrimerApellido:'',score:0}
+
     }
   }
 
@@ -50,55 +47,35 @@ export default class CreateTeam extends Component {
      equiposDelJugador = this.props.teams;
      equiposDelJugador.push(equipo);
      TeamService.newTeamsByPlayer(equiposDelJugador);
-     this.props.addPlayers();
+     this.props.back;
    });
  }
 
   render(){
-    let genderPicker = this.state.genders.map( (s, i) => {
-       return <Picker.Item  key={i} value={s} label={s} />
-     });
     return (
   <FadeInView style={styles.container} duration={30}>
-  <View style={styles.mainName}><Text style={styles.whiteFont}>Crear un equipo</Text></View>
-  <View style={styles.subtitle}><Text style={styles.whiteFont2}>Crea tu perfil de jugador</Text></View>
+  <View style={styles.mainName}><Text style={styles.whiteFont}>Agrega los jugadores a tu equipo y arma tu equipo!</Text></View>
+  <View style={styles.subtitle}><Text style={styles.whiteFont2}>Buscar jugador por nombre de usuario</Text></View>
     <View style={{flex:1,padding:20}}>
-      <ScrollView>
-      <View style={{flexDirection:'row'}}>
-      <TextInput
-      underlineColorAndroid='#42A5F5'
-      placeholderTextColor="grey"
-      placeholder="Nombre del equipo"
-      autocapitalize={true}
-      disableFullscreenUI={true}
-      style={[styles.inputText,{flex:1}]}
-      onChangeText={(nombre) => this.setState({nombre})}
-      />
-      <TextInput
-      underlineColorAndroid='#42A5F5'
-      placeholderTextColor="grey"
-      placeholder="Lema"
-      disableFullscreenUI={true}
-      style={[styles.inputText,{flex:1}]}
-      onChangeText={(lema) => this.setState({lema})}
-      />
-   </View>
-   <View style={{flexDirection:'column',marginVertical:20}}>
-   <View style={{flex:1,marginBottom:25}}>
-    <Text style={styles.bold}>Selecciona el género del equipo</Text>
-   <Picker style={styles.androidPicker} selectedValue={this.state.genero}
-     onValueChange={ (genero) => (this.setState({genero})) } >
-     {genderPicker}
-     </Picker>
-   </View>
-
-
-  </View>
-
-      <TouchableOpacity style={styles.button}  onPress={this.submit} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>¡Listo!</Text>
-        </TouchableOpacity>
-        </ScrollView>
+          <View style={{flex:1,flexDirection:'row',paddingHorizontal:50}}>
+              <TextInput
+              underlineColorAndroid='white'
+              placeholderTextColor="grey"
+              placeholder="Nombre de usuario"
+              autocapitalize={true}
+              disableFullscreenUI={true}
+              style={[styles.inputText,{flex:1}]}
+              onChangeText={(nombre) => this.setState({nombre})}
+              />
+              <TouchableOpacity style={[styles.buttonBuscarJugador,{flex:1,alignItems:'flex-end'}]}  onPress={this.submit} underlayColor='#99d9f4'>
+                <Text style={styles.buttonText}>Buscar</Text>
+              </TouchableOpacity>
+           </View>
+           <ScrollView style={{flex:1}}>
+             <TouchableOpacity style={[styles.button,{flex:1,alignItems:'flex-end'}]}  onPress={this.submit} underlayColor='#99d9f4'>
+               <Text style={styles.buttonText}>¡Listo!</Text>
+             </TouchableOpacity>
+           </ScrollView>
       </View>
       </FadeInView>
     )
@@ -106,18 +83,15 @@ export default class CreateTeam extends Component {
 }
 
 const styles = StyleSheet.create({
-  androidPicker: {
-    height: 40,
-            alignSelf: 'stretch',
-            alignItems:'center',
-            justifyContent:'center',
-        },
   inputText: {
-    height: 40,
+    height: 26,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical:1,
     color: 'grey',
     textAlign:'center',
+    borderWidth: 1,
+    margin: 5,
+     borderColor: '#E0E0E0',
   },
   boldSmall:{
     color:'#42A5F5',
@@ -129,17 +103,7 @@ const styles = StyleSheet.create({
       textAlign:'center',
       fontWeight:'bold'
   },
-  ageText:{
-    color:'orange',
-    fontSize:28,
-    textAlign:'center',
-    fontWeight:'bold',
-  },
-  btnAge:{
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
+
   mainName:{
     backgroundColor:'#1A237E',
     padding:7,
@@ -183,6 +147,14 @@ const styles = StyleSheet.create({
      borderWidth: 1,
      borderRadius: 8,
      marginBottom: 10,
+     alignSelf: 'stretch',
+     justifyContent: 'center'
+   },
+   buttonBuscarJugador: {
+     height: 26,
+     backgroundColor: '#689F38',
+     borderRadius: 8,
+     margin: 5,
      alignSelf: 'stretch',
      justifyContent: 'center'
    }

@@ -15,6 +15,7 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import CreateTeam from '../team/createTeam';
 import TeamDetail from '../team/teamDetail';
+import AddPlayersToTeam from '../team/addPlayersToTeam';
 
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
@@ -26,7 +27,6 @@ export default class TeamMenu extends Component {
   constructor(props){
     super(props)
     TeamService.getTeamsByPlayer((teams)=>{
-      console.log(teams);
         this.setState({scene:"myTeams",teams})
     })
     this.state = {
@@ -48,10 +48,10 @@ export default class TeamMenu extends Component {
                   <View style={{flex:1}}>
                   <View style={{flex:2}}>
                         <Text style={styles.teamName}>{val.nombre}</Text>
-                          <Text style={styles.puntaje}>{val.puntaje} puntos</Text>
+                          <Text style={styles.puntaje}>{val.puntaje} copas</Text>
                   </View>
                     <View style={{flex:1,borderTopWidth:1, margin:15, borderColor:'#BDBDBD'}}>
-                      <Text style={styles.ligaName}>{val.liga.nombre}</Text>
+                      <Text style={styles.ligaName}>{val.liga}</Text>
                     </View>
                   </View>
 
@@ -78,7 +78,7 @@ export default class TeamMenu extends Component {
               </View>
            </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo}><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.setAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
           </View>
        </View>
     </FadeInView>
@@ -88,6 +88,10 @@ export default class TeamMenu extends Component {
   setMyTeamsMenu = ()=>{
      this.setState({scene:'myTeams'})
   }
+  setAddPlayerToTeam = ()=>{
+     this.setState({scene:'agregarJugadoresAEquipo'})
+  }
+
   setSceneRegistrarEquipo = () => {
    this.setState({scene:'registrarEquipo'})
   }
@@ -96,15 +100,18 @@ export default class TeamMenu extends Component {
       case 'myTeams':
         return this.myTeams();
         break;
-        case 'loading':
-          return (<Loader/>)
-          break;
-      case 'registrarEquipo':
-        return (<CreateTeam style={{marginTop:35,flex:1}}/>);
+      case 'loading':
+        return (<Loader/>)
         break;
-        case 'detalleEquipo':
-          return (<TeamDetail back={()=> this.setMyTeamsMenu()} team={this.state.currentTeam}/>);
-          break;
+      case 'registrarEquipo':
+        return (<CreateTeam user={this.props.user} back={()=> this.setMyTeamsMenu()} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
+        break;
+      case 'detalleEquipo':
+        return (<TeamDetail back={()=> this.setMyTeamsMenu()}  team={this.state.currentTeam}/>);
+        break;
+      case 'agregarJugadoresAEquipo':
+        return (<AddPlayersToTeam back={()=> this.setMyTeamsMenu()} team={this.state.currentTeam}/>);
+        break;
       default:
 
     }
