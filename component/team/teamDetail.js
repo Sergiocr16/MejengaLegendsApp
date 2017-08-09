@@ -43,11 +43,11 @@ export default class TeamDetail extends Component {
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.liga.nombre}</Text>
+                         <Text style={styles.flexEnd}>{this.props.team.liga}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Copas</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.puntaje}</Text>
+                         <Text style={styles.flexEnd}>{this.props.team.copas}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Género</Text>
