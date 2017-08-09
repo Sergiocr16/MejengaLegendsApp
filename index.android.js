@@ -38,9 +38,13 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-    setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
+    console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
+  }
+
+  componentDidMount() {
+      setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
   }
   async getInitialView(){
      await firebase.auth().onAuthStateChanged( async (user) => {

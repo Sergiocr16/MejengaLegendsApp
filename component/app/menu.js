@@ -376,22 +376,23 @@ export default class Menu extends Component {
       default:
         return(this.menuPartidoScene())
     }
-
   }
   menuButtons(){
     return(
-      <View style={{marginTop:35,flex:1}}>
+      <View style={{flex:1}}>
         {this.mainButtons()}
       </View>
     )
   }
+
+
   showScene(){
     switch (this.state.scene) {
       case 'buttons':
         return this.menuButtons();
         break;
       case 'menuMisEquipos':
-        return (<TeamMenu back={()=>this.setSceneButtons()} user={this.props.user} style={{marginTop:35,flex:1}}/>);
+        return (<TeamMenu back={()=>this.setSceneButtons()} user={this.props.user} style={{flex:1}}/>);
       case 'profile':
         return <Profile back={()=> this.setSceneButtons()} user={this.props.user}/>;
         break;
@@ -507,7 +508,6 @@ const styles = StyleSheet.create({
   mainButtonsContainer:{
     flexDirection:'row',
     flex:1,
-    height:30
   },
   bgImage:{
     flex:1,
@@ -517,7 +517,6 @@ const styles = StyleSheet.create({
     fontSize:50
   },
   initButton:{
-    marginTop:90,
     borderColor:'rgba(56, 45, 45,0.5)',
     backgroundColor:'rgba(255,255,255,0.5)',
     borderWidth: 6,

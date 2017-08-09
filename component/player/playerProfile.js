@@ -150,7 +150,6 @@ export default class PlayerProfile extends Component {
    container:{
      flex:1,
      borderRadius:20,
-     marginTop:30,
    },
    mainName:{
      backgroundColor:'#1A237E',

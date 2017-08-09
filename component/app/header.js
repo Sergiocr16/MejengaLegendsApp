@@ -19,18 +19,18 @@ export default class Header extends Component {
        scene:'loading',
        player:{ nombre: '',liga:'',PrimerApellido:'',score:0}
     }
+  }
+ componentDidMount(){
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
    })
-
-  }
-
+ }
   render(){
     return (
-      <View>
+      <View style={{flex:1}}>
       <View style={styles.row}>
         <View style={styles.ligaBar}>
-         <Text style={styles.ligaBarText}> <Icon name="diamond" size={16} color="#00BCD4" /> {this.state.player.liga}</Text>
+         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="diamond" size={16} color="#00BCD4" /> {this.state.player.liga}</Text>
          <Text style={styles.ligaBarText}><Icon name="trophy" size={16} color="yellow" /> {this.state.player.score}</Text>
         </View>
         <View style={styles.accountnfoBox}>
@@ -74,14 +74,13 @@ const styles = StyleSheet.create({
   ligaBarText:{
     color:'white',
     borderRightColor:'gray',
-    borderWidth:1,
+
     flex:1,
     textAlign:'center',
   },
   ligaBar:{
     flex:6,
     backgroundColor:'black',
-    height:30,
     alignItems:'center',
     justifyContent:'center',
     borderTopRightRadius:9,
@@ -102,7 +101,6 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },
   accountnfoBox:{
-    height:30,
     flex:5,
     flexDirection:'row'
   },
@@ -112,7 +110,6 @@ const styles = StyleSheet.create({
   row:{
     flexDirection:'row',
     flex:1,
-    height:30,
     paddingTop:2
   }
 

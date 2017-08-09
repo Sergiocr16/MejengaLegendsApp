@@ -24,11 +24,13 @@ export default class BestPlayers extends Component {
       scene: 'loading',
       currentPlayer:{}
     }
+
+  }
+  componentDidMount() {
     Player.findTopPlayers((players)=>{
       this.setState({players,scene:'bestPlayers'})
     })
   }
-
   setScenePlayers = () => {
     this.setState({scene:'bestPlayers'})
   }
@@ -233,7 +235,6 @@ export default class BestPlayers extends Component {
    container:{
      flex:1,
      borderRadius:20,
-     marginTop:30,
    },
    mainName:{
      backgroundColor:'#1A237E',
