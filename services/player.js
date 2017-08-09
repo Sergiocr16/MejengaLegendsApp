@@ -13,6 +13,10 @@ class Player {
     static getCurrentPlayer(callback){
       FirebaseBasicService.findActiveById('users/players/',firebase.auth().currentUser.uid,callback)
     }
+
+    static findTopPlayers(callback){
+      FirebaseBasicService.orderByAttribute('users/players/active/','score',callback)
+    }
 }
 
 module.exports = Player

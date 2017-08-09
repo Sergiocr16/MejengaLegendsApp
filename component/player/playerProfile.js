@@ -12,7 +12,7 @@ import * as firebase from 'firebase'
 import EditPlayer from './editPlayer';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default class Profile extends Component {
+export default class PlayerProfile extends Component {
   constructor(props){
     super(props)
   var years = parseInt(moment(new Date()).format('YYYY')) - parseInt(moment(this.props.user.fechaNacimiento).format('YYYY'));
@@ -22,21 +22,6 @@ export default class Profile extends Component {
     }
   }
 
-  setSceneInfo = () => {
-    this.setState({scene:'info'})
-  }
-  showScene(){
-    switch (this.state.scene) {
-      case 'info':
-        return this.showInfo()
-        break;
-      case 'editInfo':
-        return <EditPlayer player={this.props.user} back={()=>{this.setSceneInfo()}}/>
-        break;
-      default:
-
-    }
-  }
 
   showInfo(){
     return (
@@ -91,9 +76,6 @@ export default class Profile extends Component {
               </Text>
           </View>
        </TouchableOpacity>
-       <View style={{flex:1, alignItems:'flex-end'}}>
-        <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-      </View>
       </View>
       </FadeInView>
     )
@@ -101,7 +83,7 @@ export default class Profile extends Component {
       render(){
         return (
           <View style={{flex:1}}>
-          {this.showScene()}
+          {this.showInfo()}
           </View>
         )
       }
