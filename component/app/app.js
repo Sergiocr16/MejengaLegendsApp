@@ -22,6 +22,7 @@ export default class App extends Component {
   constructor(props){
         super(props)
     FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
+      console.log(player)
         if(player.firstTime===true){
           this.setState({scene:"firstTime"})
         }else{

@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FadeInView from 'react-native-fade-in-view';
 import Account from '../account/account';
 import Profile from '../player/profile';
+import BestPlayers from '../player/bestPlayers';
 export default class Menu extends Component {
   constructor(props){
     super(props)
@@ -29,6 +30,9 @@ export default class Menu extends Component {
   }
   setSceneProfile = () => {
    this.setState({scene:'profile'})
+  }
+  setSceneBestPlayers = () => {
+   this.setState({scene:'bestPlayers'})
   }
 
  //SCENES
@@ -208,7 +212,7 @@ export default class Menu extends Component {
                     <Text style={styles.buttonSubtitle}>Visualiza tus estadísticas</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]} onPress={this.setSceneBestPlayers}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm_j9Bg4EtA_h6PvWo0UJrU_VowW6OGFbnnsCtBD9njCysiGC8'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"trophy"}  size={20} color="blue" />
@@ -390,6 +394,9 @@ export default class Menu extends Component {
         return (<TeamMenu back={()=>this.setSceneButtons()} user={this.props.user} style={{marginTop:35,flex:1}}/>);
       case 'profile':
         return <Profile back={()=> this.setSceneButtons()} user={this.props.user}/>;
+        break;
+      case 'bestPlayers':
+        return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
       default:
         return this.menuButtons();
