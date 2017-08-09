@@ -26,16 +26,18 @@ var Form = t.form.Form;
 export default class TeamMenu extends Component {
   constructor(props){
     super(props)
-    TeamService.getTeamsByPlayer((teams)=>{
-        this.setState({scene:"myTeams",teams})
-    })
     this.state = {
       scene: 'loading',
       teams:[],
       currentTeam: '',
     }
   }
+  componentDidMount() {
+    TeamService.getTeamsByPlayer((teams)=>{
+        this.setState({scene:"myTeams",teams})
+    })
 
+  }
   myTeams(){
     let equipos = this.state.teams.map( (val, key) => {
             return <TouchableOpacity onPress={()=>{
@@ -78,7 +80,7 @@ export default class TeamMenu extends Component {
               </View>
            </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={this.setAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
           </View>
        </View>
     </FadeInView>

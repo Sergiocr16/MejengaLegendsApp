@@ -50,7 +50,7 @@ export default class CreateTeam extends Component {
      equiposDelJugador = this.props.teams;
      equiposDelJugador.push(equipo);
      TeamService.newTeamsByPlayer(equiposDelJugador);
-     this.props.addPlayers();
+     this.props.back();
    });
  }
 

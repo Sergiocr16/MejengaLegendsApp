@@ -21,15 +21,7 @@ import Menu from './menu'
 export default class App extends Component {
   constructor(props){
         super(props)
-    FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
-      console.log(player)
-        if(player.firstTime===true){
-          this.setState({scene:"firstTime"})
-        }else{
-          this.setState({scene:"account"})
-        }
-        this.setState({player})
-     })
+
     this.state = {
       user: {},
       scene:'loading',
@@ -37,7 +29,16 @@ export default class App extends Component {
     }
 
   }
-
+  componentDidMount() {
+    FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
+        if(player.firstTime===true){
+          this.setState({scene:"firstTime"})
+        }else{
+          this.setState({scene:"menu"})
+        }
+        this.setState({player})
+     })
+  }
 
 
   setSceneAccount = () =>{
@@ -54,7 +55,7 @@ export default class App extends Component {
       return(<CreatePlayer/>)
       break;
     case 'menu':
-      return(<Menu user={this.state.player}/>)
+      return(<Menu sceneParent={this.state.scene} user={this.state.player}/>)
       break;
     case 'loading':
         return(<Loader/>)
@@ -70,8 +71,12 @@ export default class App extends Component {
     return (
       <FadeInView style={styles.column} duration={600}>
         <Image style={{flex:1}} source={{uri: 'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'}}>
+        <View style={{flex:1}}>
         <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+        </View>
+        <View style={{flex:12}}>
         {this.showView()}
+        </View>
         </Image>
        </FadeInView>
     )

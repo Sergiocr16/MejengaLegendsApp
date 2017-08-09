@@ -278,7 +278,6 @@ const styles = StyleSheet.create({
      justifyContent: 'center',
      backgroundColor: '#ffffff',
      flex:10,
-     marginTop:45,
      marginHorizontal:20,
      marginBottom:15,
      borderRadius:10

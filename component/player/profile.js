@@ -167,8 +167,7 @@ export default class Profile extends Component {
    },
    container:{
      flex:1,
-     borderRadius:20,
-     marginTop:30,
+     borderRadius:20
    },
    mainName:{
      backgroundColor:'#1A237E',
