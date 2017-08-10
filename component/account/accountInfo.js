@@ -21,10 +21,17 @@ export default class AccountInfo extends Component {
       // An error happened.
     });
   }
+  showImage = () => {
+    if(this.props.user.image==undefined){
+    return  <Image style={styles.profileImage} borderRadius={100} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+    }else{
+      return <Image style={styles.profileImage} borderRadius={100} source={{uri: this.props.user.image}}></Image>
+    }
+  }
       render(){
         return (
           <FadeInView style={styles.container} duration={600}>
-          <Image style={styles.profileImage} borderRadius={100} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+           {this.showImage()}
              <Text style={styles.title}>{this.props.user.nombre +" "+ this.props.user.primerApellido +" "+ this.props.user.segundoApellido}</Text>
              <Text style={styles.subTitle}>{this.props.user.username}</Text>
               <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>

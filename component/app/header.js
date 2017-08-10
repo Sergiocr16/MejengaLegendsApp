@@ -94,10 +94,13 @@ const styles = StyleSheet.create({
     borderRadius:9,
     backgroundColor:'#388E3C',
     flex:3,
+    justifyContent:'center',
+    alignItems:'center'
   },
   accountButtonText:{
     color:'white',
-    textAlign:'center'
+    textAlign:'center',
+
   },
   accountnfoBox:{
     flex:5,

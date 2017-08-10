@@ -15,6 +15,15 @@ export default class TeamDetail extends Component {
   constructor(props){
     super(props)
   }
+  showImage = () => {
+    if(this.props.team.image !== undefined){
+     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}>
+       </Image>
+    }else{
+    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+      </Image>
+  }
+  }
       render(){
         return (
           <FadeInView style={styles.container} duration={600}>
@@ -27,8 +36,7 @@ export default class TeamDetail extends Component {
               </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
-                  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
-                  </Image>
+                   {this.showImage()}
                   <View style={[styles.circularIcon,{margin:-30}]}>
                        <Icon name={"shield"}  size={40} color="#424242" />
                   </View>

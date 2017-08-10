@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  ScrollView
 } from 'react-native'
 var moment = require('moment');
 import * as firebase from 'firebase'
@@ -38,6 +39,13 @@ export default class Profile extends Component {
     }
   }
 
+  showImage = () => {
+    if(this.props.user.image==undefined){
+    return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+    }else{
+      return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.user.image}}></Image>
+    }
+  }
   showInfo(){
     return (
       <FadeInView style={styles.container}>
@@ -46,11 +54,12 @@ export default class Profile extends Component {
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
        <View style={styles.basicInfo}>
        <View style={{flex:1,alignItems:'center'}}>
-       <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       {this.showImage()}
          <Text style={styles.boldFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text>
          <Text>{this.props.user.username}</Text>
        </View>
-        <View style={{flex:2}}>
+       <View style={{flex:2}}>
+        <ScrollView>
           <View style={styles.info}>
              <Text style={styles.flexStart}>Altura [cm]/ Edad</Text>
              <Text style={styles.flexEnd}>{this.props.user.altura} / {this.state.years}</Text>
@@ -79,6 +88,7 @@ export default class Profile extends Component {
              <Text style={styles.flexStart}>Fichable</Text>
              <Text style={styles.flexEnd}>{this.props.user.fichable}</Text>
           </View>
+        </ScrollView>
         </View>
        </View>
       </FadeInView>
