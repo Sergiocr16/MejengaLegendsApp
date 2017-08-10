@@ -11,6 +11,7 @@ class TeamService {
     static newWithCallback(objeto,callback){
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
+  
     static new(objeto){
       FirebaseBasicService.new(Entities.TEAMS,objeto);
     }

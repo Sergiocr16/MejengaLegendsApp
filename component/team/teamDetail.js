@@ -32,10 +32,11 @@ export default class TeamDetail extends Component {
                   <View style={[styles.circularIcon,{margin:-30}]}>
                        <Icon name={"shield"}  size={40} color="#424242" />
                   </View>
-                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.puntaje} copas</Text>
+                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
+                  <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
 
                 </View>
-                <View style={{flex:3}}>
+                <View style={{flex:3,padding:10}}>
                   <ScrollView>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
@@ -74,15 +75,18 @@ export default class TeamDetail extends Component {
               </View>
           </View>
           <View style={{flex:1,flexDirection:'row'}}>
-            <View style={{flex:1, alignItems:'flex-start'}}>
-              <TouchableOpacity onPress={this.props.back} style={styles.buttonBackPadre}>
+            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+              <View style={styles.buttonBackPadre}>
                 <View style={styles.buttonBackHijo}/>
                   <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
                       <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
                   </Text>
-              </TouchableOpacity>
-           </View>
-       </View>
+              </View>
+           </TouchableOpacity>
+           <View style={{flex:1, alignItems:'flex-end'}}>
+            <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+          </View>
+          </View>
           </FadeInView>
         )
       }
@@ -119,7 +123,7 @@ export default class TeamDetail extends Component {
      position: 'absolute',
      right: 40,
      top: -30,
-     backgroundColor: '#2962FF',
+     backgroundColor: '#1565C0',
      transform: [{
        rotate: '138deg',
      }]
@@ -131,12 +135,11 @@ export default class TeamDetail extends Component {
    basicInfo:{
      flex:1,
      flexDirection:'row',
-     padding:20
+     padding:10
    },
    container:{
      flex:1,
      borderRadius:20,
-     marginTop:30,
    },
    mainName:{
      backgroundColor:'#1565C0',
@@ -177,6 +180,20 @@ export default class TeamDetail extends Component {
    whiteFont:{
      color:'white',
      textAlign:'center'
+   },
+   button:{
+     marginRight:5,
+     marginBottom:5,
+     paddingHorizontal:10,
+     paddingVertical:4,
+     borderRadius:9,
+     backgroundColor:'#F4511E',
+     flex:3,
+   },
+   textButton: {
+     textAlign:'center',
+     color:'white',
+     fontSize:15,
    },
    circularIcon:{
      borderWidth:1,

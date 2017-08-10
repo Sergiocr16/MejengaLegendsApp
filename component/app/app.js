@@ -25,7 +25,8 @@ export default class App extends Component {
     this.state = {
       user: {},
       scene:'loading',
-      player:{nombre:''}
+      player:{nombre:''},
+      backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
     }
 
   }
@@ -47,6 +48,7 @@ export default class App extends Component {
 
   setSceneMenu = () =>{
    this.setState({scene:'menu'})
+
   }
 
  showView(){
@@ -55,7 +57,7 @@ export default class App extends Component {
       return(<CreatePlayer/>)
       break;
     case 'menu':
-      return(<Menu sceneParent={this.state.scene} user={this.state.player}/>)
+      return(<Menu showFieldViewImg={()=>this.setState({backImg:'https://previews.123rf.com/images/darrenwhi/darrenwhi1005/darrenwhi100500047/6931190-Ilustraci-n-de-una-cancha-de-f-tbol-desde-arriba--Foto-de-archivo.jpg'})} hideFieldViewImg={()=>this.setState({backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'})} sceneParent={this.state.scene} user={this.state.player}/>)
       break;
     case 'loading':
         return(<Loader/>)
@@ -70,7 +72,7 @@ export default class App extends Component {
   render(){
     return (
       <FadeInView style={styles.column} duration={600}>
-        <Image style={{flex:1}} source={{uri: 'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'}}>
+        <Image style={{flex:1}} source={{uri: this.state.backImg}}>
         <View style={{flex:1}}>
         <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
         </View>

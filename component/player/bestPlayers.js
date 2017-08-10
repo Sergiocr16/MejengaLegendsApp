@@ -221,7 +221,7 @@ export default class BestPlayers extends Component {
      position: 'absolute',
      right: 40,
      top: -30,
-     backgroundColor: '#2962FF',
+     backgroundColor: '#1565C0',
      transform: [{
        rotate: '138deg',
      }]
@@ -239,11 +239,11 @@ export default class BestPlayers extends Component {
      borderRadius:20,
    },
    mainName:{
-     backgroundColor:'#1A237E',
+     backgroundColor:'#1565C0',
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{

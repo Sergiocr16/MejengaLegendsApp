@@ -31,7 +31,7 @@ export default class PlayerProfile extends Component {
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
        <View style={styles.basicInfo}>
        <View style={{flex:1,alignItems:'center'}}>
-       <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20431520_1490013577711814_2633038823655280681_n.jpg?oh=f6b3e97054ed3699ff162a25b2d176b3&oe=5A355363'}}></Image>
          <Text style={styles.boldFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text>
          <Text>{this.props.user.username}</Text>
        </View>
@@ -134,7 +134,7 @@ export default class PlayerProfile extends Component {
      position: 'absolute',
      right: 40,
      top: -30,
-     backgroundColor: '#2962FF',
+     backgroundColor: '#1565C0',
      transform: [{
        rotate: '138deg',
      }]
@@ -152,11 +152,11 @@ export default class PlayerProfile extends Component {
      borderRadius:20,
    },
    mainName:{
-     backgroundColor:'#1A237E',
+     backgroundColor:'#1565C0',
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{
