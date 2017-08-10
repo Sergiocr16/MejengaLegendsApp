@@ -27,7 +27,7 @@ export default class Loader extends Component {
   render(){
     return (
     <FadeInView style={styles.centerItems} duration={30}>
-    <AnimatedIcon animation="rotate" iterationCount="infinite" direction="right" name="futbol-o" size={65} color="white" ></AnimatedIcon>
+    <AnimatedIcon animation="rotate" iterationCount="infinite" name="futbol-o" size={65} color="white" ></AnimatedIcon>
     </FadeInView>
     )
   }

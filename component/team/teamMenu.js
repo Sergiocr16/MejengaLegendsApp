@@ -43,7 +43,22 @@ export default class TeamMenu extends Component {
 
   }
 
-  showBorderTop(equipo) {
+  showImage = (val) => {
+    if(val.image !== undefined){
+     return <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: val.image}}>
+         <View style={[styles.circularIcon,{margin:-30}]}>
+            <Icon name={"shield"}  size={40} color="#424242" />
+         </View>
+     </Image>
+    }else{
+    return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+        <View style={[styles.circularIcon,{margin:-30}]}>
+           <Icon name={"shield"}  size={40} color="#424242" />
+        </View>
+    </Image>
+  }
+}
+  showBorderTop = (equipo) => {
     switch (equipo.estaVacio) {
       case true: return {
         flex:1,
@@ -61,15 +76,12 @@ export default class TeamMenu extends Component {
       }
     }
   }
+  
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
             return <TouchableOpacity onPress={()=>{
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
-                <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
-                    <View style={[styles.circularIcon,{margin:-30}]}>
-                       <Icon name={"shield"}  size={40} color="#424242" />
-                    </View>
-                </Image>
+                  {this.showImage(val)}
                   <View style={{flex:1}}>
                   <View style={{flex:2}}>
                       <Text style={styles.teamName}>{val.nombre}</Text>

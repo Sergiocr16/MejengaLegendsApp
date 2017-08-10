@@ -22,7 +22,13 @@ export default class PlayerProfile extends Component {
     }
   }
 
-
+  showImage = () => {
+    if(this.props.user.image==undefined){
+    return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+    }else{
+      return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.user.image}}></Image>
+    }
+  }
   showInfo(){
     return (
       <FadeInView style={styles.container}>
@@ -31,7 +37,7 @@ export default class PlayerProfile extends Component {
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
        <View style={styles.basicInfo}>
        <View style={{flex:1,alignItems:'center'}}>
-       <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20431520_1490013577711814_2633038823655280681_n.jpg?oh=f6b3e97054ed3699ff162a25b2d176b3&oe=5A355363'}}></Image>
+        {this.showImage()}
          <Text style={styles.boldFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text>
          <Text>{this.props.user.username}</Text>
        </View>

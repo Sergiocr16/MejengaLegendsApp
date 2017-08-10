@@ -15,11 +15,14 @@ import FadeInView from 'react-native-fade-in-view';
 import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
 export default class Menu extends Component {
   constructor(props){
     super(props)
     this.state = {
       scene: 'buttons',
+      gestureName: 'none',
       menuScene: 'partido'
     }
 
@@ -123,7 +126,11 @@ export default class Menu extends Component {
 
 
   menuEquipoScene(){
-    return(<FadeInView duration={300} style={styles.partidoScene}>
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setScenePartido} onSwipeLeft={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -174,11 +181,15 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
               </View>
-          </FadeInView>)
+          </GestureRecognizer>)
   }
 
   menuJugadoresScene(){
-    return(<FadeInView duration={300} style={styles.partidoScene}>
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneContratos} onSwipeRight={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -229,11 +240,15 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
               </View>
-          </FadeInView>)
+          </GestureRecognizer>)
   }
 
   menuContratoScene(){
-    return(<FadeInView duration={300}style={styles.partidoScene}>
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -295,11 +310,15 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
               </View>
-          </FadeInView>)
+          </GestureRecognizer>)
   }
 
   menuPartidoScene(){
-    return(<FadeInView duration={300} style={styles.partidoScene}>
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -361,7 +380,7 @@ export default class Menu extends Component {
                 </TouchableOpacity>
                 </View>
               </View>
-          </FadeInView>)
+          </GestureRecognizer>)
   }
   showMenuScene(){
     switch (this.state.menuScene) {

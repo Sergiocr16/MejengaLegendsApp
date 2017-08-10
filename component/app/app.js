@@ -25,7 +25,7 @@ export default class App extends Component {
     this.state = {
       user: {},
       scene:'loading',
-      player:{nombre:''},
+      player:{firstTime:true},
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
     }
 
@@ -68,13 +68,20 @@ export default class App extends Component {
     default:
   }
  }
-
+showHeader = () => {
+  if(this.state.player.firstTime!==true){
+    return  <View style={{flex:1}}>
+            <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+            </View>
+  }
+  return null;
+}
   render(){
     return (
       <FadeInView style={styles.column} duration={600}>
         <Image style={{flex:1}} source={{uri: this.state.backImg}}>
         <View style={{flex:1}}>
-        <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+        {this.showHeader()}
         </View>
         <View style={{flex:12}}>
         {this.showView()}
