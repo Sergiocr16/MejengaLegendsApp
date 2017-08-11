@@ -67,7 +67,7 @@ export default class EditPlayer extends Component {
        var yearSet = parseInt(moment(new Date()).format('YYYY')) - 15
        var maxYear = parseInt(moment(new Date()).format('YYYY')) - 5
        const {action, year, month, day} =  await DatePickerAndroid.open({
-         date: new Date("01/01/"+yearSet),
+         date: new Date(this.state.fechaNacimiento),
          maxDate: new Date("01/01/"+maxYear),
          mode: 'default',
        });
@@ -127,12 +127,15 @@ export default class EditPlayer extends Component {
    this.state.player.fichable = this.props.player.fichable;
    this.state.player.altura = this.state.altura;
    this.state.player.username = this.props.player.username;
+   this.setState({submitted:true})
+   if(this.isValid()){
    this.setState({scene:'loading'})
    if(this.state.source=='none'){
      Player.update(firebase.auth().currentUser.uid,this.state.player)
      this.props.back()
    }else{
    this.uploadImage(this.state.source)
+}
 }
  }
  _takePicture = () => {
@@ -165,7 +168,31 @@ export default class EditPlayer extends Component {
          }
        })
      }
+     isEmpty = (val) => {
+         if(val===""){
+           return '#F44336';
+         }else{
+           return '#42A5F5';
+         }
+     }
 
+     isValid = () => {
+       var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
+       var valid = false;
+      toValidate.map((val)=>{
+        if(val===""){
+          valid = false;
+        }else{
+          valid = true;
+        }
+      })
+      if(valid){
+        return true;
+      }else{
+        ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
+        return false;
+      }
+     }
      showImage = () => {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
@@ -178,7 +205,19 @@ export default class EditPlayer extends Component {
      }
      }
 
-
+     onChangedOnlyNumbers(text){
+        var newText = '';
+        var numbers = '0123456789';
+        if(text.length < 1){
+          this.setState({ altura: '' });
+        }
+        for (var i=0; i < text.length; i++) {
+             if(numbers.indexOf(text[i]) > -1 ) {
+                  newText = newText + text[i];
+             }
+             this.setState({ altura: newText });
+         }
+     }
   showEditInfo = () => {
     let genderPicker = this.state.genders.map( (s, i) => {
        return <Picker.Item  key={i} value={s} label={s} />
@@ -189,8 +228,6 @@ export default class EditPlayer extends Component {
     let positionPicker = this.state.positions.map( (s, i) => {
        return <Picker.Item  key={i} value={s} label={s} />
      });
-
-
     return (
    <View style={styles.container}>
   <FadeInView style={styles.infoContainer} duration={300}>
@@ -208,7 +245,7 @@ export default class EditPlayer extends Component {
     </View>
     <View style={{flexDirection:'row',flex:3}}>
     <TextInput
-    underlineColorAndroid='#42A5F5'
+    underlineColorAndroid={this.isEmpty(this.state.nombre)}
     placeholderTextColor="grey"
     placeholder="Nombre"
     autocapitalize={true}
@@ -218,7 +255,7 @@ export default class EditPlayer extends Component {
     onChangeText={(nombre) => this.setState({nombre})}
     />
     <TextInput
-    underlineColorAndroid='#42A5F5'
+    underlineColorAndroid={this.isEmpty(this.state.primerApellido)}
     placeholderTextColor="grey"
     placeholder="Primer Apellido"
     disableFullscreenUI={true}
@@ -227,7 +264,7 @@ export default class EditPlayer extends Component {
     onChangeText={(primerApellido) => this.setState({primerApellido})}
     />
     <TextInput
-    underlineColorAndroid='#42A5F5'
+    underlineColorAndroid={this.isEmpty(this.state.segundoApellido)}
     placeholderTextColor="grey"
     placeholder="Segundo Apellido"
     disableFullscreenUI={true}
@@ -249,13 +286,14 @@ export default class EditPlayer extends Component {
    <Text style={styles.bold}>Define tu Altura</Text>
    <TextInput
      value={this.state.altura.toString()}
-     underlineColorAndroid='#42A5F5'
+     underlineColorAndroid={this.isEmpty(this.state.altura)}
      placeholderTextColor="grey"
      placeholder="en (cm)"
      keyboardType='numeric'
+     onChangeText={(altura) => this.onChangedOnlyNumbers(altura)}
+     maxLength={3}
      disableFullscreenUI={true}
      style={styles.inputText}
-     onChangeText={(altura) => this.setState({altura})}
    />
     </View>
    <View style={{flex:1,marginBottom:25}}>

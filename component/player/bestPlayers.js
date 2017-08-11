@@ -29,6 +29,8 @@ export default class BestPlayers extends Component {
   componentDidMount() {
     Player.findTopPlayers((players)=>{
       this.setState({players,scene:'bestPlayers'})
+    },()=>{
+      this.setState({scene:'noPlayers'})
     })
   }
   setScenePlayers = () => {
@@ -44,6 +46,9 @@ export default class BestPlayers extends Component {
         break;
       case 'bestPlayers':
         return this.showPlayers()
+        break;
+      case 'noPlayers':
+        return this.noPlayers()
         break;
       case 'playerProfile':
         return <PlayerProfile back={()=>{this.setScenePlayers()}} user={this.state.currentPlayer}/>
@@ -116,7 +121,31 @@ export default class BestPlayers extends Component {
     }
   }
 
-
+  noPlayers(){
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES JUGADORES</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
+       <View style={styles.basicInfo}>
+       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+       <Text style={{textAlign:'center',fontSize:18}} >No existen jugadores registrados aún</Text>
+       </View>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
   showPlayers(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){

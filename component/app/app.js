@@ -80,9 +80,7 @@ showHeader = () => {
     return (
       <FadeInView style={styles.column} duration={600}>
         <Image style={{flex:1}} source={{uri: this.state.backImg}}>
-        <View style={{flex:1}}>
         {this.showHeader()}
-        </View>
         <View style={{flex:12}}>
         {this.showView()}
         </View>
