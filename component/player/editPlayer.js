@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
    position: 'absolute',
    right: 40,
    top: -30,
-   backgroundColor: '#2962FF',
+   backgroundColor: '#1565C0',
    transform: [{
      rotate: '138deg',
    }]
@@ -387,13 +387,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   mainName:{
-    backgroundColor:'#1A237E',
+    backgroundColor:'#1565C0',
     padding:7,
    borderTopLeftRadius:10,
    borderTopRightRadius:10
   },
   subtitle:{
-    backgroundColor:'#42A5F5',
+    backgroundColor:'#BBDEFB',
     padding:8
   },
   whiteFont2:{

@@ -1,3 +1,5 @@
+
+
 import React, {Component} from 'react'
 import {
   Text,
@@ -11,18 +13,9 @@ import {
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default class TeamDetail extends Component {
+export default class PlayersByTeam extends Component {
   constructor(props){
     super(props)
-  }
-  showImage = () => {
-    if(this.props.team.image !== undefined){
-     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}>
-       </Image>
-    }else{
-    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
-      </Image>
-  }
   }
       render(){
         return (
@@ -32,52 +25,14 @@ export default class TeamDetail extends Component {
                   <Text style={styles.whiteFont}>{this.props.team.nombre}</Text>
               </View>
               <View style={styles.subtitle}>
-                  <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
+                  <Text style={styles.whiteFont2}>Jugadores del equipo</Text>
               </View>
              <View style={styles.basicInfo}>
-                <View style={{flex:1,alignItems:'center'}}>
-                   {this.showImage()}
-                  <View style={[styles.circularIcon,{margin:-30}]}>
-                       <Icon name={"shield"}  size={40} color="#424242" />
-                  </View>
-                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
-                  <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
 
-                </View>
                 <View style={{flex:3,padding:10}}>
                   <ScrollView>
-                      <View style={styles.info}>
-                         <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Liga</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.liga}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Copas</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.copas}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Género</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.genero}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Goles marcados</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.golesMarcados}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Goles recibidos</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.golesRecibidos}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Mayor puntaje de la historia</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.mayorPuntajeDeLaHistoria}</Text>
-                      </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Racha de victorias</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.rachaVictorias}</Text>
-                      </View>
+                  <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.teamPositions} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver alineación</Text></TouchableOpacity>
+
                     </ScrollView>
                   </View>
               </View>
@@ -92,7 +47,7 @@ export default class TeamDetail extends Component {
               </View>
            </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.props.addPlayers}><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
           </View>
           </View>
           </FadeInView>

@@ -11,6 +11,7 @@ class TeamService {
     static newWithCallback(objeto,callback){
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
+
     static new(objeto){
       FirebaseBasicService.new(Entities.TEAMS,objeto);
     }
@@ -25,7 +26,7 @@ class TeamService {
       FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack)
     }
     static newPlayerByTeams(objeto){
-      FirebaseBasicService.newWithKey(Entities.PLAYERSBYTEAM,'KSRKw0p4P7Vnip26wwAtmF4bRrg2',objeto);
+      FirebaseBasicService.newWithKey(Entities.PLAYERSBYTEAM,firebase.auth().currentUser.uid,objeto);
     }
 }
 
