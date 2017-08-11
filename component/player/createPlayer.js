@@ -32,7 +32,7 @@ export default class CreatePlayer extends Component {
       nombre: '',
       fechaNacimiento: Date.now(),
       years: 15,
-      altura:0,
+      altura:'',
       primerApellido:'',
       segundoApellido:'',
       genero:'Masculino',
@@ -44,8 +44,50 @@ export default class CreatePlayer extends Component {
       feet:['Derecho','Izquiero','Ambidiestro'],
       player:{},
       source:'none',
-      scene:'createInfo'
+      scene:'createInfo',
+      submitted:false
     }
+  }
+  isValid = () => {
+    var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
+    var valid = false;
+   toValidate.map((val)=>{
+     if(val===""){
+       valid = false;
+     }else{
+       valid = true;
+     }
+   })
+   if(valid){
+     return true;
+   }else{
+     ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
+     return false;
+   }
+  }
+  isEmpty = (val) => {
+    if(this.state.submitted){
+      if(val===""){
+        return '#F44336';
+      }else{
+        return '#42A5F5';
+      }
+    } else{
+      return '#42A5F5';
+    }
+  }
+  onChangedOnlyNumbers(text){
+     var newText = '';
+     var numbers = '0123456789';
+     if(text.length < 1){
+       this.setState({ altura: '' });
+     }
+     for (var i=0; i < text.length; i++) {
+          if(numbers.indexOf(text[i]) > -1 ) {
+               newText = newText + text[i];
+          }
+          this.setState({ altura: newText });
+      }
   }
   uploadImage = (uri, mime = 'application/octet-stream') => {
    return new Promise((resolve, reject) => {
@@ -164,13 +206,14 @@ export default class CreatePlayer extends Component {
    this.state.player.fichable = false;
    this.state.player.altura = this.state.altura;
    this.state.player.username = firebase.auth().currentUser.email.split("@")[0]
-
+   this.setState({submitted:true})
+   if(this.isValid()){
    this.setState({scene:'loading'})
    if(this.state.source=='none'){
      Player.update(firebase.auth().currentUser.uid,this.state.player)
-
    }else{
    this.uploadImage(this.state.source)
+}
 }
 
  }
@@ -201,7 +244,7 @@ showCreateInfo = () => {
   </View>
   <View style={{flexDirection:'row',flex:3}}>
   <TextInput
-  underlineColorAndroid='#42A5F5'
+  underlineColorAndroid={this.isEmpty(this.state.nombre)}
   placeholderTextColor="grey"
   placeholder="Nombre"
   autocapitalize={true}
@@ -210,7 +253,7 @@ showCreateInfo = () => {
   onChangeText={(nombre) => this.setState({nombre})}
   />
   <TextInput
-  underlineColorAndroid='#42A5F5'
+  underlineColorAndroid={this.isEmpty(this.state.primerApellido)}
   placeholderTextColor="grey"
   placeholder="Primer Apellido"
   disableFullscreenUI={true}
@@ -218,7 +261,7 @@ showCreateInfo = () => {
   onChangeText={(primerApellido) => this.setState({primerApellido})}
   />
   <TextInput
-  underlineColorAndroid='#42A5F5'
+  underlineColorAndroid={this.isEmpty(this.state.segundoApellido)}
   placeholderTextColor="grey"
   placeholder="Segundo Apellido"
   disableFullscreenUI={true}
@@ -238,13 +281,14 @@ showCreateInfo = () => {
  <View style={{flex:1,marginBottom:25}}>
  <Text style={styles.bold}>Define tu Altura</Text>
  <TextInput
-   underlineColorAndroid='#42A5F5'
+   underlineColorAndroid={this.isEmpty(this.state.altura)}
    placeholderTextColor="grey"
    placeholder="en (cm)"
    keyboardType='numeric'
    disableFullscreenUI={true}
+   maxLength={3}
    style={styles.inputText}
-   onChangeText={(altura) => this.setState({altura})}
+   onChangeText={(altura) => this.onChangedOnlyNumbers(altura)}
  />
   </View>
  <View style={{flex:1,marginBottom:25}}>

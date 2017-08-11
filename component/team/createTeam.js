@@ -33,7 +33,6 @@ const fs = RNFetchBlob.fs
 export default class CreateTeam extends Component {
   constructor(props){
     super(props)
-
     this.state = {
       nombre: '',
       lema: '',
@@ -42,9 +41,34 @@ export default class CreateTeam extends Component {
       player:{ nombre: '',liga:'',PrimerApellido:'',score:0},
       team:{},
       source:'none',
-      scene:'createTeam'
+      scene:'createTeam',
+      submitted:false
     }
   }
+
+
+  isEmpty = (val) => {
+    if(this.state.submitted){
+      if(val===""){
+        return '#F44336';
+      }else{
+        return '#42A5F5';
+      }
+    } else{
+      return '#42A5F5';
+    }
+  }
+
+  isValid = () => {
+   if(this.state.nombre===""){
+     ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
+     return false;
+   }else{
+     return true;
+   }
+  }
+
+
   uploadImage = (uri, mime = 'application/octet-stream') => {
    return new Promise((resolve, reject) => {
      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : this.state.imagePath
@@ -118,7 +142,7 @@ export default class CreateTeam extends Component {
        </View>
          <View style={{flexDirection:'row',flex:3}}>
            <TextInput
-           underlineColorAndroid='#42A5F5'
+           underlineColorAndroid={this.isEmpty(this.state.nombre)}
            placeholderTextColor="grey"
            placeholder="Nombre del equipo"
            autocapitalize={true}
@@ -218,7 +242,9 @@ export default class CreateTeam extends Component {
    var equiposDelJugador = {};
    this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
 
-   this.setState({scene:'loading'})
+   this.setState({submitted:true})
+   if(this.isValid()){
+      this.setState({scene:'loading'})
    if(this.state.source=='none'){
      TeamService.newWithCallback(this.state.team,(equipo)=>{
        equiposDelJugador = this.props.teams;
@@ -229,7 +255,7 @@ export default class CreateTeam extends Component {
    }else{
    this.uploadImage(this.state.source)
 }
-
+}
  }
 
   render(){

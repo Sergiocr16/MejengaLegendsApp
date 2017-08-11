@@ -28,6 +28,8 @@ export default class BestTeams extends Component {
   componentDidMount() {
     Team.findTopTeams((teams)=>{
       this.setState({teams,scene:'bestTeams'})
+    },()=>{
+      this.setState({scene:'noTeams'})
     })
   }
   setSceneTeams = () => {
@@ -44,11 +46,13 @@ export default class BestTeams extends Component {
       case 'bestTeams':
         return this.showTeams()
         break;
+        case 'noTeams':
+          return this.noTeams()
+          break;
       case 'playerProfile':
         return <TeamProfile back={()=>{this.setSceneTeams()}} user={this.state.currentTeam}/>
         break;
       default:
-
     }
   }
 
@@ -116,6 +120,32 @@ export default class BestTeams extends Component {
   }
 
 
+
+  noTeams(){
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES EQUIPOS</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores equipos actualmente</Text></View>
+       <View style={styles.basicInfo}>
+       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+       <Text style={{textAlign:'center',fontSize:18}} >No existen equipos registrados aún</Text>
+       </View>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
   showTeams(){
     let teams =  this.state.teams.map( (val, key) => {
       // if(val.estaVacio!==true){

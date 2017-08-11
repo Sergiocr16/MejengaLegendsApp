@@ -19,11 +19,11 @@ class TeamService {
     static newTeamsByPlayer(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
     }
-    static findTopTeams(callback){
-      FirebaseBasicService.orderByAttribute('teams/active/','copas',callback)
+    static findTopTeams(callback,error){
+      FirebaseBasicService.orderByAttribute('teams/active/','copas',callback,error)
     }
-    static getTeamsByPlayer(callBack){
-      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack)
+    static getTeamsByPlayer(callBack,error){
+      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack,error)
     }
     static newPlayerByTeams(objeto){
       FirebaseBasicService.newWithKey(Entities.PLAYERSBYTEAM,firebase.auth().currentUser.uid,objeto);

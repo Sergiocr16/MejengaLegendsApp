@@ -16,8 +16,8 @@ class Player {
       FirebaseBasicService.findActiveById('users/players/',firebase.auth().currentUser.uid,callback)
     }
 
-    static findTopPlayers(callback){
-      FirebaseBasicService.orderByAttribute('users/players/active/','score',callback)
+    static findTopPlayers(callback,error){
+      FirebaseBasicService.orderByAttribute('users/players/active/','score',callback,error)
     }
 }
 
