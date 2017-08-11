@@ -15,6 +15,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
+import BestTeams from '../team/bestTeams';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 export default class Menu extends Component {
@@ -36,6 +37,10 @@ export default class Menu extends Component {
   }
   setSceneBestPlayers = () => {
    this.setState({scene:'bestPlayers'})
+  }
+
+  setSceneBestTeams = () => {
+   this.setState({scene:'bestTeams'})
   }
 
  //SCENES
@@ -168,7 +173,7 @@ export default class Menu extends Component {
                     <Text style={styles.buttonSubtitle}>Visualiza tus equipos</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]} onPress={this.setSceneBestTeams}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.unimexsoccerleague.com/wp-content/uploads/2015/03/Awesome-Soccer-Wallpaper.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"trophy"}  size={20} color="#1565C0" />
@@ -422,6 +427,9 @@ export default class Menu extends Component {
       case 'bestPlayers':
         return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
+        case 'bestTeams':
+        return <BestTeams back={()=> this.setSceneButtons()}/>;
+         break;
       default:
         return this.menuButtons();
     }

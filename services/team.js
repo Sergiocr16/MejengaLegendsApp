@@ -18,7 +18,9 @@ class TeamService {
     static newTeamsByPlayer(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
     }
-
+    static findTopTeams(callback){
+      FirebaseBasicService.orderByAttribute('teams/active/','copas',callback)
+    }
     static getTeamsByPlayer(callBack){
       FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack)
     }
