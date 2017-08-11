@@ -15,6 +15,7 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import CreateTeam from '../team/createTeam';
 import TeamDetail from '../team/teamDetail';
+import TeamPositions from '../team/teamPositions';
 import PlayersByTeam from '../team/playersByTeam';
 
 import AddPlayersToTeam from '../team/addPlayersToTeam';
@@ -76,7 +77,7 @@ export default class TeamMenu extends Component {
       }
     }
   }
-  
+
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
             return <TouchableOpacity onPress={()=>{
@@ -92,9 +93,9 @@ export default class TeamMenu extends Component {
                       <Text style={styles.ligaName}>{val.liga}</Text>
                     </View>
                     {RenderIf(val.estaVacio==false,
-                        <TouchableOpacity style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
+                        <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
                             <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay jugadores</Text>
-                        </TouchableOpacity>
+                        </Text>
                     )}
                   </View>
 
@@ -144,6 +145,9 @@ detalleEquipo
   setSceneRegistrarEquipo = () => {
    this.setState({scene:'registrarEquipo'})
   }
+  setSceneTeamPositions = () => {
+   this.setState({scene:'teamPositions'})
+  }
   showScene(){
     switch (this.state.scene) {
       case 'myTeams':
@@ -159,11 +163,14 @@ detalleEquipo
         return (<TeamDetail back={()=> this.setMyTeamsMenu()} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
         break;
       case 'agregarJugadoresAEquipo':
-        return (<AddPlayersToTeam back={()=> this.setMyTeamsMenu()} team={this.state.currentTeam}/>);
+        return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
         break;
       case 'jugadoresPorEquipo':
-        return (<PlayersByTeam showFieldViewImg={this.props.showFieldViewImg} hideFieldViewImg={this.props.hideFieldViewImg} back={()=> this.setSceneDetalleEquipo()}  team={this.state.currentTeam}/>);
+        return (<PlayersByTeam addPlayers={()=> this.setSceneAddPlayerToTeam()} teamPositions={()=> this.setSceneTeamPositions()}  back={()=> this.setSceneDetalleEquipo()}  team={this.state.currentTeam}/>);
         break;
+        case 'teamPositions':
+          return (<TeamPositions showFieldViewImg={this.props.showFieldViewImg} hideFieldViewImg={this.props.hideFieldViewImg} back={()=> this.setScenePlayersByTeam()}  team={this.state.currentTeam}/>);
+          break;
       default:
 
     }

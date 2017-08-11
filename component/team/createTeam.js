@@ -208,6 +208,7 @@ export default class CreateTeam extends Component {
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
    this.state.team.copas = 0;
+   this.state.team.estaVacio = true;
    this.state.team.golesMarcados = 0;
    this.state.team.golesRecibidos = 0;
    this.state.team.rachaVictorias = 0;

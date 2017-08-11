@@ -1,68 +1,77 @@
+
+
 import React, {Component} from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   Text,
   View,
   StyleSheet,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   Image,
-  ToastAndroid,
   ScrollView
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-import CreateTeam from '../team/createTeam';
-import AddPlayersToTeam from '../team/addPlayersToTeam';
-import TeamService from '../../services/team';
-import Loader from '../app/loading';
-import RenderIf from '../app/renderIf';
-
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 export default class PlayersByTeam extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      scene: 'loading',
-    }
   }
-  componentDidMount() {
-    this.props.showFieldViewImg();
-
-  }
-
-  render(){
-    return (
-      <FadeInView style={styles.container} duration={30}>
-          <View style={styles.myTeamsList}>
-
-              <View style={{flex:1,flexDirection:'row',alignItems:'stretch'}}>
-
+      render(){
+        return (
+          <FadeInView style={styles.container} duration={600}>
+            <View style={styles.infoContainer}>
+              <View style={styles.mainName}>
+                  <Text style={styles.whiteFont}>{this.props.team.nombre}</Text>
               </View>
+              <View style={styles.subtitle}>
+                  <Text style={styles.whiteFont2}>Jugadores del equipo</Text>
+              </View>
+             <View style={styles.basicInfo}>
 
+                <View style={{flex:3,padding:10}}>
+                  <ScrollView>
+                  <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.teamPositions} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver alineación</Text></TouchableOpacity>
+
+                    </ScrollView>
+                  </View>
+              </View>
           </View>
           <View style={{flex:1,flexDirection:'row'}}>
-              <TouchableOpacity onPress={()=>{this.setState({scene:'loading'}); this.props.hideFieldViewImg(); this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
-                <View style={styles.buttonBackPadre}>
-                  <View style={styles.buttonBackHijo}/>
-                    <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                        <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-                    </Text>
-                </View>
-             </TouchableOpacity>
-             <View style={{flex:1, alignItems:'flex-end'}}>
-              <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
-            </View>
-         </View>
-      </FadeInView>
-    )
-  }
-}
+            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+              <View style={styles.buttonBackPadre}>
+                <View style={styles.buttonBackHijo}/>
+                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+                  </Text>
+              </View>
+           </TouchableOpacity>
+           <View style={{flex:1, alignItems:'flex-end'}}>
+            <TouchableOpacity style={styles.button} onPress={this.props.addPlayers}><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
+          </View>
+          </View>
+          </FadeInView>
+        )
+      }
+    }
 
-const styles = StyleSheet.create({
-
-  buttonBackPadre: {
+    const styles = StyleSheet.create({
+    info:{
+     borderBottomWidth:1,
+     borderBottomColor:'#9E9E9E',
+     margin:5,
+     flexDirection:'row',
+   },
+   flexStart:{
+     textAlign:'left',
+     color:'black',
+     flex:1
+   },
+   flexEnd:{
+     textAlign:'right',
+     flex:1
+   },
+    buttonBackPadre: {
     width: 150,
     height: 50,
     overflow: 'hidden',
@@ -82,31 +91,58 @@ const styles = StyleSheet.create({
        rotate: '138deg',
      }]
    },
-  container: {
-     justifyContent: 'center',
-     flex:1,
+   boldFont:{
+     fontWeight:'bold',
+     fontSize:20,
    },
-   teamContainer:{
-     display:'flex',
+   basicInfo:{
+     flex:1,
+     flexDirection:'row',
+     padding:10
+   },
+   container:{
+     flex:1,
+     borderRadius:20,
+   },
+   mainName:{
+     backgroundColor:'#1565C0',
+     padding:7
+   },
+   subtitle:{
+     backgroundColor:'#42A5F5',
+     padding:8
+   },
+   whiteFont2:{
+     color:'#1A237E',
+   },
+   whiteFont:{
+     color:'white',
+     textAlign:'left'
+   },
+   infoContainer:{
      flex:10,
      backgroundColor:'white',
-     margin:10,
-     width:190,
-     borderRadius:15,
-      overflow: 'hidden',
+     borderRadius:10,
+     margin:20
    },
-   menuOptions:{
-     flexDirection:'row',
-     flex:1,
-     padding:10,
-     justifyContent: 'center',
-
+   title:{
+     fontSize:20,
+     color:'white',
+     marginVertical:10
    },
-   backButton:{
-     backgroundColor:'#2979FF',
-     paddingHorizontal:15,
-     paddingVertical:5,
-
+   subTitle:{
+     fontSize:15,
+     color:'white',
+   },
+   profileImage:{
+     height:130,
+     width:130,
+     borderWidth:2,
+     borderColor:'white'
+   },
+   whiteFont:{
+     color:'white',
+     textAlign:'center'
    },
    button:{
      marginRight:5,
@@ -116,35 +152,28 @@ const styles = StyleSheet.create({
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,
-
-   },
-   myTeamsList:{
-     flexDirection:'row',
-     flex:10,
-
-   },
-   circularIcon:{
-     borderWidth:1,
-     borderColor:'rgba(0,0,0,0.2)',
-     alignItems:'center',
-     justifyContent:'center',
-     width:60,
-     height:60,
-     backgroundColor:'#EEEEEE',
-     borderRadius:100,
    },
    textButton: {
      textAlign:'center',
      color:'white',
      fontSize:15,
    },
-   teamName: {
-     margin:5,
-     marginTop:30,
-     fontSize: 21,
-     alignSelf: 'center',
-     color: '#0D47A1'
+   circularIcon:{
+     borderWidth:1,
+     borderColor:'rgba(0,0,0,0.2)',
+     alignItems:'center',
+     justifyContent:'center',
+     width:50,
+     height:50,
+     backgroundColor:'#EEEEEE',
+     borderRadius:100,
    },
+   redButton:{
+     margin:10,
+     backgroundColor:'red',
+     paddingVertical:5,
+     paddingHorizontal:10,
+     borderRadius:20
+   }
 
-
-})
+    })

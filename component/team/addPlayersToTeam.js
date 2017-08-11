@@ -55,14 +55,21 @@ export default class AddPlayersToTeam extends Component {
     });
 
   }
+  showImage = (val) => {
+    if(val.image !== undefined){
+     return <Image style={{flex:1, alignItems:'center',marginRight:10}} borderRadius={5}   source={{uri: val.image}}></Image>
+
+    }else{
+    return <Image style={{flex:1, alignItems:'center',marginRight:10}} borderRadius={5}   source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+  }
+  }
   render(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
           return <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val}); this.addPlayers(key,val)}}
                  key={key} style={{flexDirection:'row', height:60, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
                  <View style={{flex:3}}>
-                   <Image style={{flex:1, alignItems:'center',marginRight:10}} borderRadius={5}   source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-0/p526x296/20431520_1490013577711814_2633038823655280681_n.jpg?oh=5382b097d57358d44fba2355ec8d2a49&oe=59F3D2BD'}}>
-                  </Image>
+                  {this.showImage(val)}
                  </View>
                     <View style={{flex:4,borderRightWidth:1,marginRight:5,borderColor:'#9E9E9E' }}>
                         <Text>{val.nombre +" "+ val.primerApellido}</Text>
@@ -78,8 +85,7 @@ export default class AddPlayersToTeam extends Component {
           return <TouchableOpacity onPress={()=> {this.deletePlayers(key)}}
                  key={key} style={{flexDirection:'row', height:60, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
                  <View style={{flex:3}}>
-                   <Image style={{flex:1, alignItems:'center',marginRight:10}} borderRadius={5}   source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-0/p526x296/20431520_1490013577711814_2633038823655280681_n.jpg?oh=5382b097d57358d44fba2355ec8d2a49&oe=59F3D2BD'}}>
-                  </Image>
+                     {this.showImage(val)}
                  </View>
                     <View style={{flex:4,borderRightWidth:1,marginRight:5,borderColor:'#9E9E9E' }}>
                         <Text>{val.nombre +" "+ val.primerApellido}</Text>
