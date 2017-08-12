@@ -177,10 +177,10 @@ export default class EditPlayer extends Component {
      }
 
      isValid = () => {
-       var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
+       var toValidate = [this.state.player.nombre,this.state.player.primerApellido,this.state.player.segundoApellido,this.state.player.altura]
        var valid = false;
       toValidate.map((val)=>{
-        if(val===""){
+        if(val){
           valid = false;
         }else{
           valid = true;

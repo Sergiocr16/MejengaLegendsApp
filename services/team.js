@@ -1,5 +1,6 @@
 import * as firebase from 'firebase'
 import FirebaseBasicService from '../lib/firebaseBasicService'
+import Player from '../services/player'
 import Entities from '../lib/fireBaseEntities'
 class TeamService {
 
@@ -13,11 +14,15 @@ class TeamService {
     }
 
     static new(objeto){
-      FirebaseBasicService.new(Entities.TEAMS,objeto);
+      FirebaseBasicService.newWithKey(Entities.TEAMS,objeto);
+    }
+    static newWithKey(objeto,key){
+      FirebaseBasicService.newWithKey(Entities.TEAMS,objeto,key);
     }
 
     static newTeamsByPlayer(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
+    
     }
     static findTopTeams(callback,error){
       FirebaseBasicService.orderByAttribute('teams/active/','copas',callback,error)

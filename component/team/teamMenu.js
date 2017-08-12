@@ -103,7 +103,15 @@ export default class TeamMenu extends Component {
       }
     }
   }
-
+ showCreateTeamButton = () => {
+   if(this.props.user.cantidadEquipos<5){
+     return (   <View style={{flex:1, alignItems:'flex-end'}}>
+         <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+       </View>)
+   }else{
+     return null;
+   }
+ }
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
             return <TouchableOpacity onPress={()=>{
@@ -148,9 +156,7 @@ export default class TeamMenu extends Component {
                   </Text>
               </View>
            </TouchableOpacity>
-           <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
-          </View>
+          {this.showCreateTeamButton()}
        </View>
     </FadeInView>
     )

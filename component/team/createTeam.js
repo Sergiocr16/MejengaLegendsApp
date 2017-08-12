@@ -42,7 +42,7 @@ export default class CreateTeam extends Component {
       team:{},
       source:'none',
       scene:'createTeam',
-      submitted:false
+      submitted:false,
     }
   }
 
@@ -94,6 +94,7 @@ export default class CreateTeam extends Component {
              equiposDelJugador = this.props.teams;
              equiposDelJugador.push(equipo);
              TeamService.newTeamsByPlayer(equiposDelJugador);
+              Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
              this.props.back();
            });
            resolve(url)
@@ -250,11 +251,15 @@ export default class CreateTeam extends Component {
        equiposDelJugador = this.props.teams;
        equiposDelJugador.push(equipo);
        TeamService.newTeamsByPlayer(equiposDelJugador);
+       Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
+
        this.props.back();
      });
    }else{
    this.uploadImage(this.state.source)
 }
+
+
 }
  }
 
