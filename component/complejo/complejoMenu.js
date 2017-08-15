@@ -6,44 +6,57 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Loader from '../app/loading';
 import ComplejoService from '../../services/complejo';
+import CreateComplejo from '../complejo/createComplejo';
+import ComplejoDetail from '../complejo/complejoDetail';
+import RenderIf from '../app/renderIf';
+
 export default class Complejo extends Component {
     constructor(props){
         super(props)
         this.state = {
             scene: 'loading',
-            complejos:[],
-            currentComplejo: '',
+            complejosArray:[],
+            currentComplejo: {
+                nombre: '',
+                provincia: '',
+                canton: '',
+                imagen: '',
+                comodidades: ''
+            }
         }
     }
 
     componentDidMount() {
-        ComplejoService.getAll((complejos)=>{
+        ComplejoService.findTopComplejos((complejos)=>{
             if(complejos){
-            this.setState({scene:"myComplejos",complejos})
+            this.setState({complejosArray:complejos,scene:"myComplejos"})
             }
-        },()=>{
-            this.setState({scene:"noComplejos"})
-        })
+            },()=>{
+                this.setState({scene:"registrarComplejo"})
+            // this.setState({scene:"noComplejos"})
+            }
+        )
     }
 
-    showNoTeams = () => {
+    showNoComplejos = () => {
         return (
             <FadeInView style={styles.container} duration={30}>
                 <View style={styles.myTeamsList}>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{fontSize:25,color:'white',textAlign:'center'}}>No estás en ningún equipo aún</Text>
+                        <Text style={{fontSize:25,color:'white',textAlign:'center'}}>No tienes complejos registrados</Text>
                 </View>
                 </View>
                 <View style={{flex:1,flexDirection:'row'}}>
                     <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
-                        this.props.hideFieldViewImg(); this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
+                         this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
                         <View style={styles.buttonBackPadre}>
                         <View style={styles.buttonBackHijo}/>
                             <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
@@ -56,17 +69,17 @@ export default class Complejo extends Component {
                     </View>
                 </View>
             </FadeInView>
-            )
+        )
     }
 
-    setMyComplejosMenu = ()=>{
+    setMyComplejoMenu = ()=>{
         this.setState({scene:'myComplejos'})
     }
     setSceneRegistrarComplejo = () => {
         this.setState({scene:'registrarComplejo'})
     }
     setAddCanchaToComplejo = ()=> {
-        this.setState({scene:'registrarComplejo'})
+        this.setState({scene:'agregarCanchaComplejo'})
     }
     setSceneDetalleComplejo = ()=>{
         this.setState({scene:'detalleComplejo'})
@@ -74,6 +87,41 @@ export default class Complejo extends Component {
     setSceneCanchasByComplejo = () =>{
         this.setState({scene:'canchasPorComplejo'})
     }
+
+    showImage = (val) => {
+        if(val.image !== undefined){
+         return <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: val.image}}>
+             <View style={[styles.circularIcon,{margin:-30}]}>
+                <Icon name={"shield"}  size={40} color="#424242" />
+             </View>
+         </Image>
+        }else{
+        return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+            <View style={[styles.circularIcon,{margin:-30}]}>
+               <Icon name={"shield"}  size={40} color="#424242" />
+            </View>
+        </Image>
+      }
+    }
+    showBorderTop = (equipo) => {
+    switch (equipo.estaVacio) {
+        case true: return {
+        flex:1,
+        borderTopWidth:1,
+        margin:15,
+        borderColor:'#BDBDBD'
+        }
+        break;
+        default: return {
+        flex:1,
+        borderTopWidth:1,
+        borderColor:'#BDBDBD',
+        marginHorizontal:15,
+            marginTop:38,
+        }
+    }
+    }
+
     showScene(){
         switch (this.state.scene) {
         case 'myComplejos':
@@ -82,52 +130,56 @@ export default class Complejo extends Component {
         case 'loading':
             return (<Loader/>)
             break;
-        case 'noTeams':
+        case 'noComplejos':
         return (this.showNoComplejos())
             break;
         case 'registrarComplejo':
-            return (<CreateComplejo user={this.props.user} back={()=> this.componentDidMount()} addPlayers={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
+            return (<CreateComplejo complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
             break;
         case 'detalleComplejo':
-            return (<ComplejoDetail back={()=> this.setMyComplejoMenu()} playersByTeam={()=> this.setSceneCanchasByComplejo()} complejo={this.state.currentComlejo}/>);
+            return (<ComplejoDetail back={()=> this.setMyComplejoMenu()} playersByTeam={()=> this.setSceneCanchasByComplejo()} complejo={this.state.currentComplejo}/>);
             break;
         default:
         }
     }
     myComplejos(){
-        let comps = this.state.complejos.map((val, key) => {
-            return 
-                <TouchableOpacity onPress={()=>{
-                    this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.teamContainer}>
-                    {this.showImage(val)}
-                    <View style={{flex:1}}>
-                    <View style={{flex:2}}>
-                        <Text style={styles.teamName}>{val.nombre}</Text>
-                            <Text style={[styles.score,{marginHorizontal:30}]}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>    
-                    </View>
-                        <View style={this.showBorderTop(val)}>
-                        <Text style={styles.ligaName}>{val.liga}</Text>
+        let comps = this.state.complejosArray.map((val, key) => {
+            if(val.nombre!==null){
+              
+                return (
+                    <TouchableOpacity onPress={()=>{
+                        this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.teamContainer}>
+                        {this.showImage(val)}
+                        <View style={{flex:1}}>
+                            <View style={{flex:2}}>
+                                <Text style={styles.teamName}>{val.nombre}</Text>
+                                <Text style={[styles.score,{marginHorizontal:30}]}><Icon name="trophy" size={20} color="yellow" /> {val.nombre}</Text>    
+                            </View>
+                            <View style={this.showBorderTop(val)}>
+                            <Text style={styles.ligaName}>{val.provincia}</Text>
+                            </View>
+                            {RenderIf(val.estaVacio==false,
+                                <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
+                                    <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay complejoses</Text>
+                                </Text>
+                            )}
                         </View>
-                        {RenderIf(val.estaVacio==false,
-                            <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
-                                <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay complejoses</Text>
-                            </Text>
-                        )}
-                    </View>
-                </TouchableOpacity>      
-            });
-    
+                    </TouchableOpacity> 
+                    
+                )}    
+        })
+        /*      
         return (
         <FadeInView style={styles.container} duration={30}>
             <View style={styles.myTeamsList}>
               <ScrollView horizontal={true} style={[styles.myComplejoList,{flex:1}]}>
                 {comps}
-    
+                <Text>Estoy en vista de complejo</Text>
               </ScrollView>
             </View>
             <View style={{flex:1,flexDirection:'row'}}>
                 <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
-                    this.props.hideFieldViewImg(); this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
+                    this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
                   <View style={styles.buttonBackPadre}>
                     <View style={styles.buttonBackHijo}/>
                       <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
@@ -140,12 +192,14 @@ export default class Complejo extends Component {
               </View>
            </View>
         </FadeInView>
-        )
-      }
+        )*/
+
+    }
 
     render(){
         return (
-        <FadeInView style={{flex:1}} duration={300}>
+        <FadeInView style={{flex:1}} duration={30}>
+            {this.props.children}
             {this.showScene()}
         </FadeInView>
         )

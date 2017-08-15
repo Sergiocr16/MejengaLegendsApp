@@ -16,7 +16,7 @@ import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
 import BestTeams from '../team/bestTeams';
-import Complejos from '../complejo/complejo';
+import ComplejoMenu from '../complejo/complejoMenu';
 
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -437,7 +437,7 @@ export default class Menu extends Component {
         return <BestTeams back={()=> this.setSceneButtons()}/>;
          break;
       case 'complejos':
-        return <Complejos back={()=> this.setSceneButtons()}/>;
+        return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
         break;
       default:
         return this.menuButtons();
