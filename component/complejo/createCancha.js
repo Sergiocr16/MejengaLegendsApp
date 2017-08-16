@@ -31,79 +31,39 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 const fs = RNFetchBlob.fs
 
-export default class CreateComplejo extends Component {
+export default class CreateCancha extends Component {
   constructor(props){
     super(props)
     this.state = {
-      provinciaList: ["Seleccionar", 'Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San Jose'],
-      cantonList: ["Seleccionar"],
       // Estados del constructor
       uid: null,
       nombre: '',
-      provincia: '',
-      canton: '',
-      comodidades: '',
+      gramilla: '',
+      capacidad: '',
+      techo: 'No',
+      numero: '',
       imagen: '',
-      administrador: {nombre:null, jugadorGUID:null},
       // Objeto para registrar y editar
-      newComplejo: {
+      newCancha: {
           uid: null,
           nombre: '',
-          provincia: '',
-          canton: '',
-          comodidades: '',
+          gramilla: '',
+          capacidad: '',
+          techo: false,
           imagen: '',
-          administrador: {nombre:null, jugadorGUID:null}
+          numero: '',
+          idComplejo: null          
       },
       ///
+      techoOptions: ["Si","No"],
       cancha:{ nombre: '',capacidad:'',gramilla:'',techo: false},
       imagePath: null,
       imageHeight: null,
       imageWidth: null,
       source:'none',
-      scene:'createComplejo',
+      scene:'CreateCancha',
       submitted:false
     }   
-  }
-
-  handleProvinciaChange(idProv){
-    this.setState({provincia: idProv})
-    switch (idProv) {
-        case 'San Jose':
-            this.setState({cantonList : ["Seleccionar","Aserrí","Coronado","Curridabat","Desamparados","Dota","Escazú", "Montes de Oca","Mora",
-            "Moravia","San José Central","Perez Zeledón","Santa Ana","Alajuelita","Tarrazú","Tibás"]})  
-            break;
-        case 'Alajuela':
-            this.setState({cantonList :["Seleccionar",'Alajuela','San Ramón','Grecia','San Mateo','Atenas','Naranjo','Palmares',
-            'Poás','Orotina','San Carlos','Zarcero','Valverde Vega','Upala','Los Chiles','Guatuzo','Rio Cuarto']})
-            break;
-        case 'Cartago':
-            this.setState({cantonList : ["Seleccionar","Cartago","Paraíso","La Unión","Jiménez","Turrialba","Alvarado","Oreamuno","El Guarco"]})
-            break;
-        case 'Guanacaste':
-            this.setState({cantonList : ["Seleccionar",'Liberia','Nicoya','Santa Cruz','Bagaces','Carrillo',
-            'Cañas','Abangares','Tilarán','Nandayure','La Cruz','Hojancha']})
-            break;
-        case 'Heredia':
-            this.setState({cantonList : ["Seleccionar",'Heredia','Barva','Santo Domingo','Santa Bárbara',
-            'San Rafael','San Isidro','Belén','Flores','San Pablo','Sarapiquí']})
-            break;
-        case 'Limon':
-            this.setState({cantonList : ["Seleccionar",'Limón','Pococí','Siquirres','Talamanca','Matina','Guácimo']})
-            break;
-        case 'Puntarenas':
-            this.setState({cantonList : ["Seleccionar",'Puntarenas','Esparza','Buenos Aires','Montes de Oro',
-            'Osa','Quepos','Golfito','Cotobrus','Parrita','Corredores','Garabito']})
-            break;
-        default:
-    }
-  }
-
-  handleCantonChange(idCanton){
-      this.setState({canton: {idCanton}})
-  }
-  componentDidMount() {
-    this.setMyComplejoMenu();
   }
 
   isEmpty = (val) => {
@@ -147,11 +107,11 @@ export default class CreateComplejo extends Component {
          return imageRef.getDownloadURL()
        })
        .then((url) => {
-           this.state.newComplejo.imagen = url;
-           ComplejoService.newWithCallback(this.state.newComplejo,(cancha)=>{
-             canchasDelComplejo = this.props.canchas;
-             canchasDelComplejo.push(cancha);
-             ComplejoService.newCanchasByComplejo(canchasDelComplejo);
+           this.state.newCancha.imagen = url;
+           ComplejoService.newWithCallback(this.state.newCancha,(cancha)=>{
+             //canchasDelComplejo = this.props.canchas;
+             //canchasDelComplejo.push(cancha);
+             //ComplejoService.newCanchasByComplejo(canchasDelComplejo);
              this.props.back();
            });
            resolve(url)
@@ -161,13 +121,14 @@ export default class CreateComplejo extends Component {
        })
    })
   }
-  setMyComplejoMenu = ()=>{
-    this.setState({scene:'createComplejo'})
+  setMyCanchaMenu = ()=>{
+    this.setState({scene:'CreateCancha'})
   }
+
   showScene = () => {
     switch (this.state.scene) {
-    case 'createComplejo':
-      return this.showCreateComplejo()
+    case 'CreateCancha':
+      return this.showCreateCancha()
       break;
     case 'loading':
       return <Loader/>
@@ -175,75 +136,64 @@ export default class CreateComplejo extends Component {
     default:
     }
   }
-  showCreateComplejo = () => {
-    let provinciaPicker = this.state.provinciaList.map( (s, i) => {
+
+  showCreateCancha = () => {
+    let techoPicker = this.state.techoOptions.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
     });
 
-    let cantonPicker = this.state.cantonList.map( (s, i) => {
-      return <Picker.Item  key={i} value={s} label={s} />
-  });
 
   return (
     <FadeInView style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>Crea un complejo</Text>
-        </View>
-        <View style={styles.subtitle}>
-            <Text style={styles.whiteFont2}>Información básica</Text>
+            <Text style={styles.whiteFont}>Agregar una cancha</Text>
         </View>
        <View style={{padding:20,flex:1}}>
        <ScrollView>
-         <View style={{flexDirection:'row',flex:3}}>
-           <TextInput
-           underlineColorAndroid={this.isEmpty(this.state.nombre)}
-           placeholderTextColor="grey"
-           placeholder="Nombre del complejo"
-           autocapitalize={true}
-           disableFullscreenUI={true}
-           style={[styles.inputText,{flex:1}]}
-           onChangeText={(nombre) => this.setState({nombre})}
-           />
-        </View>
-        <View style={{flexDirection:'column',marginVertical:20}}>
-          <View style={{flex:1,marginBottom:25}}>
-             <Text style={styles.bold}>Selecciona la provincia</Text>
-             <Picker style={styles.androidPicker} ref='provincia' label='Provincia' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                selectedValue = {this.state.provincia} value = {this.state.provincia}                              
-                onValueChange={this.handleProvinciaChange.bind(this) } >
-                {provinciaPicker} 
+          <View style={{flexDirection:'row',flex:3}}>
+            <TextInput
+            underlineColorAndroid={this.isEmpty(this.state.nombre)}
+            placeholderTextColor="grey"
+            placeholder="Nombre de la cancha"
+            autocapitalize={true}
+            disableFullscreenUI={true}
+            style={[styles.inputText,{flex:1}]}
+            onChangeText={(nombre) => this.setState({nombre})}
+            />
+          </View>
+          <View style={{flexDirection:'row',flex:3}}>
+            <TextInput
+            underlineColorAndroid={this.isEmpty(this.state.capacidad)}
+            placeholderTextColor="grey"
+            placeholder="Capacidad de la cancha"
+            autocapitalize={true}
+            disableFullscreenUI={true}
+            keyboardType={'numeric'}
+            style={[styles.inputText,{flex:1}]}
+            onChangeText={(capacidad) => this.setState({capacidad})}
+            />
+            </View>
+          <View style={{flexDirection:'row',flex:3}}>           
+            <TextInput
+            underlineColorAndroid={this.isEmpty(this.state.numero)}
+            placeholderTextColor="grey"
+            placeholder="Numero de la cancha"
+            autocapitalize={true}
+            disableFullscreenUI={true}
+            keyboardType={'numeric'}
+            style={[styles.inputText,{flex:1}]}
+            onChangeText={(numero) => this.setState({numero})}
+            />
+            </View>
+            <View style={{flexDirection:'column',marginVertical:20}}>
+            <Text style={styles.bold}>Bajo techo</Text>
+            <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+                selectedValue = {this.state.techo} value = {this.state.techo} options={this.state.techoOptions}                              
+                onValueChange={(techo) => this.setState({techo:techo})} >
+                {techoPicker} 
              </Picker>
-          <Text style={styles.bold}>Selecciona el cantón</Text>
-          <Picker style={styles.androidPicker} ref='canton' label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                            options={this.state.cantonList} 
-                            value ={this.state.canton} selectedValue = {this.state.canton}
-                            onChange={this.handleCantonChange.bind(this)}
-            onValueChange={ (canton) => (this.setState({canton})) } >
-            {cantonPicker}
-          </Picker>
-          <TextInput style={{width: '49.5%', height: 100, backgroundColor: 'transparent'}}
-          label='Comodidades:'
-          ref='comodidades' 
-          placeholder='Comodidades' 
-          placeholderTextColor="#888888"
-          underlineColorAndroid = "transparent"
-          multiline={true}
-          numberOfLines={4}
-          value ={this.state.comodidades}
-          onChangeText={(comodidades) => this.setState({comodidades})}
-          />
-        </View>
-      </View>
-
-       <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',margin:15}}>
-        <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
-        {this.showImage()}
-        </View>
-        <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
-        <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
-        </TouchableOpacity>
-       </View>
+             </View>
        <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
            <Text style={styles.buttonText2}>¡Listo!</Text>
        </TouchableOpacity>
@@ -259,9 +209,6 @@ export default class CreateComplejo extends Component {
             </Text>
         </View>
      </TouchableOpacity>
-     <View style={{flex:1, alignItems:'flex-end'}}>
-      <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-    </View>
     </View>
     </FadeInView>
   )
@@ -303,27 +250,27 @@ export default class CreateComplejo extends Component {
        return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
      }
      }
- submit = () =>{
-   this.state.newComplejo.uid = Date.now();
-   this.state.newComplejo.nombre = this.state.nombre;
-   this.state.newComplejo.provincia = this.state.provincia;
-   this.state.newComplejo.canton = this.state.canton;
-   this.state.newComplejo.comodidades = this.state.comodidades;
-   this.state.newComplejo.imagen = this.state.imagen;
 
-   var canchasDelComplejo = {};
-   this.state.newComplejo.administrador = { nombre: '',jugadorGUID:firebase.auth().currentUser.uid};
+ submit = () =>{
+  this.state.newCancha.uid = Date.now();
+   this.state.newCancha.nombre = this.state.nombre;
+   this.state.newCancha.numero = this.state.numero;
+   this.state.newCancha.gramilla = this.state.gramilla;
+   this.state.newCancha.capacidad = this.state.capacidad;
+   this.state.newCancha.techo = this.state.techo;
+   this.state.newCancha.imagen = this.state.imagen;
+   this.state.newCancha.idComplejo = this.props.complejo.uid
 
    this.setState({submitted:true})
 
     if(this.isValid()){
         this.setState({scene:'loading'})
-    // if(this.state.source=='none'){
-      ComplejoService.newWithKey(this.state.newComplejo)
-      this.props.back();
-    // }else{
-    // this.uploadImage(this.state.source)
-    // }
+    if(this.state.source=='none'){
+        ComplejoService.newCanchaByComplejo(this.state.newCancha);
+        this.props.back();
+    }else{
+    this.uploadImage(this.state.source)
+    }
   }
  }
 

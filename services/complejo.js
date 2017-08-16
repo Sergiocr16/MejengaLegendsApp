@@ -12,23 +12,34 @@ class ComplejoService {
       FirebaseBasicService.newWithCallback(Entities.COMPLEJOS,objeto,callback);
     }
 
-    static new(objeto){
-      FirebaseBasicService.new(Entities.COMPLEJOS,objeto);
+    static newWithKey(objeto){
+      FirebaseBasicService.newWithKey(Entities.COMPLEJOS, objeto.uid,objeto);
     }
-    static update(key, complejo){
-        FirebaseBasicService.update('complejo/complejos/',key, player)
+
+    static updateComplejo(complejo){
+        FirebaseBasicService.update(Entities.COMPLEJOS,complejo.uid, complejo)
     }
+
+    static deleteComplejo(key){
+      FirebaseBasicService.deleteForever(Entities.COMPLEJOS + '/active/',key)
+    }
+
+    static updateCancha(key, cancha){
+      FirebaseBasicService.update(Entities.CANCHASBYCOMPLEJO,key, cancha)
+    }
+
+    static deleteCancha(key){
+      FirebaseBasicService.deleteForever(Entities.CANCHASBYCOMPLEJO + '/active/',key)
+    }
+
     static newCanchaByComplejo(objeto){
-      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,firebase.auth().currentUser.uid,objeto);
+      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,objeto.uid,objeto);
     }
     static findTopComplejos(callback,error){
       FirebaseBasicService.orderByAttribute('complejos/active/','canton',callback,error)
     }
-    static getCanchasByComplejo(callBack,error){
-      FirebaseBasicService.findActiveById(Entities.CANCHASBYCOMPLEJO,firebase.auth().currentUser.uid,callBack,error)
-    }
-    static newCanchaByComplejo(objeto){
-      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,firebase.auth().currentUser.uid,objeto);
+    static getCanchasByComplejo(idComplejo, callback){
+      FirebaseBasicService.filterByAttribute(Entities.CANCHASBYCOMPLEJO + '/active/','idComplejo',idComplejo,callback)
     }
 }
 

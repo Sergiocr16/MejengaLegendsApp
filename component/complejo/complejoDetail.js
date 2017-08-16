@@ -11,10 +11,29 @@ import {
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Loader from '../app/loading';
+import CreateCancha from '../complejo/createCancha';
+import EditCancha from '../complejo/editCancha';
+import EditComplejo from '../complejo/editComplejo';
+import ComplejoService from '../../services/complejo';
 export default class ComplejoDetail extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      scene: 'loading',
+      currentCancha: null,
+      canchasArray: [
+      ]
+    }
   }
+
+  componentDidMount() {
+    ComplejoService.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
+        this.setState({canchasArray:canchas,scene:"complejoInformation"})
+    })
+    this.setState({scene:"complejoInformation"})
+}
+
   showImage = () => {
     if(this.props.complejo.image !== undefined){
      return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.complejo.image}}>
@@ -24,15 +43,61 @@ export default class ComplejoDetail extends Component {
       </Image>
   }
   }
-      render(){
+
+  showScene(){
+    switch (this.state.scene) {
+      case 'complejoInformation':
+        return this.complejoInformation();
+        break;
+      case 'loading':
+        return (<Loader/>)
+        break;
+      case 'agregarCancha':
+      return (<CreateCancha complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
+        break;
+        case 'editarCancha':
+        return (<EditCancha cancha={this.state.currentCancha} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
+          break;
+          case 'editComplejo':
+          return (<EditComplejo cancha={this.state.currentCancha} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
+            break;
+      default:
+
+    }
+  }
+      complejoInformation(){
+        let canchas = []; 
+        canchas.push(
+          <TouchableOpacity onPress={()=>{
+            this.setState({scene:'agregarCancha'})}} style={styles.canchasContainer}>
+              <View style={{flex:1}}>
+                  <Text style={styles.canchasName}>Agregar Cancha</Text>
+                  <Icon name="trophy" size={30} color="yellow" />
+              </View>
+          </TouchableOpacity>
+         );
+        this.state.canchasArray.map((val, key) => {
+              canchas.push(
+                <TouchableOpacity onPress={()=>{
+                    this.setState({currentCancha: val, scene:'editarCancha'})}} key={key} style={styles.canchasContainer}>
+                  <View style={{flex:1}}>
+                    <View style={{flex:2}}>
+                      <Text style={styles.canchasName}>{val.nombre}</Text>
+                      <Text style={styles.gramilla}>{val.numero}</Text>
+                      <Text style={styles.gramilla}>{val.gramilla}</Text>
+                      <Text style={[styles.capacidad,{marginHorizontal:10}]}><Icon name="trophy" size={20} color="yellow" /> {val.capacidad}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+               );
+        });
+        
+
         return (
           <FadeInView style={styles.container} duration={600}>
             <View style={styles.infoContainer}>
               <View style={styles.mainName}>
-                  <Text style={styles.whiteFont}>{this.props.complejo.nombre}</Text>
-              </View>
-              <View style={styles.subtitle}>
-                  <Text style={styles.whiteFont2}>Información básica</Text>
+                  <Text style={styles.whiteFont}>Información básica</Text>
               </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
@@ -42,10 +107,10 @@ export default class ComplejoDetail extends Component {
                   </View>
                 </View>
                 <View style={{flex:3,padding:10}}>
-                  <ScrollView>
+                  <View>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Nombre</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.complejo.nombre}"</Text>
+                         <Text style={[styles.flexEnd,{flex:5}]}>{this.props.complejo.nombre}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Provincia</Text>
@@ -56,12 +121,17 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexEnd}>{this.props.complejo.canton}</Text>
                       </View>
                       <View style={styles.info}>
-                         <Text style={styles.flexStart}>Localizacion</Text>
-                         <Text style={styles.flexEnd}>{this.props.complejo.localizacion}</Text>
+                         <Text style={styles.flexStart}>Comodidades</Text>
+                         <Text style={styles.flexEnd}>{this.props.complejo.comodidades}</Text>
                       </View>                   
-                    </ScrollView>
+                    </View>
                   </View>
               </View>
+              <View style={{flex:0.75,padding:10}}>
+                <ScrollView horizontal={true} style={[styles.canchasList,{flex:1}]}>
+                    {canchas}
+                </ScrollView>
+            </View>
           </View>
           <View style={{flex:1,flexDirection:'row'}}>
             <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
@@ -74,13 +144,35 @@ export default class ComplejoDetail extends Component {
               </View>
             </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'myComplejo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={()=>{this.editComplejo()}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+          </View>
+          <View style={{flex:1, alignItems:'flex-end'}}>
+            <TouchableOpacity style={styles.button} onPress={()=>{this.deleteComplejo()}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Eliminar</Text></TouchableOpacity>
           </View>
           </View>
           </FadeInView>
         )
       }
-    }
+
+      deleteComplejo(){
+        ComplejoService.deleteComplejo(this.props.complejo.uid);
+        this.props.back();
+     }
+
+     editComplejo(){
+      this.setState({scene:'editComplejo'})
+   }
+
+      render(){
+        return (
+        <FadeInView style={{flex:1}} duration={30}>
+            {this.props.children}
+            {this.showScene()}
+        </FadeInView>
+        )
+    } 
+
+}
 
     const styles = StyleSheet.create({
     info:{
@@ -201,6 +293,42 @@ export default class ComplejoDetail extends Component {
      paddingVertical:5,
      paddingHorizontal:10,
      borderRadius:20
-   }
-
+   },
+   canchasList:{
+    flexDirection:'row',
+    flex:10,
+  },
+  canchasContainer:{
+    display:'flex',
+    flex:10,
+    backgroundColor:'#F8F8F8',
+    margin:10,
+    width:150,
+    borderRadius:15,
+     overflow: 'hidden',
+  },
+  canchasName: {
+    margin:1,
+    fontSize: 13,
+    alignSelf: 'center',
+    color: '#0D47A1'
+  },
+  capacidad:{
+    backgroundColor:'#FDD835',
+    padding:1,
+    borderRadius:5,
+    borderWidth:1,
+    borderColor:'white',
+    height:25,
+    color:'white',
+    paddingHorizontal:10,
+    fontWeight:'bold',
+    textAlign:'center'
+  },
+  gramilla: {
+    margin:1,
+    fontSize: 10,
+    alignSelf: 'center',
+    color: 'black'
+  }
     })

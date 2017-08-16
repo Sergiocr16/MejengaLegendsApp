@@ -25,6 +25,7 @@ export default class Complejo extends Component {
             scene: 'loading',
             complejosArray:[],
             currentComplejo: {
+                uid: null,
                 nombre: '',
                 provincia: '',
                 canton: '',
@@ -143,38 +144,29 @@ export default class Complejo extends Component {
         }
     }
     myComplejos(){
-        let comps = this.state.complejosArray.map((val, key) => {
-            if(val.nombre!==null){
-              
-                return (
-                    <TouchableOpacity onPress={()=>{
-                        this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.teamContainer}>
-                        {this.showImage(val)}
-                        <View style={{flex:1}}>
-                            <View style={{flex:2}}>
-                                <Text style={styles.teamName}>{val.nombre}</Text>
-                                <Text style={[styles.score,{marginHorizontal:30}]}><Icon name="trophy" size={20} color="yellow" /> {val.nombre}</Text>    
-                            </View>
-                            <View style={this.showBorderTop(val)}>
-                            <Text style={styles.ligaName}>{val.provincia}</Text>
-                            </View>
-                            {RenderIf(val.estaVacio==false,
-                                <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
-                                    <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay complejoses</Text>
-                                </Text>
-                            )}
+        let comps = []; 
+        this.state.complejosArray.map((val, key) => {
+              //Alert.alert(val.nombre);
+               comps.push(
+                <TouchableOpacity onPress={()=>{
+                    this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.complejoContainer}>
+                    {this.showImage(val)}
+                    <View style={{flex:1}}>
+                        <View style={{flex:2}}>
+                            <Text style={styles.complejoName}>{val.nombre}</Text>
+                            <Text style={[styles.provincia,{marginHorizontal:30}]}>{val.provincia}</Text>    
                         </View>
-                    </TouchableOpacity> 
-                    
-                )}    
-        })
-        /*      
-        return (
+                        <Text style={styles.canton}>{val.canton}</Text>
+                    </View>
+                </TouchableOpacity>
+               );
+        });
+              
+    return (
         <FadeInView style={styles.container} duration={30}>
             <View style={styles.myTeamsList}>
               <ScrollView horizontal={true} style={[styles.myComplejoList,{flex:1}]}>
-                {comps}
-                <Text>Estoy en vista de complejo</Text>
+                  {comps}
               </ScrollView>
             </View>
             <View style={{flex:1,flexDirection:'row'}}>
@@ -192,7 +184,7 @@ export default class Complejo extends Component {
               </View>
            </View>
         </FadeInView>
-        )*/
+        )
 
     }
 
@@ -324,6 +316,49 @@ const styles = StyleSheet.create({
      paddingVertical:5,
      paddingHorizontal:10,
      borderRadius:20
-   }
+   },
+   myTeamsList:{
+    flexDirection:'row',
+    flex:10,
 
+  },
+  myComplejoList:{
+    flexDirection:'row',
+    flex:10,
+
+  },
+  complejoContainer:{
+    display:'flex',
+    flex:10,
+    backgroundColor:'white',
+    margin:10,
+    width:190,
+    borderRadius:15,
+     overflow: 'hidden',
+  },
+  complejoName: {
+    margin:5,
+    marginTop:30,
+    fontSize: 21,
+    alignSelf: 'center',
+    color: '#0D47A1'
+  },
+  provincia:{
+    backgroundColor:'#FDD835',
+    padding:5,
+    borderRadius:5,
+    borderWidth:1,
+    borderColor:'white',
+    height:30,
+    color:'white',
+    paddingHorizontal:10,
+    fontWeight:'bold',
+    textAlign:'center'
+  },
+  canton: {
+    margin:10,
+    fontSize: 15,
+    alignSelf: 'center',
+    color: 'black'
+  }
     })

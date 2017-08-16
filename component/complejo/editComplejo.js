@@ -31,7 +31,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 const fs = RNFetchBlob.fs
 
-export default class CreateComplejo extends Component {
+export default class EditComplejo extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -61,7 +61,7 @@ export default class CreateComplejo extends Component {
       imageHeight: null,
       imageWidth: null,
       source:'none',
-      scene:'createComplejo',
+      scene:'EditComplejo',
       submitted:false
     }   
   }
@@ -162,12 +162,12 @@ export default class CreateComplejo extends Component {
    })
   }
   setMyComplejoMenu = ()=>{
-    this.setState({scene:'createComplejo'})
+    this.setState({scene:'EditComplejo'})
   }
   showScene = () => {
     switch (this.state.scene) {
-    case 'createComplejo':
-      return this.showCreateComplejo()
+    case 'EditComplejo':
+      return this.showEditComplejo()
       break;
     case 'loading':
       return <Loader/>
@@ -175,7 +175,7 @@ export default class CreateComplejo extends Component {
     default:
     }
   }
-  showCreateComplejo = () => {
+  showEditComplejo = () => {
     let provinciaPicker = this.state.provinciaList.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
     });
@@ -188,7 +188,7 @@ export default class CreateComplejo extends Component {
     <FadeInView style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>Crea un complejo</Text>
+            <Text style={styles.whiteFont}>Editar complejo</Text>
         </View>
         <View style={styles.subtitle}>
             <Text style={styles.whiteFont2}>Información básica</Text>
@@ -259,9 +259,6 @@ export default class CreateComplejo extends Component {
             </Text>
         </View>
      </TouchableOpacity>
-     <View style={{flex:1, alignItems:'flex-end'}}>
-      <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-    </View>
     </View>
     </FadeInView>
   )
@@ -303,6 +300,7 @@ export default class CreateComplejo extends Component {
        return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
      }
      }
+
  submit = () =>{
    this.state.newComplejo.uid = Date.now();
    this.state.newComplejo.nombre = this.state.nombre;
