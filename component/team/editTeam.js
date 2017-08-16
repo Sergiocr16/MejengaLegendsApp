@@ -30,19 +30,18 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 const fs = RNFetchBlob.fs
 
-export default class CreateTeam extends Component {
+export default class EditTeam extends Component {
   constructor(props){
     super(props)
     this.state = {
-      nombre: '',
-      lema: '',
-      genero:'Masculino',
+      nombre: this.props.team.nombre,
+      lema: this.props.team.lema,
+      genero:this.props.team.genero,
       genders:['Masculino','Femenino'],
-      player:{ nombre: '',liga:'',PrimerApellido:'',score:0},
-      team:{},
       source:'none',
-      scene:'createTeam',
+      scene:'editTeam',
       submitted:false,
+      team:{}
     }
   }
 
@@ -97,13 +96,8 @@ export default class CreateTeam extends Component {
        })
        .then((url) => {
            this.state.team.image = url;
-           TeamService.newWithCallback(this.state.team,(equipo)=>{
-             equiposDelJugador = this.props.teams;
-             equiposDelJugador.push(equipo);
-             TeamService.newTeamsByPlayer(equiposDelJugador);
-              Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
-             this.props.back();
-           });
+           TeamService.update(this.props.user.uid,this.props.team.uid,this.state.team)
+            this.props.back();
            resolve(url)
        })
        .catch((error) => {
@@ -114,8 +108,8 @@ export default class CreateTeam extends Component {
 
  showScene = () => {
    switch (this.state.scene) {
-     case 'createTeam':
-       return this.showCreateTeam()
+     case 'editTeam':
+       return this.showEditTeam()
        break;
      case 'loading':
        return <Loader/>
@@ -124,19 +118,19 @@ export default class CreateTeam extends Component {
 
    }
  }
- showCreateTeam = () => {
+ showEditTeam = () => {
 
     let genderPicker = this.state.genders.map( (s, i) => {
      return <Picker.Item  key={i} value={s} label={s} />
    });
   return (
-    <FadeInView style={styles.container} duration={600}>
+    <View style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>Crea un equipo</Text>
+            <Text style={styles.whiteFont}>{this.state.nombre.toUpperCase()}</Text>
         </View>
         <View style={styles.subtitle}>
-            <Text style={styles.whiteFont2}>Información básica</Text>
+            <Text style={styles.whiteFont2}>Edita la información básica de tu equipo</Text>
         </View>
        <View style={{padding:20,flex:1}}>
        <ScrollView>
@@ -157,6 +151,7 @@ export default class CreateTeam extends Component {
            disableFullscreenUI={true}
            style={[styles.inputText,{flex:1}]}
            onChangeText={(nombre) => this.setState({nombre})}
+           value={this.state.nombre}
            />
            <TextInput
            underlineColorAndroid='#42A5F5'
@@ -164,6 +159,7 @@ export default class CreateTeam extends Component {
            placeholder="Lema"
            disableFullscreenUI={true}
            style={[styles.inputText,{flex:1}]}
+            value={this.state.lema}
            onChangeText={(lema) => this.setState({lema})}
            />
         </View>
@@ -195,7 +191,7 @@ export default class CreateTeam extends Component {
       <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
     </View>
     </View>
-    </FadeInView>
+    </View>
   )
  }
  _takePicture = () => {
@@ -237,31 +233,17 @@ export default class CreateTeam extends Component {
      }
      }
  submit = () =>{
+   this.state.team = this.props.team;
    this.state.team.nombre = this.state.nombre;
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
-   this.state.team.copas = 0;
-   this.state.team.estaVacio = true;
-   this.state.team.golesMarcados = 0;
-   this.state.team.golesRecibidos = 0;
-   this.state.team.rachaVictorias = 0;
-   this.state.team.mayorPuntajeDeLaHistoria = 0;
-   this.state.team.logo = 'shield';
-   this.state.team.liga = 'Liga Amateur';
-   var equiposDelJugador = {};
-   this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
 
    this.setState({submitted:true})
    if(this.isValid()){
       this.setState({scene:'loading'})
    if(this.state.source=='none'){
-     TeamService.newWithCallback(this.state.team,(equipo)=>{
-       equiposDelJugador = this.props.teams;
-       equiposDelJugador.push(equipo);
-       TeamService.newTeamsByPlayer(equiposDelJugador);
-       Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
-       this.props.back();
-     });
+     TeamService.update(this.props.user.uid,this.props.team.uid,this.state.team)
+      this.props.back();
    }else{
    this.uploadImage(this.state.source)
 }

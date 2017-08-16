@@ -177,16 +177,14 @@ export default class EditPlayer extends Component {
      }
 
      isValid = () => {
-       var toValidate = [this.state.player.nombre,this.state.player.primerApellido,this.state.player.segundoApellido,this.state.player.altura]
-       var valid = false;
+       var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
+       var invalidItems = 0;
       toValidate.map((val)=>{
-        if(val){
-          valid = false;
-        }else{
-          valid = true;
+        if(val===""){
+          invalidItems++;
         }
       })
-      if(valid){
+      if(invalidItems==0){
         return true;
       }else{
         ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);

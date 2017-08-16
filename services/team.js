@@ -13,6 +13,23 @@ class TeamService {
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
 
+    static update(userKey,key,team){
+      FirebaseBasicService.update(Entities.TEAMS,key, team)
+      var i = 0;
+      var updated = false;
+firebase.database().goOffline();
+      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,userKey,(teamsByPlayer)=>{
+      console.log("A")
+        for (var i = 0; i < teamsByPlayer.length; i++) {
+          if(teamsByPlayer[i].uid===key){
+              FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+userKey+"/",i, team)
+                break;
+          }
+        }
+      },()=>{})
+      firebase.database().goOnline();
+    }
+
     static new(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMS,objeto);
     }
@@ -22,7 +39,6 @@ class TeamService {
 
     static newTeamsByPlayer(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
-    
     }
     static findTopTeams(callback,error){
       FirebaseBasicService.orderByAttribute('teams/active/','copas',callback,error)
