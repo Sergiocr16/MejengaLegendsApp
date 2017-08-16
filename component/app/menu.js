@@ -15,6 +15,8 @@ import FadeInView from 'react-native-fade-in-view';
 import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
+import Players from '../player/players';
+import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
 import ComplejoMenu from '../complejo/complejoMenu';
 
@@ -26,10 +28,12 @@ export default class Menu extends Component {
     this.state = {
       scene: 'buttons',
       gestureName: 'none',
-      menuScene: 'partido'
+      menuScene: this.props.initView
     }
 
-  }
+}
+
+
 
   setSceneButtons = () => {
    this.setState({scene:'buttons'})
@@ -49,6 +53,12 @@ export default class Menu extends Component {
     this.setState({scene:'complejos'})
    }
 
+  setSceneAllJugadores = () => {
+   this.setState({scene:'allPlayers'})
+  }
+  setSceneAllTeams = () => {
+   this.setState({scene:'allTeams'})
+  }
  //SCENES
 
  //END SCENES
@@ -58,14 +68,22 @@ export default class Menu extends Component {
   setScenePartido = () => {
    this.setState({menuScene:'partido'})
   }
+
+
   setSceneJugadores = () => {
-   this.setState({menuScene:'jugadores'})
+    this.setState({menuScene:'jugadores'})
   }
   setSceneEquipos =() => {
    this.setState({menuScene:'equipos'})
   }
   setSceneContratos= () =>{
    this.setState({menuScene:'contratos'})
+  }
+  setSceneSuperAdmin= () =>{
+   this.setState({menuScene:'superAdmin'})
+  }
+  setSceneAdministradores= () =>{
+   this.setState({menuScene:'administradores'})
   }
   setSceneMenuMisEquipos = () => {
    this.setState({scene:'menuMisEquipos'})
@@ -112,22 +130,37 @@ export default class Menu extends Component {
       }
     }
   }
+
+
+defineMainButtons = () => {
+  switch (this.props.user.rol) {
+    case "player":
+    return <View style={styles.mainButtonsContainer}>
+    <TouchableOpacity style={this.activeMainButton('partido')} onPress={this.setScenePartido}>
+     <Text style={this.activeMainText('partido')}>PARTIDO</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={this.activeMainButton('equipos')} onPress={this.setSceneEquipos}>
+     <Text style={this.activeMainText('equipos')} >EQUIPOS</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={this.activeMainButton('jugadores')} onPress={this.setSceneJugadores}>
+     <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={this.activeMainButton('contratos')} onPress={this.setSceneContratos}>
+     <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
+    </TouchableOpacity>
+    </View>
+      break;
+    case "superAdmin":
+    return null
+      break;
+    default:
+
+  }
+}
+
   mainButtons(){
     return(<View style={{flex:1}}>
-        <View style={styles.mainButtonsContainer}>
-        <TouchableOpacity style={this.activeMainButton('partido')} onPress={this.setScenePartido}>
-         <Text style={this.activeMainText('partido')}>PARTIDO</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={this.activeMainButton('equipos')} onPress={this.setSceneEquipos}>
-         <Text style={this.activeMainText('equipos')} >EQUIPOS</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={this.activeMainButton('jugadores')} onPress={this.setSceneJugadores}>
-         <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={this.activeMainButton('contratos')} onPress={this.setSceneContratos}>
-         <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
-        </TouchableOpacity>
-        </View>
+        {this.defineMainButtons()}
         <View style={{flex:6}}>
         {this.showMenuScene()}
         </View>
@@ -135,7 +168,40 @@ export default class Menu extends Component {
     )
   }
 
-
+  menuComplejosScene(){
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.superAdminScene}>
+              <View style={styles.row}>
+                <View style={styles.row}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://stadiumdb.com/pictures/stadiums/jpn/kashima_soccer_stadium/kashima_soccer_stadium14.jpg'}}>
+                    <View style={styles.circularIcon}>
+                       <Icon name={"bank"}  size={30} color="#1565C0" />
+                   </View>
+                  </Image>
+                  <View style={styles.textAreaButton}>
+                    <Text style={styles.buttonBigTitle}>Complejos deportivos</Text>
+                    <Text style={styles.buttonSubtitle}>Visualiza todos los complejos</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://cdn23.merca20.com/wp-content/uploads/2017/02/bigstock-144060173.jpg'}}>
+                    <View style={styles.circularIcon}>
+                       <Icon name={"pie-chart"}  size={30} color="#1565C0" />
+                   </View>
+                  </Image>
+                  <View style={styles.textAreaButton}>
+                    <Text style={styles.buttonBigTitle}>Administradores de Complejos deportivos</Text>
+                    <Text style={styles.buttonSubtitle}>Visualiza todos los administradores</Text>
+                  </View>
+                </TouchableOpacity>
+                </View>
+              </View>
+          </GestureRecognizer>)
+  }
   menuEquipoScene(){
     const config = {
      velocityThreshold: 0.3,
@@ -144,7 +210,7 @@ export default class Menu extends Component {
     return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setScenePartido} onSwipeLeft={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAllTeams}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://3a1133d325f0c8a50c77eb21-lapelotonasas.netdna-ssl.com/wp-content/uploads/2017/01/James-Rodr%C3%ADguez-Real-Madrid.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -200,10 +266,10 @@ export default class Menu extends Component {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneContratos} onSwipeRight={this.setSceneEquipos}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene}  onSwipeLeft={this.setSceneContratos} onSwipeRight={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAllJugadores}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2017/02/16/sports/16ISRAELSOCCER3/16ISRAELSOCCER3-superJumbo.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -259,7 +325,7 @@ export default class Menu extends Component {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneJugadores}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setScenePartido}  onSwipeRight={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -329,7 +395,7 @@ export default class Menu extends Component {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneEquipos}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneContratos} onSwipeLeft={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -407,6 +473,9 @@ export default class Menu extends Component {
       case 'contratos':
         return(this.menuContratoScene())
        break;
+       case 'superAdmin':
+         return(this.menuComplejosScene())
+        break;
       default:
         return(this.menuPartidoScene())
     }
@@ -433,7 +502,17 @@ export default class Menu extends Component {
       case 'bestPlayers':
         return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
+<<<<<<< HEAD
       case 'bestTeams':
+=======
+        case 'allPlayers':
+          return <Players back={()=> this.setSceneButtons()}/>;
+          break;
+          case 'allTeams':
+            return <Teams back={()=> this.setSceneButtons()}/>;
+            break;
+        case 'bestTeams':
+>>>>>>> c478c89ce081a9b025332837f29f5a07dea9990f
         return <BestTeams back={()=> this.setSceneButtons()}/>;
          break;
       case 'complejos':
@@ -502,6 +581,10 @@ const styles = StyleSheet.create({
   partidoScene:{
     flex:1,
     paddingHorizontal:30
+  },
+  superAdminScene:{
+    flex:1,
+    padding:30
   },
   buttonMainMenu:{
     flex:1,

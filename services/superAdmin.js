@@ -1,19 +1,16 @@
 import FirebaseBasicService from '../lib/firebaseBasicService'
 import * as firebase from 'firebase'
 
-class Player {
+class SuperAdmin {
     static new(key){
-      player = {firstTime: true, rol: "player", score:0, uid:key,cantidadEquipos:0 }
-      FirebaseBasicService.newWithKey('users/players/',key, player)
+      superAdmin = {rol: "superAdmin",uid:key,nombre:'Mejenga',primerApellido:'Legends'}
+      FirebaseBasicService.newWithKey('users/superAdmin/',key, superAdmin)
     }
     static update(key, player){
       FirebaseBasicService.update('users/players/',key, player)
     }
     static findPlayerByUsername(filterData,callback){
       FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback)
-    }
-    static findPlayerByUsername(filterData,callback,error){
-      FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback,error)
     }
     static getCurrentPlayer(callback){
       FirebaseBasicService.findActiveById('users/players/',firebase.auth().currentUser.uid,callback)
@@ -23,4 +20,4 @@ class Player {
     }
 }
 
-module.exports = Player
+module.exports = SuperAdmin
