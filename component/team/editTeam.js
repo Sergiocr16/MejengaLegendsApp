@@ -18,6 +18,8 @@ import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
+import Entities from '../../lib/fireBaseEntities'
+import FirebaseBasicService from '../../lib/firebaseBasicService'
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
@@ -40,22 +42,21 @@ export default class EditTeam extends Component {
       genders:['Masculino','Femenino'],
       source:'none',
       scene:'editTeam',
-      submitted:false,
-      team:{}
+
+      team:{},
+      teams:[]
     }
   }
 
 
   isEmpty = (val) => {
-    if(this.state.submitted){
+
       if(val===""){
         return '#F44336';
       }else{
         return '#42A5F5';
       }
-    } else{
-      return '#42A5F5';
-    }
+
   }
 
   isValid = () => {
@@ -96,7 +97,7 @@ export default class EditTeam extends Component {
        })
        .then((url) => {
            this.state.team.image = url;
-           TeamService.update(this.props.user.uid,this.props.team.uid,this.state.team)
+           TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
             this.props.back();
            resolve(url)
        })
@@ -229,7 +230,11 @@ export default class EditTeam extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
+       if(this.props.team.image==undefined){
        return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       }else{
+         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}></Image>
+       }
      }
      }
  submit = () =>{
@@ -238,11 +243,10 @@ export default class EditTeam extends Component {
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
 
-   this.setState({submitted:true})
    if(this.isValid()){
       this.setState({scene:'loading'})
    if(this.state.source=='none'){
-     TeamService.update(this.props.user.uid,this.props.team.uid,this.state.team)
+     TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
       this.props.back();
    }else{
    this.uploadImage(this.state.source)

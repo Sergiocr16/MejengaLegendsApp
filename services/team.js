@@ -13,21 +13,15 @@ class TeamService {
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
 
-    static update(userKey,key,team){
-      FirebaseBasicService.update(Entities.TEAMS,key, team)
+    static update(userKey,key,teams,team){
+      FirebaseBasicService.update(Entities.TEAMS,key, team);
       var i = 0;
-      var updated = false;
-firebase.database().goOffline();
-      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,userKey,(teamsByPlayer)=>{
-      console.log("A")
-        for (var i = 0; i < teamsByPlayer.length; i++) {
-          if(teamsByPlayer[i].uid===key){
-              FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+userKey+"/",i, team)
-                break;
-          }
-        }
-      },()=>{})
-      firebase.database().goOnline();
+     teams.map((val)=>{
+      if(val.uid===team.uid){
+          FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+userKey+"/",i, team)
+      }
+      i++;
+    })
     }
 
     static new(objeto){

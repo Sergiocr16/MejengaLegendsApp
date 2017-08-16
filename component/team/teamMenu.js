@@ -195,7 +195,7 @@ detalleEquipo
         return (<CreateTeam user={this.props.user} back={()=> this.componentDidMount()} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
         break;
       case 'detalleEquipo':
-        return (<TeamDetail back={()=> this.setMyTeamsMenu()} user={this.props.user} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
+        return (<TeamDetail myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
         break;
       case 'agregarJugadoresAEquipo':
         return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);

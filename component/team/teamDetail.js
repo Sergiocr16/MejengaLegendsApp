@@ -28,7 +28,7 @@ export default class TeamDetail extends Component {
         return this.showTeamDetail()
         break;
         case 'editTeam':
-          return <EditTeam team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
+          return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
           break;
       default:
 
