@@ -28,13 +28,32 @@ export default class AccountInfo extends Component {
       return <Image style={styles.profileImage} borderRadius={100} source={{uri: this.props.user.image}}></Image>
     }
   }
+
+  defineRol = () => {
+    if(this.props.user.rol === "player"){
+      return (
+        <FadeInView style={styles.container} duration={600}>
+         {this.showImage()}
+           <Text style={styles.title}>{this.props.user.nombre +" "+ this.props.user.primerApellido +" "+ this.props.user.segundoApellido}</Text>
+           <Text style={styles.subTitle}>{this.props.user.username}</Text>
+            <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
+        </FadeInView>
+      )
+    }else if(this.props.user.rol==="superAdmin"){
+      return (
+        <FadeInView style={styles.container} duration={600}>
+         {this.showImage()}
+           <Text style={styles.title}>Super administrador</Text>
+           <Text style={styles.subTitle}>Mejenga Legends</Text>
+            <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
+        </FadeInView>
+      )
+    }
+  }
       render(){
         return (
           <FadeInView style={styles.container} duration={600}>
-           {this.showImage()}
-             <Text style={styles.title}>{this.props.user.nombre +" "+ this.props.user.primerApellido +" "+ this.props.user.segundoApellido}</Text>
-             <Text style={styles.subTitle}>{this.props.user.username}</Text>
-              <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
+          {this.defineRol()}
           </FadeInView>
         )
       }
