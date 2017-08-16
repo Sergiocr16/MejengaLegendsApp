@@ -1,5 +1,6 @@
 import * as firebase from 'firebase'
 import FirebaseBasicService from '../lib/firebaseBasicService'
+import Player from '../services/player'
 import Entities from '../lib/fireBaseEntities'
 class TeamService {
 
@@ -12,8 +13,22 @@ class TeamService {
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
 
+    static update(userKey,key,teams,team){
+      FirebaseBasicService.update(Entities.TEAMS,key, team);
+      var i = 0;
+     teams.map((val)=>{
+      if(val.uid===team.uid){
+          FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+userKey+"/",i, team)
+      }
+      i++;
+    })
+    }
+
     static new(objeto){
-      FirebaseBasicService.new(Entities.TEAMS,objeto);
+      FirebaseBasicService.newWithKey(Entities.TEAMS,objeto);
+    }
+    static newWithKey(objeto,key){
+      FirebaseBasicService.newWithKey(Entities.TEAMS,objeto,key);
     }
 
     static newTeamsByPlayer(objeto){
