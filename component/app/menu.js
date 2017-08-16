@@ -502,19 +502,15 @@ defineMainButtons = () => {
       case 'bestPlayers':
         return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
-<<<<<<< HEAD
+      case 'allPlayers':
+        return <Players back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'allTeams':
+        return <Teams back={()=> this.setSceneButtons()}/>;
+        break;
       case 'bestTeams':
-=======
-        case 'allPlayers':
-          return <Players back={()=> this.setSceneButtons()}/>;
-          break;
-          case 'allTeams':
-            return <Teams back={()=> this.setSceneButtons()}/>;
-            break;
-        case 'bestTeams':
->>>>>>> c478c89ce081a9b025332837f29f5a07dea9990f
         return <BestTeams back={()=> this.setSceneButtons()}/>;
-         break;
+        break;
       case 'complejos':
         return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
         break;
