@@ -19,7 +19,7 @@ import Players from '../player/players';
 import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-
+import SoundManager from '../../services/soundManager'
 export default class Menu extends Component {
   constructor(props){
     super(props)
@@ -34,22 +34,34 @@ export default class Menu extends Component {
 
 
   setSceneButtons = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'buttons'})
   }
   setSceneProfile = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'profile'})
   }
   setSceneBestPlayers = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'bestPlayers'})
   }
 
   setSceneBestTeams = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'bestTeams'})
   }
   setSceneAllJugadores = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'allPlayers'})
   }
   setSceneAllTeams = () => {
+    SoundManager.playPushBtn()
+
    this.setState({scene:'allTeams'})
   }
  //SCENES
@@ -59,17 +71,20 @@ export default class Menu extends Component {
 
   //MENU SCENE BUTTONS
   setScenePartido = () => {
+    SoundManager.playSwitchClick()
    this.setState({menuScene:'partido'})
   }
 
-
   setSceneJugadores = () => {
+    SoundManager.playSwitchClick()
     this.setState({menuScene:'jugadores'})
   }
   setSceneEquipos =() => {
+    SoundManager.playSwitchClick()
    this.setState({menuScene:'equipos'})
   }
   setSceneContratos= () =>{
+    SoundManager.playSwitchClick()
    this.setState({menuScene:'contratos'})
   }
   setSceneSuperAdmin= () =>{

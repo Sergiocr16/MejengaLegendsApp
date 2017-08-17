@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Image,
   ToastAndroid,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  AppState
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
@@ -17,6 +18,7 @@ import Account from '../account/account'
 import Header from './header'
 import Loader from './loading'
 import Menu from './menu'
+import SoundManager from '../../services/soundManager'
 
 export default class App extends Component {
   constructor(props){
@@ -26,11 +28,33 @@ export default class App extends Component {
       user: {},
       scene:'loading',
       player:{},
-      backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
+      backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg',
+      appState: AppState.currentState
     }
 
   }
+
+
+
+    componentWillUnmount() {
+      AppState.removeEventListener('change', this._handleAppStateChange);
+    }
+
+    _handleAppStateChange = (nextAppState) => {
+      if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!')
+        this.setState({scene:'menu'})
+        SoundManager.playBackgroundMusic();
+      }else{
+        console.log('App has come to the background!')
+        SoundManager.pauseBackgroundMusic();
+      }
+      this.setState({appState: nextAppState});
+    }
+
+
   componentDidMount() {
+      AppState.addEventListener('change', this._handleAppStateChange);
     FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
         if(player.firstTime===true){
           this.setState({scene:"firstTime"})
@@ -38,11 +62,13 @@ export default class App extends Component {
           this.setState({scene:"menu",initView:"partido"})
         }
         this.setState({player})
+        SoundManager.startBackgroundMusic();
      },()=>{
        this.setState({initView:"superAdmin"})
        FirebaseBasicService.findActiveById("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
              this.setState({scene:"menu"})
              this.setState({player:superAdmin})
+             SoundManager.startBackgroundMusic();
         },()=>{
         })
      })
