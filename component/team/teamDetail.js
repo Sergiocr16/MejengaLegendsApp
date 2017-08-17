@@ -148,7 +148,7 @@ export default class TeamDetail extends Component {
       </View>
 
        {this.showBackButton()}
-
+    </View>
       </FadeInView>
     )
   }

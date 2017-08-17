@@ -126,8 +126,7 @@ export default class App extends Component {
 showHeader = () => {
   if(this.state.player.firstTime!==true || this.state.superAdmin!==undefined){
     return  <View style={{flex:1}}>
-            <Header notifications={this.state.notifications} setSceneAccount={()=>this.setSceneAccount()} setSceneNotifications={()=>this.setSceneNotifications()} setSceneMenu={()=>this.setSceneMenu()} />
-
+            <Header user={this.state.player} notifications={this.state.notifications} setSceneAccount={()=>this.setSceneAccount()} setSceneNotifications={()=>this.setSceneNotifications()} setSceneMenu={()=>this.setSceneMenu()} />
             </View>
   }
   return null;

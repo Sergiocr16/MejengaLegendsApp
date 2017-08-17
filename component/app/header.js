@@ -30,7 +30,7 @@ export default class Header extends Component {
    console.log(this.props.estadoNotification)
       console.log('3333333333333333333333333333333333')
  }
-  render(){
+
 defineHeader = () =>{
   if(this.props.user.rol === "player"){
     return (
@@ -86,9 +86,11 @@ defineHeader = () =>{
     )
   }
   return null;
+
 }
   render(){
-  return(<View style={{flex:1}}>
+  return(
+    <View style={{flex:1}}>
      {this.defineHeader()}
    </View>)
   }
