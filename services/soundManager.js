@@ -18,30 +18,30 @@ var backBtn;
 class SoundManager {
 
   static loadSounds = () => {
-    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/whereareunow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    songs.push(new Sound("whereareunow.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
-    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/thunder.mp3",Sound.MAIN_BUNDLE, (error) => {
+    songs.push(new Sound("thunder.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
-    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/unforgettable.mp3",Sound.MAIN_BUNDLE, (error) => {
+    songs.push(new Sound("unforgettable.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
-    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/keeptogether.mp3",Sound.MAIN_BUNDLE, (error) => {
+    songs.push(new Sound("keeptogether.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
-    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/nothingholdingmeback.mp3",Sound.MAIN_BUNDLE, (error) => {
+    songs.push(new Sound("nothingholdingmeback.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
-    ambienteEstadio = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
+    ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
 
     // CLICKS
-    switchBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/switch.wav",Sound.MAIN_BUNDLE, (error) => {
+    switchBtn = new Sound("switchsound.wav",Sound.MAIN_BUNDLE, (error) => {
     })
-    pushBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.wav",Sound.MAIN_BUNDLE, (error) => {
+    pushBtn = new Sound("push.wav",Sound.MAIN_BUNDLE, (error) => {
     })
-    backBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/back.wav",Sound.MAIN_BUNDLE, (error) => {
+    backBtn = new Sound("back.wav",Sound.MAIN_BUNDLE, (error) => {
    })
-   initClick = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/initSound.mp3",Sound.MAIN_BUNDLE, (error) => {
+   initClick = new Sound("initsound.mp3",Sound.MAIN_BUNDLE, (error) => {
      console.log(error)
    })
-   notification = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/notifications.mp3",Sound.MAIN_BUNDLE, (error) => {
+   notification = new Sound("notifications.mp3",Sound.MAIN_BUNDLE, (error) => {
    })
   }
 
@@ -49,9 +49,9 @@ class SoundManager {
       if(songs.length>0){
       playSong = (position) => {
       backgroundMusic = songs[position];
-      var newPosition  = Math.round(Math.random() * (songsQuantity - 0) + 0)
+      var newPosition  = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      if(newPosition === position){
-       newPosition = Math.round(Math.random() * (songsQuantity - 0) + 0)
+       newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
       songs[position].play((success)=>{
           if(success){
@@ -62,16 +62,16 @@ class SoundManager {
         })
         songs[position].setVolume(0.3);
       }
-      playSong(Math.round(Math.random() * (songsQuantity - 0) + 0));
+      playSong(Math.round(Math.random() * ((songsQuantity-1) - 0) + 0));
     }
   }
 
     static playBackgroundMusic(){
       playSong = (position) => {
       backgroundMusic = songs[position];
-      var newPosition  = Math.round(Math.random() * (songsQuantity - 0) + 0)
+      var newPosition  = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      if(newPosition === position){
-       newPosition = Math.round(Math.random() * (songsQuantity - 0) + 0)
+       newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
       songs[position].play((success)=>{
           if(success){
@@ -84,7 +84,7 @@ class SoundManager {
       }
       backgroundMusic.play((success) => {
         if (success) {
-          playSong(Math.round(Math.random() * (songsQuantity - 0) + 0))
+          playSong(Math.round(Math.random() * ((songsQuantity-1) - 0) + 0))
         } else {
           console.log('playback failed due to audio decoding errors');
         }

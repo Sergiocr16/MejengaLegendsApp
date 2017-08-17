@@ -48,7 +48,7 @@ export default class MejengaLegendsApp extends Component {
   componentDidMount() {
       setTimeout(()=>{this.setState({initialView:'Welcome'})
       SoundManager.playAmbienteEstadio()
-    },4000)
+    },2000)
   }
   async getInitialView(){
      await firebase.auth().onAuthStateChanged( async (user) => {

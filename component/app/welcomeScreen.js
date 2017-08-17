@@ -31,7 +31,7 @@ export default class Welcome extends Component {
       <Text style={styles.mainTitle}>Mejenga Legends</Text>
      <TouchableOpacity style={styles.initButton} onPress={()=>{
        SoundManager.playInitClickSound()
-          SoundManager.stopAmbienteEstadio()
+      SoundManager.stopAmbienteEstadio()
        this.props.showInitialView()}}>
      </TouchableOpacity>
      </View>
