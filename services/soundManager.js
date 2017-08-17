@@ -49,9 +49,9 @@ class SoundManager {
       if(songs.length>0){
       playSong = (position) => {
       backgroundMusic = songs[position];
-      var newPosition  = Math.round(Math.random() * (songsQuantity - 0) + 0)
+      var newPosition  = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      if(newPosition === position){
-       newPosition = Math.round(Math.random() * (songsQuantity - 0) + 0)
+       newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
       songs[position].play((success)=>{
           if(success){
@@ -62,16 +62,16 @@ class SoundManager {
         })
         songs[position].setVolume(0.3);
       }
-      playSong(Math.round(Math.random() * (songsQuantity - 0) + 0));
+      playSong(Math.round(Math.random() * ((songsQuantity-1) - 0) + 0));
     }
   }
 
     static playBackgroundMusic(){
       playSong = (position) => {
       backgroundMusic = songs[position];
-      var newPosition  = Math.round(Math.random() * (songsQuantity - 0) + 0)
+      var newPosition  = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      if(newPosition === position){
-       newPosition = Math.round(Math.random() * (songsQuantity - 0) + 0)
+       newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
       songs[position].play((success)=>{
           if(success){
@@ -84,7 +84,7 @@ class SoundManager {
       }
       backgroundMusic.play((success) => {
         if (success) {
-          playSong(Math.round(Math.random() * (songsQuantity - 0) + 0))
+          playSong(Math.round(Math.random() * ((songsQuantity-1) - 0) + 0))
         } else {
           console.log('playback failed due to audio decoding errors');
         }
