@@ -48,9 +48,9 @@ export default class TeamMenu extends Component {
     return (
             <FadeInView style={styles.container} duration={30}>
                 <View style={styles.myTeamsList}>
-                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{fontSize:25,color:'white',textAlign:'center'}}>No estás en ningún equipo aún</Text>
-                </View>
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Text style={{fontSize:25,color:'white',textAlign:'center'}}>No estás en ningún equipo aún</Text>
+                    </View>
                 </View>
                 <View style={{flex:1,flexDirection:'row'}}>
                     <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
@@ -84,6 +84,15 @@ export default class TeamMenu extends Component {
     </Image>
   }
 }
+teamNameFontSize = (option) =>{
+
+    if(option>16){
+      return{fontSize:17}
+    } else {
+      return{fontSize:21}
+    }
+}
+
   showBorderTop = (equipo) => {
     switch (equipo.estaVacio) {
       case true: return {
@@ -110,7 +119,7 @@ export default class TeamMenu extends Component {
                   {this.showImage(val)}
                   <View style={{flex:1}}>
                   <View style={{flex:2}}>
-                      <Text style={styles.teamName}>{val.nombre}</Text>
+                      <Text style={[styles.teamName,this.teamNameFontSize(val.nombre.length)]}>{val.nombre}</Text>
                         <Text style={[styles.score,{marginHorizontal:30,fontSize:17}]}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>
 
                   </View>
@@ -130,7 +139,7 @@ export default class TeamMenu extends Component {
         });
 
     return (
-    <FadeInView style={styles.container} duration={30}>
+    <FadeInView style={styles.container} duration={400}>
         <View style={styles.myTeamsList}>
           <ScrollView horizontal={true} style={[styles.myTeamsList,{flex:1}]}>
             {equipos}
@@ -302,9 +311,10 @@ const styles = StyleSheet.create({
      fontSize:15,
    },
    teamName: {
+
      margin:5,
      marginTop:30,
-     fontSize: 21,
+     fontSize: 16,
      alignSelf: 'center',
      color: '#0D47A1'
    },

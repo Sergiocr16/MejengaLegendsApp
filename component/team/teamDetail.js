@@ -154,7 +154,7 @@ export default class TeamDetail extends Component {
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{

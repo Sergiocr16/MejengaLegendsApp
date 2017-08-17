@@ -25,6 +25,8 @@ export default class Header extends Component {
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
    })
+   console.log(this.props.estadoNotification)
+      console.log('3333333333333333333333333333333333')
  }
   render(){
     return (
@@ -38,10 +40,10 @@ export default class Header extends Component {
          <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
 
 
-        {RenderIf(this.props.notificationsQuantity==0,
-             <TouchableOpacity style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
+        {RenderIf(this.props.notifications.length==undefined,
+             <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
          )}
-        {RenderIf(this.props.notificationsQuantity!==0,
+        {RenderIf(this.props.notifications.length>0,
            <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
               <View style={styles.notificationsBellIcon}>
                   <Text style={{textAlign:'center'}}>

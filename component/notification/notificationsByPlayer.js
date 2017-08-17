@@ -23,32 +23,27 @@ export default class NotificationsByPlayer extends Component {
     this.state = {
       scene: 'myNotifications',
       currentNotification: '',
+      notificationKey:''
     }
   }
-  deleteNotification = (currentNotification)=>{
 
-    var i = 0;
-    this.props.notifications.map((val)=>{
-      if(val.equipoGUID===currentNotification.equipoGUID){
-        Notification.deleteNotification(i,()=>{
-            ToastAndroid.show('¡Felicidades ahora eres parte del equipo ' + this.state.currentNotification.nombreEquipo +'!!', ToastAndroid.LONG);
-        },()=>{})
-          }
-      i++;
-    })
+  deleteNotification = ()=>{
+    var notifications = this.props.notifications;
+    notifications.splice(this.state.notificationKey,1);
+    Notification.deleteNotification(notifications);
 
   }
   setSceneMyNotifications = ()=>{
      this.setState({scene:'myNotifications'})
-  }
 
+
+  }
     myNotifications(){
       let notifications =  this.props.notifications.map( (val, key) => {
-
             return (  <View key={key}>
                       {RenderIf(val.tipo==1,
-                        <TouchableOpacity onPress={()=>this.setState({scene:'notificationDetail',currentNotification:val})}
-                            key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,paddingVertical:10,paddingHorizontal:15}}>
+                        <TouchableOpacity onPress={()=>this.setState({scene:'notificationDetail',currentNotification:val,notificationKey:key})}
+                            key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,paddingVertical:8,paddingHorizontal:15}}>
                             <View style={{flex:1}}>
                               <Icon name="handshake-o" color="#F4511E" size={50}  />
                             </View>
@@ -70,21 +65,32 @@ export default class NotificationsByPlayer extends Component {
             <View style={styles.mainName}>
                 <Text style={styles.whiteFont}>Notificaciones</Text>
             </View>
-            <View style={[styles.subtitle,{flexDirection:'row',paddingHorizontal:30}]}>
-                <View style={{flex:3}}>
-                    <Text style={styles.whiteFont2}>Contenido</Text>
-                </View>
-                <View style={{flex:1}}>
-                    <Text style={styles.whiteFont2}>Fecha</Text>
-                </View>
-            </View>
+            {RenderIf(this.props.notifications.length>0,
+              <View style={[styles.subtitle,{flexDirection:'row',paddingHorizontal:30}]}>
+                  <View style={{flex:3}}>
+                      <Text style={styles.whiteFont2}>Contenido</Text>
+                  </View>
+                  <View style={{flex:1}}>
+                      <Text style={styles.whiteFont2}>Fecha</Text>
+                  </View>
+              </View>
+             )}
+
 
            <View style={styles.basicInfo}>
 
               <View style={{flex:3,padding:2}}>
-                <ScrollView>
-                  {notifications}
-                  </ScrollView>
+
+               {RenderIf(this.props.notifications.length==0||this.props.notifications==undefined,
+                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                         <Text style={{fontSize:25,color:'#78909C',textAlign:'center'}}>No hay notificaciones que mostrar</Text>
+                 </View>
+                )}
+                {RenderIf(this.props.notifications.length>0 && this.props.notifications!==undefined,
+                  <ScrollView>
+                    {notifications}
+                    </ScrollView>
+                 )}
                 </View>
             </View>
         </View>
@@ -108,8 +114,9 @@ export default class NotificationsByPlayer extends Component {
           return this.myNotifications();
           break;
         case 'notificationDetail':
-          return  (<AddToTeamNotificationDetail deleteNotification={()=>{this.deleteNotification(this.state.currentNotification)}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
+          return  (<AddToTeamNotificationDetail deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
           break;
+
         default:
 
       }

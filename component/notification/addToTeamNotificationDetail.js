@@ -20,34 +20,21 @@ export default class AddToTeamNotificationDetail extends Component {
     this.state = {
           team:{},
           ownTeams: [],
-          hola: ''
     }
   }
   componentDidMount() {
     TeamService.getTeamsByPlayer((teams)=>{
       if(teams){
         this.state.ownTeams = teams;
-
       }
     },()=>{
       this.state.ownTeams = [];
     })
-    // firebase.database().ref("playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/0").on('value', (snapshot) => {
-    //     let data = snapshot.val()
-    //     if(data){
-    //        this.setState({team:data[0]})
-    //        console.log('dfffffffaaaaaa')
-    //         console.log(this.state.team.tipo)
-    //     }else{
-    //       error()
-    //     }
-    // })
+
     TeamService.getTeam(this.props.notification.equipoGUID,(team)=>{
          this.setState({team:team})
         this.showTeamDetail();
-    },()=>{
-        console.log('no hay nada')
-    })
+    },()=>{})
 
   }
   showImage = () => {
@@ -63,12 +50,11 @@ export default class AddToTeamNotificationDetail extends Component {
       acceptInvitation = () => {
           var equiposDelJugador = {};
           equiposDelJugador = this.state.ownTeams;
-            console.log(this.state.ownTeams)
           equiposDelJugador.push(this.state.team);
           TeamService.newTeamsByPlayer(equiposDelJugador);
           this.props.deleteNotification();
           this.props.back();
-
+          ToastAndroid.show('¡Felicidades ahora eres parte del equipo ' + this.state.team.nombre +'!!', ToastAndroid.LONG);
 
       }
       showTeamDetail(){
@@ -156,7 +142,7 @@ export default class AddToTeamNotificationDetail extends Component {
       }
       render(){
         return (
-          <FadeInView style={{flex:1}} duration={300}>
+          <FadeInView style={{flex:1}} duration={600}>
               {this.showTeamDetail()}
           </FadeInView>
         )
@@ -218,7 +204,7 @@ export default class AddToTeamNotificationDetail extends Component {
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      paddingVertical:8,
     justifyContent:'center',
     alignItems:'center',

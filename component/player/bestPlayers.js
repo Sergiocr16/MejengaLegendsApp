@@ -125,7 +125,7 @@ export default class BestPlayers extends Component {
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES JUGADORES</Text></View>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores jugadores</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
        <View style={styles.basicInfo}>
        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
@@ -163,7 +163,7 @@ export default class BestPlayers extends Component {
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES JUGADORES</Text></View>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores jugadores</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
        <View style={styles.basicInfo}>
        <ScrollView>

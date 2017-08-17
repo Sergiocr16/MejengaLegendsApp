@@ -8,10 +8,9 @@ class Notification {
   static getNotificationsByPlayer(uid,callBack,error){
     FirebaseBasicService.findActiveById(Entities.PLAYERNOTIFICATIONS,uid,callBack,error)
   }
-  static deleteNotification(position,callBack,error){
-    FirebaseBasicService.deleteForever(Entities.PLAYERNOTIFICATIONS+"/active/"+firebase.auth().currentUser.uid+"/",position)
+  static deleteNotification(notifications){
+    firebase.database().ref(Entities.PLAYERNOTIFICATIONS+'/active/'+firebase.auth().currentUser.uid+'/').set(notifications)
   }
-
 }
 
 module.exports = Notification

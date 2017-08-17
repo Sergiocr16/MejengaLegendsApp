@@ -29,7 +29,6 @@ export default class App extends Component {
       user: {},
       scene:'loading',
       player:{firstTime:true},
-      notificationsQuantity:0,
       notifications:{},
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
     }
@@ -44,16 +43,14 @@ export default class App extends Component {
         }
         this.setState({player})
      })
-     var notificationsafaf = [{equipoGUID:'1502494395992',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'unete al equoo',message:'unete al equoo',tipo:'1'},{equipoGUID:'1502494407164',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'unete al equoo',message:'unete al equoo',tipo:'1'}]
+     var notificationsafaf = [{equipoGUID:'1502971810816',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'Invitación a unirte a equipo',message:'unete al equoo',tipo:'1',nombreEquipo:'Barcelona'}]
 
      firebase.database().ref('playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/').set(notificationsafaf)
      Notification.getMyNotifications((notifications)=>{
        if(notifications){
-         this.setState({notificationsQuantity:notifications.length,notifications:notifications})
+         this.setState({notifications:notifications})
        }
      },()=>{
-       console.log('/////////////////////////////////');
-      this.setState({notificationsQuantity:0})
      })
   }
 
@@ -86,7 +83,7 @@ export default class App extends Component {
         return(<Account user={this.state.player}/>)
         break;
     case 'notifications':
-        return(<NotificationsByPlayer notifications={this.state.notifications} user={this.state.player}/>)
+        return(<NotificationsByPlayer estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} user={this.state.player}/>)
         break;
     default:
   }

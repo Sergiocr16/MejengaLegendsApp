@@ -28,6 +28,7 @@ export default class AddPlayersToTeam extends Component {
       username: '',
       players: [],
       playersSelected: [],
+      notificationsByPLayer: [],
       currentPlayer: '',
       seEncontroJugador: 1,
       hayJugadoresSeleccionados: 1
@@ -43,48 +44,48 @@ export default class AddPlayersToTeam extends Component {
       return false;
   }
   sendRequestToPlayers = ()=>{
+      console.log('///////////////////')
+    console.log(this.state.notificationsByPLayer)
+      console.log(this.state.playersSelected)
     var notificationsTemporal = {};
-    var temporalNotification = [{message: "El equipo Mi familia FC quiere que seas parte de ellos!"}];
-    var notificationss = [{message: "El equipo Mi familia FC quiere que seas parte de ellos!"},{message: "El equipo Mi familia FC quiere que seas parte de ellos!"}]
     this.state.playersSelected.map((val, key) => {
-        console.log('entre equi');
-        TeamService.getNotificationsByPlayer(val.jugadorGUID,(notifications)=>{
-            if(notificationss){
-                notificationsTemporal = notificationss;
-                notificationsTemporal.push(temporalNotification);
-                TeamService.addPlayersToTeam(val.jugadorGUID,notificationsTemporal);
-            }
-        },()=>{
-            TeamService.addPlayersToTeam(val.jugadorGUID,temporalNotification);
-        })
+        var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1};
+        if(this.state.notificationsByPLayer[key].length!==0){
+          notificationsTemporal = this.state.notificationsByPLayer[key];
+          notificationsTemporal.push(temporalNotification);
+          TeamService.addPlayersToTeam(val.uid,notificationsTemporal);
+          this.props.back();
+          ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
+        } else {
+           var firstNotification = [{equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1}];
+            TeamService.addPlayersToTeam(val.jugadorGUID,firstNotification);
+            this.props.back();
+            ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
+        }
     })
 
-        // TeamService.getNotificationsByPlayer(Entities.PLAYERNOTIFICATIONS,val.jugadorGUID,(notifications)=>{
-        //     var temporalNotification = [{message: "El equipo Mi familia FC quiere que seas parte de ellos!"}];
-        //     notificationsTemporal = {};
-        //     notificationsTemporal = notifications;
-        //       console.log('/////////////////////////////////gola 2//////');
-        //       console.log(notificationsTemporal);
-        //       notificationsTemporal.push(temporalNotification);
-        //      FirebaseBasicService.newWithKey(Entities.PLAYERNOTIFICATIONS,'PcLNztdnI7eERNrQxVXuAl8hjt22',notificationsTemporal);
-        //
-        // },()=>{
-        //   var temporalNotification = [{message: "El prmer mejs"}];
-        //   FirebaseBasicService.newWithKey(Entities.PLAYERNOTIFICATIONS,val.jugadorGUID,temporalNotification);
-        // })
-
-
-      // TeamService.sendRequestToPlayers(this.state.playersSelected);
 
   }
   addPlayers = (val)=>{
-      if(!val.cantidadEquipos<=5){
-        if(!this.containsObject(val,this.state.playersSelected)){
-            this.setState({playersSelected:[...this.state.playersSelected,val]});
-            this.setState({hayJugadoresSeleccionados:2})
-        };
-      } else {
-           ToastAndroid.show('Este jugador ya pertenece a 5 equipos, limite alcanzado', ToastAndroid.LONG);
+      if(val.uid==firebase.auth().currentUser.uid){
+          ToastAndroid.show('Ya perteneces a este equipo', ToastAndroid.LONG);
+      }else{
+        if(!val.cantidadEquipos<=5){
+          if(!this.containsObject(val,this.state.playersSelected)){
+              this.setState({playersSelected:[...this.state.playersSelected,val]});
+              this.setState({hayJugadoresSeleccionados:2})
+                  TeamService.getNotificationsByPlayer(val.uid,(notifications)=>{
+                      if(notifications){
+                        this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,notifications]});
+                      }
+                  },()=>{
+                        console.log('/////////entre aqui//////////')
+                    this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,[]]});
+                  })
+          };
+        } else {
+             ToastAndroid.show('Este jugador ya pertenece a 5 equipos, limite alcanzado', ToastAndroid.LONG);
+        }
       }
   }
   deletePlayers = (key)=>{
@@ -169,7 +170,7 @@ export default class AddPlayersToTeam extends Component {
               onChangeText={(username) => this.setState({username})}
               />
               <TouchableOpacity style={[styles.buttonBuscarJugador,{flex:1,alignItems:'flex-end'}]}  onPress={this.getPlayers} underlayColor='#99d9f4'>
-                <Text style={styles.buttonText}><Icon name="search" size={13} color="#FFFFFF"/> Buscar</Text>
+                <Text style={styles.buttonText}><Icon name="search" size={16} color="#FFFFFF"/> Buscar</Text>
               </TouchableOpacity>
            </View>
            <View style={{flex:5,flexDirection:'row',paddingHorizontal:10}}>
