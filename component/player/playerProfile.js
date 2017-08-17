@@ -20,6 +20,7 @@ export default class PlayerProfile extends Component {
       years : years,
       scene: 'info'
     }
+    console.log(this.props.showBackButton)
   }
 
   showImage = () => {
@@ -28,6 +29,19 @@ export default class PlayerProfile extends Component {
     }else{
       return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.user.image}}></Image>
     }
+  }
+  showBackButton = () =>{
+    if(this.props.showBackButton==true){
+      return <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+        <View style={styles.buttonBackPadre}>
+          <View style={styles.buttonBackHijo}/>
+            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+            </Text>
+        </View>
+     </TouchableOpacity>
+   }
+     return null;
   }
   showInfo(){
     return (
@@ -74,14 +88,7 @@ export default class PlayerProfile extends Component {
        </View>
       </FadeInView>
       <View style={{flex:1,flexDirection:'row'}}>
-        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-          <View style={styles.buttonBackPadre}>
-            <View style={styles.buttonBackHijo}/>
-              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-              </Text>
-          </View>
-       </TouchableOpacity>
+    {this.showBackButton()}
       </View>
       </FadeInView>
     )
