@@ -15,6 +15,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
+import Players from '../player/players';
 import BestTeams from '../team/bestTeams';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -44,7 +45,9 @@ export default class Menu extends Component {
   setSceneBestTeams = () => {
    this.setState({scene:'bestTeams'})
   }
-
+  setSceneAllJugadores = () => {
+   this.setState({scene:'allPlayers'})
+  }
  //SCENES
 
  //END SCENES
@@ -54,8 +57,10 @@ export default class Menu extends Component {
   setScenePartido = () => {
    this.setState({menuScene:'partido'})
   }
+
+
   setSceneJugadores = () => {
-   this.setState({menuScene:'jugadores'})
+    this.setState({menuScene:'jugadores'})
   }
   setSceneEquipos =() => {
    this.setState({menuScene:'equipos'})
@@ -250,10 +255,10 @@ defineMainButtons = () => {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneContratos} onSwipeRight={this.setSceneEquipos}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene}  onSwipeLeft={this.setSceneContratos} onSwipeRight={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAllJugadores}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2017/02/16/sports/16ISRAELSOCCER3/16ISRAELSOCCER3-superJumbo.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -309,7 +314,7 @@ defineMainButtons = () => {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneJugadores}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setScenePartido}  onSwipeRight={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -379,7 +384,7 @@ defineMainButtons = () => {
      velocityThreshold: 0.3,
      directionalOffsetThreshold: 80
    };
-    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setSceneEquipos}>
+    return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneContratos} onSwipeLeft={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
@@ -486,6 +491,9 @@ defineMainButtons = () => {
       case 'bestPlayers':
         return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
+        case 'allPlayers':
+          return <Players back={()=> this.setSceneButtons()}/>;
+          break;
         case 'bestTeams':
         return <BestTeams back={()=> this.setSceneButtons()}/>;
          break;
