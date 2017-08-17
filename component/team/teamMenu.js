@@ -17,7 +17,7 @@ import CreateTeam from '../team/createTeam';
 import TeamDetail from '../team/teamDetail';
 import TeamPositions from '../team/teamPositions';
 import PlayersByTeam from '../team/playersByTeam';
-
+import SoundManager from '../../services/soundManager';
 import AddPlayersToTeam from '../team/addPlayersToTeam';
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
@@ -36,11 +36,14 @@ export default class TeamMenu extends Component {
     }
   }
   componentDidMount() {
+
       TeamService.getTeamsByPlayer((teams)=>{
         if(teams){
+            SoundManager.playBackBtn()
           this.setState({scene:"myTeams",teams})
         }
       },()=>{
+          SoundManager.playBackBtn()
         this.setState({scene:"noTeams"})
       })
   }
@@ -111,10 +114,19 @@ teamNameFontSize = (option) =>{
       }
     }
   }
-
+ showCreateTeamButton = () => {
+   if(this.props.user.cantidadEquipos<5){
+     return (   <View style={{flex:1, alignItems:'flex-end'}}>
+         <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+       </View>)
+   }else{
+     return null;
+   }
+ }
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
             return <TouchableOpacity onPress={()=>{
+                SoundManager.playPushBtn()
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
                   {this.showImage(val)}
                   <View style={{flex:1}}>
@@ -156,30 +168,34 @@ teamNameFontSize = (option) =>{
                   </Text>
               </View>
            </TouchableOpacity>
-           <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
-          </View>
+          {this.showCreateTeamButton()}
        </View>
     </FadeInView>
     )
   }
 
   setMyTeamsMenu = ()=>{
+    SoundManager.playBackBtn()
      this.setState({scene:'myTeams'})
   }
   setSceneDetalleEquipo = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'detalleEquipo'})
   }
   setSceneAddPlayerToTeam = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'agregarJugadoresAEquipo'})
   }
   setScenePlayersByTeam = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'jugadoresPorEquipo'})
   }
   setSceneRegistrarEquipo = () => {
+    SoundManager.playPushBtn()
    this.setState({scene:'registrarEquipo'})
   }
   setSceneTeamPositions = () => {
+    SoundManager.playPushBtn()
    this.setState({scene:'teamPositions'})
   }
   showScene(){
@@ -194,10 +210,10 @@ teamNameFontSize = (option) =>{
        return (this.showNoTeams())
        break;
       case 'registrarEquipo':
-        return (<CreateTeam user={this.props.user} back={()=> this.componentDidMount()} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
+        return (<CreateTeam user={this.props.user} back={()=> {this.componentDidMount()}} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
         break;
       case 'detalleEquipo':
-        return (<TeamDetail back={()=> this.setMyTeamsMenu()} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
+        return (<TeamDetail showEditButton={true} myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} showBackButton={true} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
         break;
       case 'agregarJugadoresAEquipo':
         return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);

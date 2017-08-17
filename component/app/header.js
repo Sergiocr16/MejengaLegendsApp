@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import Player from '../../services/player'
-
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Animatable from 'react-native-animatable';
+import SoundManager from '../../services/soundManager';
+const AnimatedIcon = Animatable.createAnimatableComponent(Icon)
 import {
   Text,
   View,
@@ -18,9 +20,9 @@ export default class Header extends Component {
     super(props)
     this.state = {
        scene:'loading',
-       player:{ nombre: '',liga:'',PrimerApellido:'',score:0}
     }
   }
+
  componentDidMount(){
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
@@ -29,12 +31,14 @@ export default class Header extends Component {
       console.log('3333333333333333333333333333333333')
  }
   render(){
+defineHeader = () =>{
+  if(this.props.user.rol === "player"){
     return (
       <View style={{flex:1}}>
       <View style={styles.row}>
         <View style={styles.ligaBar}>
-         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="diamond" size={16} color="#00BCD4" /> {this.state.player.liga}</Text>
-         <Text style={styles.ligaBarText}><Icon name="trophy" size={16} color="yellow" /> {this.state.player.score}</Text>
+         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="diamond" size={16} color="#00BCD4" /> {this.props.user.liga}</Text>
+         <Text style={styles.ligaBarText}><Icon name="trophy" size={16} color="yellow" /> {this.props.user.score}</Text>
         </View>
         <View style={styles.accountnfoBox}>
          <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
@@ -57,12 +61,36 @@ export default class Header extends Component {
          )}
 
          <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
-         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.state.player.nombre}</Text>
+         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
          </TouchableOpacity>
         </View>
         </View>
       </View>
     )
+  }else if(this.props.user.rol === "superAdmin"){
+    return (
+      <View style={{flex:1}}>
+      <View style={styles.row}>
+        <View style={styles.ligaBar}>
+         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="bar-chart" size={16} color="white" />  SUPER ADMIN</Text>
+         <Text style={styles.ligaBarText}><AnimatedIcon animation="rotate" iterationCount="infinite" name="futbol-o" size={16} color="yellow" ></AnimatedIcon>   Mejenga Legends</Text>
+        </View>
+        <View style={styles.accountnfoBox}>
+         <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
+         <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
+         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> Super Admin</Text>
+         </TouchableOpacity>
+        </View>
+        </View>
+      </View>
+    )
+  }
+  return null;
+}
+  render(){
+  return(<View style={{flex:1}}>
+     {this.defineHeader()}
+   </View>)
   }
 }
 

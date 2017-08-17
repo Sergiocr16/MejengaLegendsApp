@@ -48,23 +48,23 @@ export default class CreatePlayer extends Component {
       submitted:false
     }
   }
+
   isValid = () => {
     var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
-    var valid = false;
+    var invalidItems = 0;
    toValidate.map((val)=>{
      if(val===""){
-       valid = false;
-     }else{
-       valid = true;
+       invalidItems++;
      }
    })
-   if(valid){
+   if(invalidItems==0){
      return true;
    }else{
      ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
      return false;
    }
   }
+
   isEmpty = (val) => {
     if(this.state.submitted){
       if(val===""){

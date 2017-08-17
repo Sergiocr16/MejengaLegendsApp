@@ -16,6 +16,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Player from '../../services/player'
 import PlayerProfile from './playerProfile'
+import SoundManager from '../../services/soundManager';
 export default class BestPlayers extends Component {
   constructor(props){
     super(props)
@@ -34,9 +35,11 @@ export default class BestPlayers extends Component {
     })
   }
   setScenePlayers = () => {
+      SoundManager.playBackBtn();
     this.setState({scene:'bestPlayers'})
   }
   setScenePlayerProfile = () => {
+    SoundManager.playPushBtn();
     this.setState({scene:'playerProfile'})
   }
   showScene(){
@@ -51,7 +54,7 @@ export default class BestPlayers extends Component {
         return this.noPlayers()
         break;
       case 'playerProfile':
-        return <PlayerProfile back={()=>{this.setScenePlayers()}} user={this.state.currentPlayer}/>
+        return <PlayerProfile back={()=>{this.setScenePlayers()}} showBackButton={true}  user={this.state.currentPlayer}/>
         break;
       default:
 

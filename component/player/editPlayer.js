@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import Loader from '../app/loading';
+import SoundManager from '../../services/soundManager';
 var ImagePicker = require('react-native-image-picker')
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -127,6 +128,7 @@ export default class EditPlayer extends Component {
    this.state.player.fichable = this.props.player.fichable;
    this.state.player.altura = this.state.altura;
    this.state.player.username = this.props.player.username;
+   SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
    this.setState({scene:'loading'})
@@ -139,6 +141,7 @@ export default class EditPlayer extends Component {
 }
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -178,15 +181,13 @@ export default class EditPlayer extends Component {
 
      isValid = () => {
        var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.altura]
-       var valid = false;
+       var invalidItems = 0;
       toValidate.map((val)=>{
         if(val===""){
-          valid = false;
-        }else{
-          valid = true;
+          invalidItems++;
         }
       })
-      if(valid){
+      if(invalidItems==0){
         return true;
       }else{
         ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);

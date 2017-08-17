@@ -12,6 +12,7 @@ import SignUp from './signUp'
 import Login from './login'
 import RecoverPassword from './recoverPassword'
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager';
 export default class Auth extends Component {
   constructor(props){
     super(props)
@@ -27,12 +28,15 @@ export default class Auth extends Component {
   }
 
   setLoginScene(){
+    SoundManager.playSwitchClick();
     this.setState({scene:'login'})
   }
   setRegisterScene(){
+    SoundManager.playSwitchClick();
     this.setState({scene:'register'})
   }
   setRecoverPasswordScene(){
+    SoundManager.playSwitchClick();
     this.setState({scene:'recoverPassword'})
   }
 
