@@ -13,7 +13,10 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import FirebaseBasicService from '../../lib/firebaseBasicService'
 import CreatePlayer from '../player/createPlayer'
+import NotificationsByPlayer from '../notification/notificationsByPlayer';
 import Account from '../account/account'
+import TeamService from '../../services/team';
+import Notification from '../../services/notification';
 import Header from './header'
 import Loader from './loading'
 import Menu from './menu'
@@ -26,6 +29,8 @@ export default class App extends Component {
       user: {},
       scene:'loading',
       player:{firstTime:true},
+      notificationsQuantity:0,
+      notifications:{},
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
     }
 
@@ -39,6 +44,17 @@ export default class App extends Component {
         }
         this.setState({player})
      })
+     var notificationsafaf = [{equipoGUID:'1502494395992',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'unete al equoo',message:'unete al equoo',tipo:'1'},{equipoGUID:'1502494407164',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'unete al equoo',message:'unete al equoo',tipo:'1'}]
+
+     firebase.database().ref('playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/').set(notificationsafaf)
+     Notification.getMyNotifications((notifications)=>{
+       if(notifications){
+         this.setState({notificationsQuantity:notifications.length,notifications:notifications})
+       }
+     },()=>{
+       console.log('/////////////////////////////////');
+      this.setState({notificationsQuantity:0})
+     })
   }
 
 
@@ -48,6 +64,10 @@ export default class App extends Component {
 
   setSceneMenu = () =>{
    this.setState({scene:'menu'})
+
+  }
+  setSceneNotifications = () =>{
+   this.setState({scene:'notifications'})
 
   }
 
@@ -65,13 +85,16 @@ export default class App extends Component {
     case 'account':
         return(<Account user={this.state.player}/>)
         break;
+    case 'notifications':
+        return(<NotificationsByPlayer notifications={this.state.notifications} user={this.state.player}/>)
+        break;
     default:
   }
  }
 showHeader = () => {
   if(this.state.player.firstTime!==true){
     return  <View style={{flex:1}}>
-            <Header setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+            <Header notifications={this.state.notifications} setSceneAccount={()=>this.setSceneAccount()} setSceneNotifications={()=>this.setSceneNotifications()} setSceneMenu={()=>this.setSceneMenu()} />
             </View>
   }
   return null;

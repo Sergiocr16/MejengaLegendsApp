@@ -155,8 +155,8 @@ export default class BestPlayers extends Component {
                    <Text style={this.positionColor(key+1)}>{key+1}</Text>
                    </View>
                     <Text style={{flex:6}}>{val.nombre +" "+ val.primerApellido+" "+val.segundoApellido}</Text>
-                      <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
-                    <Text style={styles.score}><Icon name="trophy" size={20} color="yellow" /> {val.score}</Text>
+                    <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.score} <Icon name="trophy" size={20} color="yellow" /> </Text>
                    </TouchableOpacity>
                  }
         });

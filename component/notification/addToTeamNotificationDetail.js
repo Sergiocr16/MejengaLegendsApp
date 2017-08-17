@@ -6,77 +6,135 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  ToastAndroid
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
+import TeamService from '../../services/team';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default class TeamDetail extends Component {
+
+export default class AddToTeamNotificationDetail extends Component {
   constructor(props){
     super(props)
+    this.state = {
+          team:{},
+          ownTeams: [],
+          hola: ''
+    }
+  }
+  componentDidMount() {
+    TeamService.getTeamsByPlayer((teams)=>{
+      if(teams){
+        this.state.ownTeams = teams;
+
+      }
+    },()=>{
+      this.state.ownTeams = [];
+    })
+    // firebase.database().ref("playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/0").on('value', (snapshot) => {
+    //     let data = snapshot.val()
+    //     if(data){
+    //        this.setState({team:data[0]})
+    //        console.log('dfffffffaaaaaa')
+    //         console.log(this.state.team.tipo)
+    //     }else{
+    //       error()
+    //     }
+    // })
+    TeamService.getTeam(this.props.notification.equipoGUID,(team)=>{
+         this.setState({team:team})
+        this.showTeamDetail();
+    },()=>{
+        console.log('no hay nada')
+    })
+
   }
   showImage = () => {
-    if(this.props.team.image !== undefined){
-     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}>
+    if(this.state.team.image !== undefined){
+     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.team.image}}>
        </Image>
     }else{
-    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
-      </Image>
-  }
-  }
-      render(){
+      return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+        </Image>
+    }
+    }
+
+      acceptInvitation = () => {
+          var equiposDelJugador = {};
+          equiposDelJugador = this.state.ownTeams;
+            console.log(this.state.ownTeams)
+          equiposDelJugador.push(this.state.team);
+          TeamService.newTeamsByPlayer(equiposDelJugador);
+          this.props.deleteNotification();
+          this.props.back();
+
+
+      }
+      showTeamDetail(){
         return (
           <FadeInView style={styles.container} duration={600}>
             <View style={styles.infoContainer}>
               <View style={styles.mainName}>
-                  <Text style={styles.whiteFont}>{this.props.team.nombre}</Text>
+                  <Text style={styles.whiteFont}>¡{this.state.team.nombre} desea que seas parte de su equipo!</Text>
               </View>
-              <View style={styles.subtitle}>
-                  <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
+              <View style={[styles.subtitle,{flexDirection:'row',paddingHorizontal:10}]}>
+                  <View style={{flex:4}}>
+                      <Text style={styles.whiteFont2}>¿Deseas aceptar la invitación a unirte a este equipo?</Text>
+                  </View>
+                  <View style={{flex:1}}>
+                  <TouchableOpacity style={[styles.buttonAceptDecline,{backgroundColor:'#D32F2F' }]} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="times" size={15} color="#FFFFFF"/> Denegar</Text></TouchableOpacity>
+
+                  </View>
+                  <View style={{flex:1}}>
+                  <TouchableOpacity style={[styles.buttonAceptDecline,{backgroundColor:'#43A047'}]} onPress={()=>{this.acceptInvitation()}}><Text style={styles.textButton}><Icon name="check" size={15} color="#FFFFFF"/> Aceptar</Text></TouchableOpacity>
+
+                  </View>
               </View>
+
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
                    {this.showImage()}
                   <View style={[styles.circularIcon,{margin:-30}]}>
                        <Icon name={"shield"}  size={40} color="#424242" />
                   </View>
-                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
-                  <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
+                  <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.state.team.copas} <Icon name="trophy" size={20} color="#FFB300" /> </Text>
+                  <TouchableOpacity style={[styles.button,{marginTop:3, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
 
                 </View>
                 <View style={{flex:3,padding:10}}>
                   <ScrollView>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
+                         <Text style={[styles.flexEnd,{flex:5}]}>"{this.state.team.lema}"</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.liga}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.liga}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Copas</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.copas}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.copas}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Género</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.genero}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.genero}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Goles marcados</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.golesMarcados}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.golesMarcados}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Goles recibidos</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.golesRecibidos}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.golesRecibidos}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Mayor puntaje de la historia</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.mayorPuntajeDeLaHistoria}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.mayorPuntajeDeLaHistoria}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Racha de victorias</Text>
-                         <Text style={styles.flexEnd}>{this.props.team.rachaVictorias}</Text>
+                         <Text style={styles.flexEnd}>{this.state.team.rachaVictorias}</Text>
                       </View>
                     </ScrollView>
                   </View>
@@ -91,10 +149,15 @@ export default class TeamDetail extends Component {
                   </Text>
               </View>
            </TouchableOpacity>
-           <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.buttonEdit} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+
           </View>
-          </View>
+          </FadeInView>
+        )
+      }
+      render(){
+        return (
+          <FadeInView style={{flex:1}} duration={300}>
+              {this.showTeamDetail()}
           </FadeInView>
         )
       }
@@ -143,7 +206,8 @@ export default class TeamDetail extends Component {
    basicInfo:{
      flex:1,
      flexDirection:'row',
-     padding:10
+     padding:10,
+
    },
    container:{
      flex:1,
@@ -155,7 +219,9 @@ export default class TeamDetail extends Component {
    },
    subtitle:{
      backgroundColor:'#42A5F5',
-     padding:8
+     paddingVertical:8,
+    justifyContent:'center',
+    alignItems:'center',
    },
    whiteFont2:{
      color:'#1A237E',
@@ -181,24 +247,13 @@ export default class TeamDetail extends Component {
    },
    profileImage:{
      height:130,
-     width:130,
+     width:150,
      borderWidth:2,
      borderColor:'white'
    },
    whiteFont:{
      color:'white',
      textAlign:'center'
-   },
-   buttonEdit:{
-     marginRight:5,
-     marginBottom:5,
-     paddingHorizontal:10,
-     paddingVertical:4,
-     alignItems:'center',
-     justifyContent:'center',
-     borderRadius:9,
-     backgroundColor:'#F4511E',
-     flex:3,
    },
    button:{
      alignItems:'center',
@@ -207,6 +262,13 @@ export default class TeamDetail extends Component {
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,
+   },
+   buttonAceptDecline:{
+     alignItems:'center',
+     marginRight:5,
+     paddingVertical:6,
+     borderRadius:9,
+     backgroundColor:'#F4511E',
    },
    textButton: {
      textAlign:'center',

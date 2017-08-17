@@ -156,7 +156,7 @@ export default class BestTeams extends Component {
                    </View>
                     <Text style={{flex:6}}>{val.nombre}</Text>
                       <Text style={{flex:3}}>{val.liga}</Text>
-                    <Text style={styles.score}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.copas} <Icon name="trophy" size={20} color="yellow" /> </Text>
                    </TouchableOpacity>
                 //  }
         });

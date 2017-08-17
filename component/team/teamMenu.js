@@ -44,7 +44,6 @@ export default class TeamMenu extends Component {
         this.setState({scene:"noTeams"})
       })
   }
-
   showNoTeams = () => {
     return (
             <FadeInView style={styles.container} duration={30}>
@@ -112,7 +111,7 @@ export default class TeamMenu extends Component {
                   <View style={{flex:1}}>
                   <View style={{flex:2}}>
                       <Text style={styles.teamName}>{val.nombre}</Text>
-                        <Text style={[styles.score,{marginHorizontal:30}]}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>
+                        <Text style={[styles.score,{marginHorizontal:30,fontSize:17}]}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>
 
                   </View>
                     <View style={this.showBorderTop(val)}>
@@ -155,7 +154,7 @@ export default class TeamMenu extends Component {
     </FadeInView>
     )
   }
-detalleEquipo
+
   setMyTeamsMenu = ()=>{
      this.setState({scene:'myTeams'})
   }
@@ -182,9 +181,9 @@ detalleEquipo
       case 'loading':
         return (<Loader/>)
         break;
-        case 'noTeams':
-          return (this.showNoTeams())
-          break;
+      case 'noTeams':
+       return (this.showNoTeams())
+       break;
       case 'registrarEquipo':
         return (<CreateTeam user={this.props.user} back={()=> this.componentDidMount()} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
         break;
