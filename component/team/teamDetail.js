@@ -133,6 +133,18 @@ export default class TeamDetail extends Component {
                 </ScrollView>
               </View>
           </View>
+          <View style={{flex:1,flexDirection:'row'}}>
+            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+              <View style={styles.buttonBackPadre}>
+                <View style={styles.buttonBackHijo}/>
+                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+                  </Text>
+              </View>
+           </TouchableOpacity>
+           <View style={{flex:1, alignItems:'flex-end'}}>
+            <TouchableOpacity style={styles.buttonEdit} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+          </View>
       </View>
 
        {this.showBackButton()}
@@ -203,7 +215,7 @@ export default class TeamDetail extends Component {
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{
@@ -238,11 +250,21 @@ export default class TeamDetail extends Component {
      color:'white',
      textAlign:'center'
    },
-   button:{
+   buttonEdit:{
      marginRight:5,
      marginBottom:5,
      paddingHorizontal:10,
      paddingVertical:4,
+     alignItems:'center',
+     justifyContent:'center',
+     borderRadius:9,
+     backgroundColor:'#F4511E',
+     flex:3,
+   },
+   button:{
+     alignItems:'center',
+     justifyContent:'center',
+     paddingHorizontal:10,
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,

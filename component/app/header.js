@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Player from '../../services/player'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import SoundManager from '../../services/soundManager';
@@ -12,7 +13,7 @@ import {
   Image,
   ToastAndroid
 } from 'react-native'
-
+import RenderIf from '../app/renderIf';
 import FadeInView from 'react-native-fade-in-view';
 export default class Header extends Component {
   constructor(props){
@@ -22,6 +23,14 @@ export default class Header extends Component {
     }
   }
 
+ componentDidMount(){
+   Player.getCurrentPlayer((player)=>{
+    this.setState({player})
+   })
+   console.log(this.props.estadoNotification)
+      console.log('3333333333333333333333333333333333')
+ }
+  render(){
 defineHeader = () =>{
   if(this.props.user.rol === "player"){
     return (
@@ -33,7 +42,24 @@ defineHeader = () =>{
         </View>
         <View style={styles.accountnfoBox}>
          <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
-         <TouchableOpacity style={styles.notifications}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
+
+
+        {RenderIf(this.props.notifications.length==undefined,
+             <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
+         )}
+        {RenderIf(this.props.notifications.length>0,
+           <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
+              <View style={styles.notificationsBellIcon}>
+                  <Text style={{textAlign:'center'}}>
+                      <Icon name="bell" size={20} color="#1565C0"/>
+                  </Text>
+              </View>
+              <View style={styles.notificationsQuantity}>
+                  <Text style={styles.notificationText}>{this.props.notifications.length}</Text>
+              </View>
+           </TouchableOpacity>
+         )}
+
          <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
          <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
          </TouchableOpacity>
@@ -75,13 +101,34 @@ const styles = StyleSheet.create({
   },
   notifications:{
     flex:2,
+    backgroundColor:'white',
+    borderRadius:50,
+    marginRight:10,
+    marginLeft:5,
+    justifyContent:'center',
+  },
+  notificationsQuantity:{
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#1565C0',
+    flex:1,
+    padding:2,
+    borderTopRightRadius:50,
+      borderBottomRightRadius:50,
+  },
+  notificationsBellIcon:{
     alignItems:'center',
     justifyContent:'center',
     backgroundColor:'white',
-    paddingVertical:5,
-    borderRadius:50,
-    marginRight:10,
-    marginLeft:5
+    flex:2,
+    padding:2,
+    borderTopLeftRadius:50,
+    borderBottomLeftRadius:50,
+  },
+  notificationText:{
+    color:'white',
+    fontWeight:'bold',
+    textAlign:'center',
   },
   home:{
     flex:2,

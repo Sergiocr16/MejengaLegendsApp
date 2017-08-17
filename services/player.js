@@ -9,8 +9,8 @@ class Player {
     static update(key, player){
       FirebaseBasicService.update('users/players/',key, player)
     }
-    static findPlayerByUsername(filterData,callback){
-      FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback)
+    static findPlayerByUsername(filterData,callback,error){
+      FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback,error)
     }
     static findPlayerByUsername(filterData,callback,error){
       FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback,error)
