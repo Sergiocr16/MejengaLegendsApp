@@ -67,13 +67,13 @@ export default class App extends Component {
           this.setState({scene:"menu",initView:"partido"})
         }
         this.setState({player})
-        SoundManager.startBackgroundMusic();
+
      },()=>{
        this.setState({initView:"superAdmin"})
        FirebaseBasicService.findActiveById("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
              this.setState({scene:"menu"})
              this.setState({player:superAdmin})
-             SoundManager.startBackgroundMusic();
+
         },()=>{
         })
      })
@@ -86,6 +86,8 @@ export default class App extends Component {
        }
      },()=>{
      })
+     
+      SoundManager.startBackgroundMusic();
   }
 
 

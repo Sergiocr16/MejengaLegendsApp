@@ -133,22 +133,9 @@ export default class TeamDetail extends Component {
                 </ScrollView>
               </View>
           </View>
-          <View style={{flex:1,flexDirection:'row'}}>
-            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-              <View style={styles.buttonBackPadre}>
-                <View style={styles.buttonBackHijo}/>
-                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-                  </Text>
-              </View>
-           </TouchableOpacity>
-           <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.buttonEdit} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-          </View>
-      </View>
-
+  </View>
        {this.showBackButton()}
-    </View>
+
       </FadeInView>
     )
   }
