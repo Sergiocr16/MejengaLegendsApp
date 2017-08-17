@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
+import SoundManager from '../../services/soundManager';
 const AnimatedIcon = Animatable.createAnimatableComponent(Icon)
 import {
   Text,

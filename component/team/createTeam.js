@@ -20,7 +20,7 @@ import TeamService from '../../services/team';
 import Loader from '../app/loading';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
-
+import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import RNFetchBlob from 'react-native-fetch-blob'
@@ -192,13 +192,14 @@ export default class CreateTeam extends Component {
         </View>
      </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
-      <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+
     </View>
     </View>
     </FadeInView>
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -251,7 +252,7 @@ export default class CreateTeam extends Component {
    this.state.team.liga = 'Liga Amateur';
    var equiposDelJugador = {};
    this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
-
+  SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
       this.setState({scene:'loading'})

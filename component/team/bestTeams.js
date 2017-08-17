@@ -14,6 +14,7 @@ import Loader from '../app/loading';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Team from '../../services/team';
+import SoundManager from '../../services/soundManager';
 import TeamDetail from './teamDetail';
 // import TeamProfile from './playerProfile'
 export default class BestTeams extends Component {
@@ -34,9 +35,11 @@ export default class BestTeams extends Component {
     })
   }
   setSceneTeams = () => {
+    SoundManager.playBackBtn()
     this.setState({scene:'bestTeams'})
   }
   setScenePlayerProfile = () => {
+    SoundManager.playPushBtn();
     this.setState({scene:'teamProfile'})
   }
   showScene(){
@@ -150,7 +153,7 @@ export default class BestTeams extends Component {
   showTeams(){
     let teams =  this.state.teams.map( (val, key) => {
       // if(val.estaVacio!==true){
-            return <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamProfile'});}}
+            return <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamProfile'});SoundManager.playPushBtn()}}
                    key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
                    <View style={{flex:2}}>
                    <Text style={this.positionColor(key+1)}>{key+1}</Text>
