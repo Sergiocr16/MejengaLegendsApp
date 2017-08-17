@@ -238,6 +238,7 @@ export default class CreateTeam extends Component {
      }
  submit = () =>{
    this.state.team.nombre = this.state.nombre;
+   this.state.team.nameToQuery = this.state.nombre.toLowerCase();
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
    this.state.team.copas = 0;

@@ -44,10 +44,31 @@ export default class TeamDetail extends Component {
   }
   }
   showEdit = () => {
-    if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid){
+    if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid && this.props.showEditButton){
     return <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
   }
   return null;
+  }
+
+  showBackButton= () =>{
+    if(this.props.showBackButton == true){
+      return (
+<View style={{flex:1,flexDirection:'row'}}>
+      <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+        <View style={styles.buttonBackPadre}>
+          <View style={styles.buttonBackHijo}/>
+            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+            </Text>
+        </View>
+     </TouchableOpacity>
+     <View style={{flex:1, alignItems:'flex-end'}}>
+     {this.showEdit()}
+    </View>
+    </View>
+  )
+    }
+    return null;
   }
 
   showTeamDetail = () => {
@@ -108,19 +129,9 @@ export default class TeamDetail extends Component {
               </View>
           </View>
       </View>
-      <View style={{flex:1,flexDirection:'row'}}>
-        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-          <View style={styles.buttonBackPadre}>
-            <View style={styles.buttonBackHijo}/>
-              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-              </Text>
-          </View>
-       </TouchableOpacity>
-       <View style={{flex:1, alignItems:'flex-end'}}>
-       {this.showEdit()}
-      </View>
-      </View>
+
+       {this.showBackButton()}
+
       </FadeInView>
     )
   }
