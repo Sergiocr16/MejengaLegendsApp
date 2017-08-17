@@ -16,7 +16,8 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import TeamService from '../../services/team';
-import PlayerProfile from './playerProfile'
+import PlayerProfile from './playerProfile';
+import SoundManager from '../../services/soundManager';
 var t = require('tcomb-form-native');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -62,6 +63,7 @@ export default class Players extends Component {
   }
 
   getPlayers = ()=>{
+  SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
     Player.findPlayerByUsername(this.state.username,(players)=>{
@@ -90,7 +92,7 @@ showResults = (players) => {
   render(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
-          return <ScrollView key={key} style={{flex:1}}><PlayerProfile user={val} showBackButton={false}/></ScrollView>
+          return <ScrollView key={key} style={{flex:1,marginTop:10}}><PlayerProfile user={val} showBackButton={false}/></ScrollView>
       }
     });
 

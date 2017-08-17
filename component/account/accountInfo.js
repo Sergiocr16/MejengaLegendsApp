@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-import SoundManager from '../../services/soundManager'
+import SoundManager from '../../services/soundManager';
 export default class AccountInfo extends Component {
   constructor(props){
     super(props)
@@ -19,6 +19,7 @@ export default class AccountInfo extends Component {
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
       SoundManager.releaseBackgroundMusic();
+        SoundManager.playPushBtn();
     }, function(error) {
       // An error happened.
     });

@@ -76,10 +76,12 @@ export default class App extends Component {
 
 
   setSceneAccount = () =>{
+    SoundManager.playSwitchClick();
    this.setState({scene:'account'})
   }
 
   setSceneMenu = () =>{
+    SoundManager.playSwitchClick();
    this.setState({scene:'menu'})
   }
 

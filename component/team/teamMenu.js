@@ -17,7 +17,7 @@ import CreateTeam from '../team/createTeam';
 import TeamDetail from '../team/teamDetail';
 import TeamPositions from '../team/teamPositions';
 import PlayersByTeam from '../team/playersByTeam';
-
+import SoundManager from '../../services/soundManager';
 import AddPlayersToTeam from '../team/addPlayersToTeam';
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
@@ -36,11 +36,14 @@ export default class TeamMenu extends Component {
     }
   }
   componentDidMount() {
+
       TeamService.getTeamsByPlayer((teams)=>{
         if(teams){
+            SoundManager.playBackBtn()
           this.setState({scene:"myTeams",teams})
         }
       },()=>{
+          SoundManager.playBackBtn()
         this.setState({scene:"noTeams"})
       })
   }
@@ -115,6 +118,7 @@ export default class TeamMenu extends Component {
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
             return <TouchableOpacity onPress={()=>{
+                SoundManager.playPushBtn()
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
                   {this.showImage(val)}
                   <View style={{flex:1}}>
@@ -163,21 +167,27 @@ export default class TeamMenu extends Component {
   }
 detalleEquipo
   setMyTeamsMenu = ()=>{
+    SoundManager.playBackBtn()
      this.setState({scene:'myTeams'})
   }
   setSceneDetalleEquipo = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'detalleEquipo'})
   }
   setSceneAddPlayerToTeam = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'agregarJugadoresAEquipo'})
   }
   setScenePlayersByTeam = ()=>{
+    SoundManager.playPushBtn()
      this.setState({scene:'jugadoresPorEquipo'})
   }
   setSceneRegistrarEquipo = () => {
+    SoundManager.playPushBtn()
    this.setState({scene:'registrarEquipo'})
   }
   setSceneTeamPositions = () => {
+    SoundManager.playPushBtn()
    this.setState({scene:'teamPositions'})
   }
   showScene(){
@@ -192,7 +202,7 @@ detalleEquipo
           return (this.showNoTeams())
           break;
       case 'registrarEquipo':
-        return (<CreateTeam user={this.props.user} back={()=> this.componentDidMount()} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
+        return (<CreateTeam user={this.props.user} back={()=> {this.componentDidMount()}} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
         break;
       case 'detalleEquipo':
         return (<TeamDetail showEditButton={true} myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} showBackButton={true} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);

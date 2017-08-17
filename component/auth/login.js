@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-
+import SoundManager from '../../services/soundManager';
 export default class Login extends Component {
   constructor(props){
     super(props)
@@ -24,6 +24,7 @@ export default class Login extends Component {
   }
 
   async login() {
+      SoundManager.playPushBtn();
     try {
       await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     } catch(error){

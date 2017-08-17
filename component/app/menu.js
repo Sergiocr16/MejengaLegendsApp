@@ -34,22 +34,28 @@ export default class Menu extends Component {
 
 
   setSceneButtons = () => {
+  SoundManager.playBackBtn();
    this.setState({scene:'buttons'})
   }
   setSceneProfile = () => {
+    SoundManager.playPushBtn();
    this.setState({scene:'profile'})
   }
   setSceneBestPlayers = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'bestPlayers'})
   }
 
   setSceneBestTeams = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'bestTeams'})
   }
   setSceneAllJugadores = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'allPlayers'})
   }
   setSceneAllTeams = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'allTeams'})
   }
  //SCENES
@@ -62,13 +68,12 @@ export default class Menu extends Component {
     SoundManager.playSwitchClick()
    this.setState({menuScene:'partido'})
   }
-
   setSceneJugadores = () => {
     SoundManager.playSwitchClick()
     this.setState({menuScene:'jugadores'})
   }
   setSceneEquipos =() => {
-    SoundManager.playSwitchClick()
+    SoundManager.playSwitchClick();
    this.setState({menuScene:'equipos'})
   }
   setSceneContratos= () =>{
@@ -76,12 +81,15 @@ export default class Menu extends Component {
    this.setState({menuScene:'contratos'})
   }
   setSceneSuperAdmin= () =>{
+      SoundManager.playSwitchClick()
    this.setState({menuScene:'superAdmin'})
   }
   setSceneAdministradores= () =>{
+      SoundManager.playSwitchClick()
    this.setState({menuScene:'administradores'})
   }
   setSceneMenuMisEquipos = () => {
+      SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
   }
   activeMainButton(option) {

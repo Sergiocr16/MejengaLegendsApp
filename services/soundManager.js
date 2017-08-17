@@ -7,19 +7,12 @@ var ambienteEstadio;
 
 
 // CLIKCS
-var initClick = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/initSound.mp3",Sound.MAIN_BUNDLE, (error) => {
-  console.log(error)
-})
+var initClick;
 
-var notification = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/notifications.mp3",Sound.MAIN_BUNDLE, (error) => {
-})
-var switchBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/switch.mp3",Sound.MAIN_BUNDLE, (error) => {
-})
-
-var pushBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.mp3",Sound.MAIN_BUNDLE, (error) => {
-})
-var backBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.mp3",Sound.MAIN_BUNDLE, (error) => {
-})
+var notification;
+var switchBtn;
+var pushBtn;
+var backBtn;
 // CLIKCS
 
 class SoundManager {
@@ -37,6 +30,19 @@ class SoundManager {
     }))
     ambienteEstadio = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
+
+    // CLICKS
+    switchBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/switch.wav",Sound.MAIN_BUNDLE, (error) => {
+    })
+    pushBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.wav",Sound.MAIN_BUNDLE, (error) => {
+    })
+    backBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/back.wav",Sound.MAIN_BUNDLE, (error) => {
+   })
+   initClick = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/initSound.mp3",Sound.MAIN_BUNDLE, (error) => {
+     console.log(error)
+   })
+   notification = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/notifications.mp3",Sound.MAIN_BUNDLE, (error) => {
+   })
   }
 
     static startBackgroundMusic(){
@@ -97,10 +103,9 @@ class SoundManager {
       })
     }
     static playAmbienteEstadio(){
-
+      playAmbiente = ()=>{
         ambienteEstadio.play((success)=>{
           if(success){
-
           setTimeout(()=>{
             playAmbiente()
           },15000)
@@ -108,7 +113,8 @@ class SoundManager {
             console.log("AAA")
         }
         })
-
+      }
+playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
     }
     static stopAmbienteEstadio(){
@@ -120,13 +126,26 @@ class SoundManager {
     }
 
     static playSwitchClick(){
-     switchBtn.play();
+      switchBtn.stop(() => {
+  // Note: If you want to play a sound after stopping and rewinding it,
+  // it is important to call play() in a callback.
+  switchBtn.play();
+});
+
     }
     static playPushBtn(){
-     pushBtn.play();
+      pushBtn.stop(() => {
+  // Note: If you want to play a sound after stopping and rewinding it,
+  // it is important to call play() in a callback.
+  pushBtn.play();
+});
     }
     static playBackBtn(){
-     backBtn.play();
+      backBtn.stop(() => {
+  // Note: If you want to play a sound after stopping and rewinding it,
+  // it is important to call play() in a callback.
+  backBtn.play();
+});
     }
 }
 
