@@ -3,34 +3,44 @@ Sound.setCategory('Playback');
 var songsQuantity = 5;
 var backgroundMusic;
 var songs = [];
-songs.push(new Sound(require("../android/app/src/main/res/sound/music/whereareunow.mp3"),Sound.MAIN_BUNDLE, (error) => {
-}))
-songs.push(new Sound(require("../android/app/src/main/res/sound/music/thunder.mp3"),Sound.MAIN_BUNDLE, (error) => {
-}))
-songs.push(new Sound(require("../android/app/src/main/res/sound/music/unforgettable.mp3"),Sound.MAIN_BUNDLE, (error) => {
-}))
-songs.push(new Sound(require("../android/app/src/main/res/sound/music/keeptogether.mp3"),Sound.MAIN_BUNDLE, (error) => {
-}))
-songs.push(new Sound(require("../android/app/src/main/res/sound/music/nothingholdingmeback.mp3"),Sound.MAIN_BUNDLE, (error) => {
-}))
+var ambienteEstadio;
 
 
 // CLIKCS
-var initClick = new Sound(require("../android/app/src/main/res/sound/clicks/initSound.mp3"),Sound.MAIN_BUNDLE, (error) => {
-})
-var ambienteEstadio = new Sound("https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/advertising.mp3",Sound.MAIN_BUNDLE, (error) => {
-})
-var notification = new Sound(require("../android/app/src/main/res/sound/clicks/notifications.mp3"),Sound.MAIN_BUNDLE, (error) => {
-})
-var switchBtn = new Sound(require("../android/app/src/main/res/sound/clicks/switch.mp3"),Sound.MAIN_BUNDLE, (error) => {
+var initClick = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/initSound.mp3",Sound.MAIN_BUNDLE, (error) => {
+  console.log(error)
 })
 
-var pushBtn = new Sound(require("../android/app/src/main/res/sound/clicks/push.mp3"),Sound.MAIN_BUNDLE, (error) => {
+var notification = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/notifications.mp3",Sound.MAIN_BUNDLE, (error) => {
+})
+var switchBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/switch.mp3",Sound.MAIN_BUNDLE, (error) => {
+})
+
+var pushBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.mp3",Sound.MAIN_BUNDLE, (error) => {
+})
+var backBtn = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/clicks/push.mp3",Sound.MAIN_BUNDLE, (error) => {
 })
 // CLIKCS
 
 class SoundManager {
+
+  static loadSounds = () => {
+    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/whereareunow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/thunder.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/unforgettable.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/keeptogether.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/nothingholdingmeback.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    ambienteEstadio = new Sound("https://raw.githubusercontent.com/Sergiocr16/MejengaLegendsApp/addingSound/sound/music/sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
+    })
+  }
+
     static startBackgroundMusic(){
+      if(songs.length>0){
       playSong = (position) => {
       backgroundMusic = songs[position];
       var newPosition  = Math.round(Math.random() * (songsQuantity - 0) + 0)
@@ -41,12 +51,13 @@ class SoundManager {
           if(success){
             playSong(newPosition)
           }else{
-            console.log("AA")
+            console.log("error")
           }
         })
         songs[position].setVolume(0.3);
       }
       playSong(Math.round(Math.random() * (songsQuantity - 0) + 0));
+    }
   }
 
     static playBackgroundMusic(){
@@ -60,7 +71,7 @@ class SoundManager {
           if(success){
             playSong(newPosition)
           }else{
-            console.log("AA")
+            console.log("error")
           }
         })
         songs[position].setVolume(0.3);
@@ -83,21 +94,21 @@ class SoundManager {
     }
     static playInitClickSound(){
       initClick.play((succes)=>{
-
       })
     }
     static playAmbienteEstadio(){
-      playAmbiente= ()=>{
+
         ambienteEstadio.play((success)=>{
           if(success){
+
           setTimeout(()=>{
             playAmbiente()
           },15000)
+        }else{
+            console.log("AAA")
         }
         })
-       ambienteEstadio.setVolume(0.3);
-      }
-playAmbiente();
+
       // ambienteEstadio.setNumberOfLoops(-1);
     }
     static stopAmbienteEstadio(){
@@ -113,6 +124,9 @@ playAmbiente();
     }
     static playPushBtn(){
      pushBtn.play();
+    }
+    static playBackBtn(){
+     backBtn.play();
     }
 }
 

@@ -22,9 +22,7 @@ export default class Welcome extends Component {
     super(props)
     console.log(AppState.currentState)
   }
-   componentDidMount(){
-     SoundManager.playAmbienteEstadio()
-   }
+
   render(){
     return (
       <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
