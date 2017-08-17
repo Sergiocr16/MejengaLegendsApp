@@ -23,6 +23,7 @@ import App from './component/app/app'
 import Logo from './component/app/logo'
 import Welcome from './component/app/welcomeScreen'
 import Firebase from './lib/firebase'
+import SoundManager from './services/soundManager'
 
 // import TeamComponent from './component/team/teamCmp'
 import FirebaseBasicService from './lib/firebaseBasicService'
@@ -38,13 +39,16 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-     console.disableYellowBox = true;
+    //  console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
+    SoundManager.loadSounds();
   }
 
   componentDidMount() {
-      setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
+      setTimeout(()=>{this.setState({initialView:'Welcome'})
+      SoundManager.playAmbienteEstadio()
+    },2000)
   }
   async getInitialView(){
      await firebase.auth().onAuthStateChanged( async (user) => {

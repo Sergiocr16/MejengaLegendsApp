@@ -17,6 +17,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import TeamService from '../../services/team';
 var t = require('tcomb-form-native');
+import RenderIf from '../app/renderIf';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class AddPlayersToTeam extends Component {
@@ -27,7 +28,10 @@ export default class AddPlayersToTeam extends Component {
       username: '',
       players: [],
       playersSelected: [],
-      currentPlayer: ''
+      notificationsByPLayer: [],
+      currentPlayer: '',
+      seEncontroJugador: 1,
+      hayJugadoresSeleccionados: 1
     }
   }
     containsObject = (obj, list)=> {
@@ -39,19 +43,66 @@ export default class AddPlayersToTeam extends Component {
       }
       return false;
   }
-  addPlayers = (key,val)=>{
-      if(!this.containsObject(val,this.state.playersSelected)){
-          this.setState({playersSelected:[...this.state.playersSelected,val]});
-      };
+  sendRequestToPlayers = ()=>{
+      console.log('///////////////////')
+    console.log(this.state.notificationsByPLayer)
+      console.log(this.state.playersSelected)
+    var notificationsTemporal = {};
+    this.state.playersSelected.map((val, key) => {
+        var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1};
+        if(this.state.notificationsByPLayer[key].length!==0){
+          notificationsTemporal = this.state.notificationsByPLayer[key];
+          notificationsTemporal.push(temporalNotification);
+          TeamService.addPlayersToTeam(val.uid,notificationsTemporal);
+          this.props.back();
+          ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
+        } else {
+           var firstNotification = [{equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1}];
+            TeamService.addPlayersToTeam(val.jugadorGUID,firstNotification);
+            this.props.back();
+            ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
+        }
+    })
+
+
+  }
+  addPlayers = (val)=>{
+      if(val.uid==firebase.auth().currentUser.uid){
+          ToastAndroid.show('Ya perteneces a este equipo', ToastAndroid.LONG);
+      }else{
+        if(!val.cantidadEquipos<=5){
+          if(!this.containsObject(val,this.state.playersSelected)){
+              this.setState({playersSelected:[...this.state.playersSelected,val]});
+              this.setState({hayJugadoresSeleccionados:2})
+                  TeamService.getNotificationsByPlayer(val.uid,(notifications)=>{
+                      if(notifications){
+                        this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,notifications]});
+                      }
+                  },()=>{
+                        console.log('/////////entre aqui//////////')
+                    this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,[]]});
+                  })
+          };
+        } else {
+             ToastAndroid.show('Este jugador ya pertenece a 5 equipos, limite alcanzado', ToastAndroid.LONG);
+        }
+      }
   }
   deletePlayers = (key)=>{
     this.state.playersSelected.splice(key,1);
     this.setState({playersSelected: this.state.playersSelected });
+    if(this.state.playersSelected.length==0){
+          this.setState({hayJugadoresSeleccionados:1})
+    }
   }
   getPlayers = ()=>{
-
     Player.findPlayerByUsername(this.state.username,(players)=>{
       this.setState({players});
+      if(this.state.players!==[]){
+          this.setState({seEncontroJugador:2})
+      }
+    },()=>{
+      this.setState({seEncontroJugador:3})
     });
 
   }
@@ -64,22 +115,28 @@ export default class AddPlayersToTeam extends Component {
   }
   }
   render(){
+
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
-          return <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val}); this.addPlayers(key,val)}}
-                 key={key} style={{flexDirection:'row', height:60, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
+          return <View  key={key} val={val} style={{flexDirection:'row', flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,padding:5}}>
                  <View style={{flex:3}}>
                   {this.showImage(val)}
                  </View>
-                    <View style={{flex:4,borderRightWidth:1,marginRight:5,borderColor:'#9E9E9E' }}>
-                        <Text>{val.nombre +" "+ val.primerApellido}</Text>
-                    </View>
+                    <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{fontSize:20,flex:1}}>{val.nombre +" "+ val.primerApellido}</Text>
+                        <Text style={{flex:1}}>{val.posicionPrincipal}</Text>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                          <Text style={styles.score}><Icon name="trophy" size={16} color="yellow" /> {val.score}</Text>
+                        </View>
+                        <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val}); this.addPlayers(val)}}  style={[styles.button,{marginHorizontal:10,flex:1,backgroundColor:'#F4511E'}]} underlayColor='#99d9f4'>
+                          <Text style={styles.buttonText}>Agregar jugador</Text>
+                        </TouchableOpacity>
+                   </View>
 
-                    <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
-                  <Text style={styles.score}><Icon name="trophy" size={16} color="yellow" /> {val.score}</Text>
-                 </TouchableOpacity>
+                 </View>
                }
     });
+
     let playersSelected =  this.state.playersSelected.map( (val, key) => {
       if(val.nombre!==undefined){
           return <TouchableOpacity onPress={()=> {this.deletePlayers(key)}}
@@ -91,7 +148,7 @@ export default class AddPlayersToTeam extends Component {
                         <Text>{val.nombre +" "+ val.primerApellido}</Text>
                     </View>
 
-                    <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
+                  <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
                   <Text style={styles.score}><Icon name="trophy" size={16} color="yellow" /> {val.score}</Text>
                  </TouchableOpacity>
                }
@@ -99,7 +156,7 @@ export default class AddPlayersToTeam extends Component {
     return (
   <FadeInView style={styles.container}>
     <FadeInView style={styles.infoContainer} duration={300}>
-  <View style={styles.mainName}><Text style={styles.whiteFont}>Agrega los jugadores y arma tu equipo!</Text></View>
+  <View style={styles.mainName}><Text style={styles.whiteFont}>Agrega jugadores y arma tu equipo!</Text></View>
   <View style={styles.subtitle}><Text style={styles.whiteFont2}>Buscar jugador por nombre de usuario</Text></View>
     <View style={{flex:1,padding:10}}>
           <View style={{flex:1,flexDirection:'row',paddingHorizontal:90,marginBottom:20}}>
@@ -113,20 +170,45 @@ export default class AddPlayersToTeam extends Component {
               onChangeText={(username) => this.setState({username})}
               />
               <TouchableOpacity style={[styles.buttonBuscarJugador,{flex:1,alignItems:'flex-end'}]}  onPress={this.getPlayers} underlayColor='#99d9f4'>
-                <Text style={styles.buttonText}><Icon name="search" size={13} color="#FFFFFF"/> Buscar</Text>
+                <Text style={styles.buttonText}><Icon name="search" size={16} color="#FFFFFF"/> Buscar</Text>
               </TouchableOpacity>
            </View>
            <View style={{flex:5,flexDirection:'row',paddingHorizontal:10}}>
-              <ScrollView style={[styles.resultadoBusqueda,{flex:1}]}>
-              {players}
-              </ScrollView>
-              <ScrollView style={[styles.jugadoresSeleccionados,{flex:1}]}>
-              {playersSelected}
-              </ScrollView>
+               {RenderIf(this.state.seEncontroJugador==1,
+                 <View style={[styles.resultadoBusqueda,{flex:1,justifyContent:'center',alignItems:'center'}]}>
+                    <Text style={[{fontSize:16}]}><Icon name="warning" size={12} color="#FFFFFF"/>Resultado de busqueda</Text>
+                 </View>
+               )}
+               {RenderIf(this.state.seEncontroJugador==3,
+                 <View style={[styles.resultadoBusqueda,{flex:1,justifyContent:'center',alignItems:'center'}]}>
+                    <Text style={[{fontSize:16}]}><Icon name="warning" size={12} color="#FFFFFF"/> No se encontraron resultados</Text>
+                 </View>
+               )}
+               {RenderIf(this.state.seEncontroJugador==2,
+                 <View style={[styles.resultadoBusqueda,{flex:1}]}>
+
+                   {players}
+                 </View>
+
+               )}
+
+
+              {RenderIf(this.state.hayJugadoresSeleccionados==1,
+                <View style={[styles.resultadoBusqueda,{flex:1,justifyContent:'center',alignItems:'center'}]}>
+                   <Text style={[{fontSize:16}]}><Icon name="warning" size={12} color="#FFFFFF"/> Jugadores seleccionados</Text>
+                </View>
+              )}
+              {RenderIf(this.state.hayJugadoresSeleccionados==2,
+                    <ScrollView style={[styles.jugadoresSeleccionados,{flex:1}]}>
+                    {playersSelected}
+                      </ScrollView>
+                )}
+
+
            </View>
            <View style={{flexDirection:'row'}}>
-               <TouchableOpacity style={[styles.button]}  onPress={this.submit} underlayColor='#99d9f4'>
-                 <Text style={styles.buttonText}>Crear equipo!</Text>
+               <TouchableOpacity style={[styles.button]}  onPress={this.sendRequestToPlayers} underlayColor='#99d9f4'>
+                 <Text style={styles.buttonText}><Icon name="envelope" size={18} color="#FFFFFF"/> Enviar invitación a jugadores</Text>
                </TouchableOpacity>
        </View>
       </View>
@@ -248,7 +330,7 @@ const styles = StyleSheet.create({
      marginBottom: 30
    },
    buttonText: {
-     fontSize: 15,
+     fontSize: 17,
      color: 'white',
      alignSelf: 'center'
    },
@@ -256,7 +338,6 @@ const styles = StyleSheet.create({
      flex: 1,
      marginTop:10,
      height: 30,
-     width: 200,
      backgroundColor: '#48BBEC',
      borderRadius: 8,
      alignSelf: 'stretch',

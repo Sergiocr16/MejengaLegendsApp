@@ -16,6 +16,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Player from '../../services/player'
 import PlayerProfile from './playerProfile'
+import SoundManager from '../../services/soundManager';
 export default class BestPlayers extends Component {
   constructor(props){
     super(props)
@@ -29,12 +30,16 @@ export default class BestPlayers extends Component {
   componentDidMount() {
     Player.findTopPlayers((players)=>{
       this.setState({players,scene:'bestPlayers'})
+    },()=>{
+      this.setState({scene:'noPlayers'})
     })
   }
   setScenePlayers = () => {
+      SoundManager.playBackBtn();
     this.setState({scene:'bestPlayers'})
   }
   setScenePlayerProfile = () => {
+    SoundManager.playPushBtn();
     this.setState({scene:'playerProfile'})
   }
   showScene(){
@@ -45,8 +50,11 @@ export default class BestPlayers extends Component {
       case 'bestPlayers':
         return this.showPlayers()
         break;
+      case 'noPlayers':
+        return this.noPlayers()
+        break;
       case 'playerProfile':
-        return <PlayerProfile back={()=>{this.setScenePlayers()}} user={this.state.currentPlayer}/>
+        return <PlayerProfile back={()=>{this.setScenePlayers()}} showBackButton={true}  user={this.state.currentPlayer}/>
         break;
       default:
 
@@ -116,7 +124,31 @@ export default class BestPlayers extends Component {
     }
   }
 
-
+  noPlayers(){
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores jugadores</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
+       <View style={styles.basicInfo}>
+       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+       <Text style={{textAlign:'center',fontSize:18}} >No existen jugadores registrados aún</Text>
+       </View>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
   showPlayers(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
@@ -126,15 +158,15 @@ export default class BestPlayers extends Component {
                    <Text style={this.positionColor(key+1)}>{key+1}</Text>
                    </View>
                     <Text style={{flex:6}}>{val.nombre +" "+ val.primerApellido+" "+val.segundoApellido}</Text>
-                      <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
-                    <Text style={styles.score}><Icon name="trophy" size={20} color="yellow" /> {val.score}</Text>
+                    <Text style={{flex:3}}>{val.posicionPrincipal}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.score} <Icon name="trophy" size={20} color="yellow" /> </Text>
                    </TouchableOpacity>
                  }
         });
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES JUGADORES</Text></View>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores jugadores</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores jugadores actualmente</Text></View>
        <View style={styles.basicInfo}>
        <ScrollView>

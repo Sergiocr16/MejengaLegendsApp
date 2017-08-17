@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager';
 export default class RecoverPassword extends Component {
   constructor(props){
     super(props)
@@ -21,6 +22,7 @@ export default class RecoverPassword extends Component {
     this.recoverPassword = this.recoverPassword.bind(this)
   }
   async sendVerification() {
+
     try {
       firebase.auth().currentUser.sendEmailVerification().then(function() {
         // Email sent.
@@ -36,6 +38,7 @@ export default class RecoverPassword extends Component {
   }
 
   async recoverPassword() {
+      SoundManager.playPushBtn();
     try {
       await firebase.auth().sendPasswordResetEmail(this.state.email)
       ToastAndroid.show('Verifica tu correo electrónico para restaurar tu contraseña', ToastAndroid.LONG);

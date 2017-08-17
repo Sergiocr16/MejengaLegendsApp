@@ -7,15 +7,21 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ToastAndroid
+  ToastAndroid,
+  AppState
 } from 'react-native'
 
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager'
+
+// Load the sound file 'whoosh.mp3' from the app bundle
+// See notes below about preloading sounds within initialization code below.
+
 export default class Welcome extends Component {
   constructor(props){
     super(props)
+    console.log(AppState.currentState)
   }
-
 
   render(){
     return (
@@ -23,7 +29,10 @@ export default class Welcome extends Component {
       <Image style={styles.bgImage} source={{uri: 'https://i.ytimg.com/vi/qe1CxIA-65A/maxresdefault.jpg'}}>
      <View style={styles.centerItems}>
       <Text style={styles.mainTitle}>Mejenga Legends</Text>
-     <TouchableOpacity style={styles.initButton} onPress={()=>this.props.showInitialView()}>
+     <TouchableOpacity style={styles.initButton} onPress={()=>{
+       SoundManager.playInitClickSound()
+      SoundManager.stopAmbienteEstadio()
+       this.props.showInitialView()}}>
      </TouchableOpacity>
      </View>
       </Image>

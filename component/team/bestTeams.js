@@ -14,6 +14,8 @@ import Loader from '../app/loading';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Team from '../../services/team';
+import SoundManager from '../../services/soundManager';
+import TeamDetail from './teamDetail';
 // import TeamProfile from './playerProfile'
 export default class BestTeams extends Component {
   constructor(props){
@@ -28,12 +30,16 @@ export default class BestTeams extends Component {
   componentDidMount() {
     Team.findTopTeams((teams)=>{
       this.setState({teams,scene:'bestTeams'})
+    },()=>{
+      this.setState({scene:'noTeams'})
     })
   }
   setSceneTeams = () => {
+    SoundManager.playBackBtn()
     this.setState({scene:'bestTeams'})
   }
   setScenePlayerProfile = () => {
+    SoundManager.playPushBtn();
     this.setState({scene:'teamProfile'})
   }
   showScene(){
@@ -44,11 +50,13 @@ export default class BestTeams extends Component {
       case 'bestTeams':
         return this.showTeams()
         break;
-      case 'playerProfile':
-        return <TeamProfile back={()=>{this.setSceneTeams()}} user={this.state.currentTeam}/>
+        case 'noTeams':
+          return this.noTeams()
+          break;
+      case 'teamProfile':
+        return <TeamDetail showEditButton={false} team={this.state.currentTeam} back={()=>{this.setSceneTeams()}} user={this.state.currentTeam} showBackButton={true}/>
         break;
       default:
-
     }
   }
 
@@ -116,24 +124,50 @@ export default class BestTeams extends Component {
   }
 
 
+
+  noTeams(){
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores equipos</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores equipos actualmente</Text></View>
+       <View style={styles.basicInfo}>
+       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+       <Text style={{textAlign:'center',fontSize:18}} >No existen equipos registrados aún</Text>
+       </View>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
   showTeams(){
     let teams =  this.state.teams.map( (val, key) => {
       // if(val.estaVacio!==true){
-            return <TouchableOpacity onPress={()=> { this.setState({currentTeam:val}); this.setSceneTeamProfile();   }}
+            return <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamProfile'});SoundManager.playPushBtn()}}
                    key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
                    <View style={{flex:2}}>
                    <Text style={this.positionColor(key+1)}>{key+1}</Text>
                    </View>
                     <Text style={{flex:6}}>{val.nombre}</Text>
                       <Text style={{flex:3}}>{val.liga}</Text>
-                    <Text style={styles.score}><Icon name="trophy" size={20} color="yellow" /> {val.copas}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.copas} <Icon name="trophy" size={20} color="yellow" /> </Text>
                    </TouchableOpacity>
                 //  }
         });
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-      <View style={styles.mainName}><Text style={styles.whiteFont}>MEJORES EQUIPOS</Text></View>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores equipos</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores equipos actualmente</Text></View>
        <View style={styles.basicInfo}>
        <ScrollView>
@@ -220,7 +254,7 @@ export default class BestTeams extends Component {
      position: 'absolute',
      right: 40,
      top: -30,
-     backgroundColor: '#2962FF',
+     backgroundColor: '#1565C0',
      transform: [{
        rotate: '138deg',
      }]
@@ -238,11 +272,11 @@ export default class BestTeams extends Component {
      borderRadius:20,
    },
    mainName:{
-     backgroundColor:'#1A237E',
+     backgroundColor:'#1565C0',
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{
