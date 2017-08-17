@@ -3,7 +3,9 @@ import FirebaseBasicService from '../lib/firebaseBasicService'
 import Player from '../services/player'
 import Entities from '../lib/fireBaseEntities'
 class TeamService {
-
+  static findTeamsByTeamName(filterData,callback,error){
+    FirebaseBasicService.filterByAttribute('teams/active/','nameToQuery',filterData.toLowerCase(),callback,error)
+  }
     static getAll(callBack){
       FirebaseBasicService.getAll(Entities.TEAMS,function(result){
           callBack(result);

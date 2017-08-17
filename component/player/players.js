@@ -82,7 +82,7 @@ export default class Players extends Component {
 
 showResults = (players) => {
   if(!this.state.arePlayers && this.state.submitted){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontro ningun resultado.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontraron resultados.</Text></View>
   }else if(this.state.arePlayers){
     return players;
   }
@@ -98,7 +98,7 @@ showResults = (players) => {
   <FadeInView style={styles.container}>
     <FadeInView style={styles.infoContainer} duration={300}>
   <View style={styles.mainName}><Text style={styles.whiteFont}>Jugadores del mundo</Text></View>
-  <View style={styles.subtitle}><Text style={styles.whiteFont2}>Buscar jugador por nombre de usuario</Text></View>
+  <View style={styles.subtitle}><Text style={styles.whiteFont2}>Busca jugadores por nombre de usuario</Text></View>
     <View style={{flex:1,padding:10}}>
           <View style={{flex:1,flexDirection:'row',paddingHorizontal:90}}>
               <TextInput

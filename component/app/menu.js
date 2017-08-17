@@ -16,6 +16,7 @@ import Account from '../account/account';
 import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
 import Players from '../player/players';
+import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -47,6 +48,9 @@ export default class Menu extends Component {
   }
   setSceneAllJugadores = () => {
    this.setState({scene:'allPlayers'})
+  }
+  setSceneAllTeams = () => {
+   this.setState({scene:'allTeams'})
   }
  //SCENES
 
@@ -199,7 +203,7 @@ defineMainButtons = () => {
     return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setScenePartido} onSwipeLeft={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAllTeams}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://3a1133d325f0c8a50c77eb21-lapelotonasas.netdna-ssl.com/wp-content/uploads/2017/01/James-Rodr%C3%ADguez-Real-Madrid.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -494,6 +498,9 @@ defineMainButtons = () => {
         case 'allPlayers':
           return <Players back={()=> this.setSceneButtons()}/>;
           break;
+          case 'allTeams':
+            return <Teams back={()=> this.setSceneButtons()}/>;
+            break;
         case 'bestTeams':
         return <BestTeams back={()=> this.setSceneButtons()}/>;
          break;

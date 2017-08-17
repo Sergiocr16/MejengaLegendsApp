@@ -51,7 +51,7 @@ export default class BestTeams extends Component {
           return this.noTeams()
           break;
       case 'teamProfile':
-        return <TeamDetail team={this.state.currentTeam} back={()=>{this.setSceneTeams()}} user={this.state.currentTeam}/>
+        return <TeamDetail showEditButton={false} team={this.state.currentTeam} back={()=>{this.setSceneTeams()}} user={this.state.currentTeam} showBackButton={true}/>
         break;
       default:
     }
