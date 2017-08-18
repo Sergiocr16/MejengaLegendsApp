@@ -3,10 +3,8 @@ import FirebaseBasicService from '../lib/firebaseBasicService'
 import Entities from '../lib/fireBaseEntities'
 class ComplejoService {
 
-    static getAll(callBack){
-      FirebaseBasicService.getAll(Entities.COMPLEJOS,function(result){
-          callBack(result);
-      })
+    static getAll(callBack,error){
+      FirebaseBasicService.getAll(Entities.COMPLEJOS,callBack,error)
     }
     static newWithCallback(objeto,callback){
       FirebaseBasicService.newWithCallback(Entities.COMPLEJOS,objeto,callback);
@@ -38,6 +36,7 @@ class ComplejoService {
     static findTopComplejos(callback,error){
       FirebaseBasicService.orderByAttribute('complejos/active/','canton',callback,error)
     }
+
     static getCanchasByComplejo(idComplejo, callback){
       FirebaseBasicService.filterByAttribute(Entities.CANCHASBYCOMPLEJO + '/active/','idComplejo',idComplejo,callback)
     }

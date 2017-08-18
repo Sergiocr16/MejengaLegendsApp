@@ -12,8 +12,6 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Loader from '../app/loading';
-import CreateCancha from '../complejo/createCancha';
-import EditCancha from '../complejo/editCancha';
 import EditComplejo from '../complejo/editComplejo';
 import ComplejoService from '../../services/complejo';
 export default class ComplejoDetail extends Component {
@@ -65,49 +63,42 @@ export default class ComplejoDetail extends Component {
 
     }
   }
-      complejoInformation(){
-        let canchas = []; 
-        canchas.push(
-          <TouchableOpacity onPress={()=>{
-            this.setState({scene:'agregarCancha'})}} style={styles.canchasContainer}>
-              <View style={{flex:1}}>
-                  <Text style={styles.canchasName}>Agregar Cancha</Text>
-                  <Icon name="trophy" size={30} color="yellow" />
-              </View>
-          </TouchableOpacity>
-         );
-        this.state.canchasArray.map((val, key) => {
-              canchas.push(
-                <TouchableOpacity onPress={()=>{
-                    this.setState({currentCancha: val, scene:'editarCancha'})}} key={key} style={styles.canchasContainer}>
-                  <View style={{flex:1}}>
-                    <View style={{flex:2}}>
-                      <Text style={styles.canchasName}>{val.nombre}</Text>
-                      <Text style={styles.gramilla}>{val.numero}</Text>
-                      <Text style={styles.gramilla}>{val.gramilla}</Text>
-                      <Text style={[styles.capacidad,{marginHorizontal:10}]}><Icon name="trophy" size={20} color="yellow" /> {val.capacidad}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-               );
-        });
-        
 
+  showComodidades = () => {
+    return this.props.complejo.comodidades.map( (val, key) => {
+        return (<View key={key}>
+        <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+        <Icon name={val.icono} size={15} color="#1565C0"/>
+        <Text style={{textAlign:'center',color:"#1565C0",textAlign:'center'}}>{val.nombre}</Text>
+        </View>
+        </View>)
+    });
+  }
+      complejoInformation(){
         return (
           <FadeInView style={styles.container} duration={600}>
             <View style={styles.infoContainer}>
-              <View style={styles.mainName}>
-                  <Text style={styles.whiteFont}>Información básica</Text>
-              </View>
+            <View style={styles.mainName}>
+                <Text style={styles.whiteFont}>{this.props.complejo.nombre.toUpperCase()}</Text>
+            </View>
+            <View style={styles.subtitle}>
+                <Text style={styles.whiteFont2}>Información básica</Text>
+            </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
+                <View style={{flex:6,alignItems:'center'}}>
                    {this.showImage()}
                   <View style={[styles.circularIcon,{margin:-30}]}>
-                       <Icon name={"shield"}  size={40} color="#424242" />
+                       <Icon name={"bank"}  size={24} color="#424242" />
                   </View>
+                    </View>
+                  <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                  <TouchableOpacity style={[styles.button,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver Canchas</Text></TouchableOpacity>
+                      </View>
                 </View>
                 <View style={{flex:3,padding:10}}>
-                  <View>
+                  <View style={{flex:2}}>
+                      <View style={{flex:1}}>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Nombre</Text>
                          <Text style={[styles.flexEnd,{flex:5}]}>{this.props.complejo.nombre}</Text>
@@ -120,18 +111,18 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexStart}>Canton</Text>
                          <Text style={styles.flexEnd}>{this.props.complejo.canton}</Text>
                       </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Comodidades</Text>
-                         <Text style={styles.flexEnd}>{this.props.complejo.comodidades}</Text>
-                      </View>                   
+                      </View>
+                      <View style={{flex:0.7}}>
+                         <Text style={{marginBottom:5}}>Comodidades</Text>
+                         <View style={{flex:1,flexDirection:'column'}}>
+                         <ScrollView horizontal={true}>
+                         {this.showComodidades()}
+                         </ScrollView>
+                         </View>
+                      </View>
                     </View>
                   </View>
               </View>
-              <View style={{flex:0.75,padding:10}}>
-                <ScrollView horizontal={true} style={[styles.canchasList,{flex:1}]}>
-                    {canchas}
-                </ScrollView>
-            </View>
           </View>
           <View style={{flex:1,flexDirection:'row'}}>
             <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
@@ -170,7 +161,7 @@ export default class ComplejoDetail extends Component {
             {this.showScene()}
         </FadeInView>
         )
-    } 
+    }
 
 }
 
@@ -181,6 +172,12 @@ export default class ComplejoDetail extends Component {
      margin:5,
      flexDirection:'row',
    },
+   comodidades:{
+    borderBottomWidth:1,
+    borderBottomColor:'#9E9E9E',
+    margin:5,
+    flexDirection:'row',
+  },
    flexStart:{
      textAlign:'left',
      color:'black',
