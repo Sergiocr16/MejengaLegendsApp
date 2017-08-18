@@ -12,6 +12,8 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EditTeam from './editTeam';
+import SoundManager from '../../services/soundManager';
+
 export default class TeamDetail extends Component {
   constructor(props){
     super(props)
@@ -20,6 +22,7 @@ export default class TeamDetail extends Component {
     }
   }
  setSceneTeamDetail =()=>{
+   SoundManager.playBackBtn();
    this.setState({scene:'teamDetail'})
  }
   showScene = () => {
@@ -45,7 +48,9 @@ export default class TeamDetail extends Component {
   }
   showEdit = () => {
     if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid && this.props.showEditButton){
-    return <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+    return <TouchableOpacity style={styles.button} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
   }
   return null;
   }
@@ -128,8 +133,7 @@ export default class TeamDetail extends Component {
                 </ScrollView>
               </View>
           </View>
-      </View>
-
+  </View>
        {this.showBackButton()}
 
       </FadeInView>
@@ -198,7 +202,7 @@ export default class TeamDetail extends Component {
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{
@@ -233,11 +237,21 @@ export default class TeamDetail extends Component {
      color:'white',
      textAlign:'center'
    },
-   button:{
+   buttonEdit:{
      marginRight:5,
      marginBottom:5,
      paddingHorizontal:10,
      paddingVertical:4,
+     alignItems:'center',
+     justifyContent:'center',
+     borderRadius:9,
+     backgroundColor:'#F4511E',
+     flex:3,
+   },
+   button:{
+     alignItems:'center',
+     justifyContent:'center',
+     paddingHorizontal:10,
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,

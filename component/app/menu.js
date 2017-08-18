@@ -21,7 +21,7 @@ import BestTeams from '../team/bestTeams';
 import ComplejoMenu from '../complejo/complejoMenu';
 
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-
+import SoundManager from '../../services/soundManager'
 export default class Menu extends Component {
   constructor(props){
     super(props)
@@ -36,16 +36,20 @@ export default class Menu extends Component {
 
 
   setSceneButtons = () => {
+  SoundManager.playBackBtn();
    this.setState({scene:'buttons'})
   }
   setSceneProfile = () => {
+    SoundManager.playPushBtn();
    this.setState({scene:'profile'})
   }
   setSceneBestPlayers = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'bestPlayers'})
   }
 
   setSceneBestTeams = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'bestTeams'})
   }
 
@@ -54,9 +58,11 @@ export default class Menu extends Component {
    }
 
   setSceneAllJugadores = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'allPlayers'})
   }
   setSceneAllTeams = () => {
+      SoundManager.playPushBtn();
    this.setState({scene:'allTeams'})
   }
  //SCENES
@@ -66,26 +72,31 @@ export default class Menu extends Component {
 
   //MENU SCENE BUTTONS
   setScenePartido = () => {
+    SoundManager.playSwitchClick()
    this.setState({menuScene:'partido'})
   }
-
-
   setSceneJugadores = () => {
+    SoundManager.playSwitchClick()
     this.setState({menuScene:'jugadores'})
   }
   setSceneEquipos =() => {
+    SoundManager.playSwitchClick();
    this.setState({menuScene:'equipos'})
   }
   setSceneContratos= () =>{
+    SoundManager.playSwitchClick()
    this.setState({menuScene:'contratos'})
   }
   setSceneSuperAdmin= () =>{
+      SoundManager.playSwitchClick()
    this.setState({menuScene:'superAdmin'})
   }
   setSceneAdministradores= () =>{
+      SoundManager.playSwitchClick()
    this.setState({menuScene:'administradores'})
   }
   setSceneMenuMisEquipos = () => {
+      SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
   }
   activeMainButton(option) {
@@ -211,7 +222,7 @@ defineMainButtons = () => {
               <View style={styles.row}>
                 <View style={styles.flex1}>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAllTeams}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://3a1133d325f0c8a50c77eb21-lapelotonasas.netdna-ssl.com/wp-content/uploads/2017/01/James-Rodr%C3%ADguez-Real-Madrid.jpg'}}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://i.cbc.ca/1.2464498.1452886323!/fileImage/httpImage/image.jpg_gen/derivatives/16x9_620/neymar.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
                    </View>

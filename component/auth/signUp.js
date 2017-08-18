@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager';
 export default class SignUp extends Component {
   constructor(props){
     super(props)
@@ -35,6 +36,7 @@ export default class SignUp extends Component {
     }
   }
   async signUp() {
+      SoundManager.playPushBtn();
     try {
       await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
       this.setState({
