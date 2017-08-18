@@ -1,6 +1,6 @@
 var Sound = require('react-native-sound');
 Sound.setCategory('Playback');
-var songsQuantity = 5;
+var songsQuantity = 10;
 var backgroundMusic;
 var songs = [];
 var ambienteEstadio;
@@ -27,6 +27,20 @@ class SoundManager {
     songs.push(new Sound("keeptogether.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
     songs.push(new Sound("nothingholdingmeback.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("morethanuknow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("onmymind.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("ride.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("kmagic.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("dontwannaknow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("shapeofu.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("coldwater.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
     ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })

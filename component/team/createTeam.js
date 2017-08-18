@@ -260,7 +260,7 @@ export default class CreateTeam extends Component {
      TeamService.newWithCallback(this.state.team,(equipo)=>{
        equiposDelJugador = this.props.teams;
        equiposDelJugador.push(equipo);
-       TeamService.newTeamsByPlayer(equiposDelJugador);
+       TeamService.newTeamsByPlayer(equiposDelJugador,this.props.user.uid);
        Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
        this.props.back();
      });
