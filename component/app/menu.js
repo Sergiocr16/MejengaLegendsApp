@@ -54,6 +54,7 @@ export default class Menu extends Component {
   }
 
   setSceneComplejos = () => {
+    SoundManager.playPushBtn();
     this.setState({scene:'complejos'})
    }
 

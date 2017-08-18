@@ -21,7 +21,7 @@ import ComplejoService from '../../services/complejo';
 import Loader from '../app/loading';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
-
+import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import RNFetchBlob from 'react-native-fetch-blob'
@@ -191,6 +191,7 @@ export default class CreateComplejo extends Component {
     return comodidades;
   }
   seleccionaComodidad = (key) => {
+    SoundManager.playBackBtn()
     var updatedArray = this.state.comodidadesDefault;
     updatedArray[key].selected = !updatedArray[key].selected;
     this.setState({comodidadesDefault:updatedArray})
@@ -301,6 +302,7 @@ export default class CreateComplejo extends Component {
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -344,7 +346,7 @@ export default class CreateComplejo extends Component {
    this.state.newComplejo.canton = this.state.canton;
    this.state.newComplejo.comodidades = this.defineComodidades();
    this.state.newComplejo.administrador = {};
-
+   SoundManager.playPushBtn();
    this.setState({submitted:true})
     if(this.isValid()){
         this.setState({scene:'loading'})

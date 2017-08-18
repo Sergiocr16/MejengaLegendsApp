@@ -13,24 +13,21 @@ import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Loader from '../app/loading';
 import EditComplejo from '../complejo/editComplejo';
+import CanchasMenu from '../cancha/canchasMenu'
 import ComplejoService from '../../services/complejo';
+import SoundManager from '../../services/soundManager';
 export default class ComplejoDetail extends Component {
   constructor(props){
     super(props)
     this.state = {
-      scene: 'loading',
+      scene: 'complejoInformation',
       currentCancha: null,
       canchasArray: [
       ]
     }
   }
 
-  componentDidMount() {
-    ComplejoService.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
-        this.setState({canchasArray:canchas,scene:"complejoInformation"})
-    })
-    this.setState({scene:"complejoInformation"})
-}
+
 
   showImage = () => {
     if(this.props.complejo.image !== undefined){
@@ -42,6 +39,14 @@ export default class ComplejoDetail extends Component {
   }
   }
 
+  setComplejoInformationScene = () => {
+    SoundManager.playBackBtn();
+    this.setState({scene:'complejoInformation'})
+  }
+  setSceneCanchas = () => {
+    SoundManager.playPushBtn();
+    this.setState({scene:'menuCanchas'})
+  }
   showScene(){
     switch (this.state.scene) {
       case 'complejoInformation':
@@ -50,6 +55,9 @@ export default class ComplejoDetail extends Component {
       case 'loading':
         return (<Loader/>)
         break;
+      case 'menuCanchas':
+       return (<CanchasMenu  back={()=>{this.setComplejoInformationScene()}} complejo={this.props.complejo}/>)
+      break;
       case 'agregarCancha':
       return (<CreateCancha complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
         break;
@@ -65,6 +73,7 @@ export default class ComplejoDetail extends Component {
   }
 
   showComodidades = () => {
+    if(this.props.complejo.comodidades!==undefined){
     return this.props.complejo.comodidades.map( (val, key) => {
         return (<View key={key}>
         <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
@@ -73,6 +82,13 @@ export default class ComplejoDetail extends Component {
         </View>
         </View>)
     });
+  }else{
+    return <View>
+    <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+    <Text style={{textAlign:'center',color:"#1565C0",textAlign:'center'}}>Ninguna</Text>
+    </View>
+    </View>
+  }
   }
       complejoInformation(){
         return (
@@ -93,7 +109,7 @@ export default class ComplejoDetail extends Component {
                   </View>
                     </View>
                   <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                  <TouchableOpacity style={[styles.button,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver Canchas</Text></TouchableOpacity>
+                  <TouchableOpacity style={[styles.button,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.setSceneCanchas} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver Canchas</Text></TouchableOpacity>
                       </View>
                 </View>
                 <View style={{flex:3,padding:10}}>

@@ -13,6 +13,7 @@ var notification;
 var switchBtn;
 var pushBtn;
 var backBtn;
+var startedBackground = false;
 // CLIKCS
 
 class SoundManager {
@@ -60,6 +61,7 @@ class SoundManager {
   }
 
     static startBackgroundMusic(){
+      startedBackground = true;
       if(songs.length>0){
       playSong = (position) => {
       backgroundMusic = songs[position];
@@ -121,14 +123,16 @@ class SoundManager {
         ambienteEstadio.play((success)=>{
           if(success){
           setTimeout(()=>{
-            playAmbiente()
+            if(!startedBackground){
+            playAmbiente();
+            }
           },15000)
         }else{
             console.log("AAA")
         }
         })
       }
-playAmbiente();
+      playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
     }
     static stopAmbienteEstadio(){

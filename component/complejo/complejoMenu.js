@@ -16,6 +16,7 @@ import Loader from '../app/loading';
 import ComplejoService from '../../services/complejo';
 import CreateComplejo from '../complejo/createComplejo';
 import ComplejoDetail from '../complejo/complejoDetail';
+import SoundManager from '../../services/soundManager';
 import RenderIf from '../app/renderIf';
 
 export default class Complejo extends Component {
@@ -30,7 +31,7 @@ export default class Complejo extends Component {
                 provincia: '',
                 canton: '',
                 imagen: '',
-                comodidades: ''
+                comodidades: []
             }
         }
     }
@@ -65,7 +66,7 @@ export default class Complejo extends Component {
                         </View>
                     </TouchableOpacity>
                     <View style={{flex:1, alignItems:'flex-end'}}>
-                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
                     </View>
                 </View>
             </FadeInView>
@@ -73,15 +74,19 @@ export default class Complejo extends Component {
     }
 
     setMyComplejoMenu = ()=>{
+      SoundManager.playBackBtn();
         this.setState({scene:'myComplejos'})
     }
     setSceneRegistrarComplejo = () => {
+      SoundManager.playPushBtn();
         this.setState({scene:'registrarComplejo'})
     }
     setAddCanchaToComplejo = ()=> {
+        SoundManager.playPushBtn();
         this.setState({scene:'agregarCanchaComplejo'})
     }
     setSceneDetalleComplejo = ()=>{
+        SoundManager.playPushBtn();
         this.setState({scene:'detalleComplejo'})
     }
     setSceneCanchasByComplejo = () =>{
@@ -134,7 +139,7 @@ export default class Complejo extends Component {
         return (this.showNoComplejos())
             break;
         case 'registrarComplejo':
-            return (<CreateComplejo complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
+            return (<CreateComplejo complejo={this.props.complejo} back={()=>{SoundManager.playBackBtn(); this.componentDidMount()}} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
             break;
         case 'detalleComplejo':
             return (<ComplejoDetail back={()=> this.setMyComplejoMenu()} complejo={this.state.currentComplejo}/>);
@@ -147,7 +152,8 @@ export default class Complejo extends Component {
               //Alert.alert(val.nombre);
                return (
                 <TouchableOpacity onPress={()=>{
-                    this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.complejoContainer}>
+                    this.setState({currentComplejo:val})
+                    this.setSceneDetalleComplejo()}} key={key} style={styles.complejoContainer}>
                     {this.showImage(val)}
                     <View style={{flex:1}}>
                         <View style={{flex:2,justifyContent:'center',alignItems:'center'}}>

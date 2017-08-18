@@ -94,7 +94,6 @@ export default class TeamDetail extends Component {
               </View>
               <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
               <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
-
             </View>
             <View style={{flex:3,padding:10}}>
               <ScrollView>

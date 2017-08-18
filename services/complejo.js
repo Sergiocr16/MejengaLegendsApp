@@ -37,8 +37,8 @@ class ComplejoService {
       FirebaseBasicService.orderByAttribute('complejos/active/','canton',callback,error)
     }
 
-    static getCanchasByComplejo(idComplejo, callback){
-      FirebaseBasicService.filterByAttribute(Entities.CANCHASBYCOMPLEJO + '/active/','idComplejo',idComplejo,callback)
+    static getCanchasByComplejo(idComplejo, callback,error){
+      FirebaseBasicService.findActiveById(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
     }
 }
 
