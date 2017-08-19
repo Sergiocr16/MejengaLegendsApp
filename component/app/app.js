@@ -30,7 +30,7 @@ export default class App extends Component {
     this.state = {
       user: {},
       scene:'loading',
-      notifications:{},
+      notifications:[],
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg',
       player:{},
       appState: AppState.currentState
@@ -77,13 +77,13 @@ export default class App extends Component {
 
         })
      })
-
      Notification.getMyNotifications((notifications)=>{
        if(notifications){
          this.setState({notifications:notifications})
        }
      },()=>{
      })
+
       SoundManager.startBackgroundMusic();
   }
 
@@ -117,7 +117,7 @@ export default class App extends Component {
         return(<Account user={this.state.player}/>)
         break;
     case 'notifications':
-        return(<NotificationsByPlayer estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} user={this.state.player}/>)
+        return(<NotificationsByPlayer user={this.state.player} estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} />)
         break;
     default:
   }

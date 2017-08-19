@@ -20,11 +20,24 @@ import SoundManager from '../../services/soundManager'
 export default class Welcome extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      appState: AppState.currentState
+    this.state ={
+      scene: 'blackScreen',
+       appState: AppState.currentState
     }
   }
-componentDidMount(){
+  showScene = () => {
+    switch (this.state.scene) {
+      case 'blackScreen':
+        return this.showBlackScreen();
+        break;
+      case 'wellcomeScreen':
+        return this.showWellcomeScreen();
+        break;
+      default:
+
+    }
+  }
+  componentDidMount(){
     AppState.addEventListener('change', this._handleAppStateChange);
 }
 componentWillUnmount() {
@@ -41,7 +54,21 @@ _handleAppStateChange = (nextAppState) => {
   }
   this.setState({appState: nextAppState});
 }
-  render(){
+  changeScene=()=>{
+  setTimeout(()=>{ this.setState({scene:'wellcomeScreen'}) }, 2000);
+
+  }
+    showBlackScreen = ()=>{
+      return (
+        <View style={{flex:1,backgroundColor:'black'}} >
+        <View duration={300}>
+        {this.changeScene()}
+        </View>
+        </View>
+      )
+    }
+
+  showWellcomeScreen = ()=>{
     return (
       <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
       <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/68R2RJh.jpg'}}>
@@ -56,6 +83,14 @@ _handleAppStateChange = (nextAppState) => {
      </View>
       </Image>
       </FadeInView>
+    )
+  }
+
+  render(){
+    return (
+      <View style={{flex:1,backgroundColor:'black'}}>
+        {this.showScene()}
+      </View>
     )
   }
 }

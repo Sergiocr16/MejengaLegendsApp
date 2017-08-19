@@ -66,7 +66,7 @@ export default class Players extends Component {
   SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
-    Player.findPlayerByUsername(this.state.username,(players)=>{
+    Player.findPlayerByUsername(this.state.username.trim(),(players)=>{
       this.setState({players,arePlayers:true});
     },()=>{
       this.setState({arePlayers:false});
@@ -84,7 +84,7 @@ export default class Players extends Component {
 
 showResults = (players) => {
   if(!this.state.arePlayers && this.state.submitted){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontraron resultados.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:16}}>No se encontraron resultados.</Text></View>
   }else if(this.state.arePlayers){
     return players;
   }

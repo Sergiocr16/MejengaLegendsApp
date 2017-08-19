@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   },
   whiteFont2:{
     color:'#1A237E',
-    textAlign:'left'
+    textAlign:'center'
   },
   whiteFont:{
     color:'white',

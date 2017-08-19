@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import EditTeam from './editTeam';
 import SoundManager from '../../services/soundManager';
 
+import PlayersByTeam from '../team/playersByTeam';
 export default class TeamDetail extends Component {
   constructor(props){
     super(props)
@@ -25,14 +26,21 @@ export default class TeamDetail extends Component {
    SoundManager.playBackBtn();
    this.setState({scene:'teamDetail'})
  }
+ setScenePlayersByTeam = ()=>{
+   SoundManager.playPushBtn()
+    this.setState({scene:'jugadoresPorEquipo'})
+ }
   showScene = () => {
     switch (this.state.scene) {
       case 'teamDetail':
         return this.showTeamDetail()
         break;
-        case 'editTeam':
-          return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
-          break;
+      case 'editTeam':
+        return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
+        break;
+      case 'jugadoresPorEquipo':
+        return (<PlayersByTeam showAddPlayerButton={true} addPlayers={()=> this.setSceneAddPlayerToTeam()} teamPositions={()=> this.setSceneTeamPositions()}  back={()=> this.setSceneTeamDetail()}  team={this.props.team}/>);
+        break;
       default:
 
     }
@@ -48,7 +56,7 @@ export default class TeamDetail extends Component {
   }
   showEdit = () => {
     if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid && this.props.showEditButton){
-    return <TouchableOpacity style={styles.button} onPress={()=>{
+    return <TouchableOpacity style={[styles.button,{marginRight:5,marginBottom:5}]} onPress={()=>{
       SoundManager.playPushBtn();
       this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
   }
@@ -58,15 +66,15 @@ export default class TeamDetail extends Component {
   showBackButton= () =>{
     if(this.props.showBackButton == true){
       return (
-<View style={{flex:1,flexDirection:'row'}}>
-      <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-        <View style={styles.buttonBackPadre}>
-          <View style={styles.buttonBackHijo}/>
-            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-            </Text>
-        </View>
-     </TouchableOpacity>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
      {this.showEdit()}
     </View>
@@ -75,7 +83,13 @@ export default class TeamDetail extends Component {
     }
     return null;
   }
-
+  showLema = (lema) =>{
+    if(lema==""){
+      return "No definido";
+    }else{
+      return '"'+lema+'"';
+    }
+  }
   showTeamDetail = () => {
     return (
       <FadeInView style={styles.container} duration={600}>
@@ -86,20 +100,26 @@ export default class TeamDetail extends Component {
           <View style={styles.subtitle}>
               <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
           </View>
+
          <View style={styles.basicInfo}>
             <View style={{flex:1,alignItems:'center'}}>
                {this.showImage()}
               <View style={[styles.circularIcon,{margin:-30}]}>
                    <Icon name={"shield"}  size={40} color="#424242" />
               </View>
-              <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
-              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
+               <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} <Icon name="trophy" size={20} color="#FFB300" /> </Text>
+              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>this.setScenePlayersByTeam()} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
+
             </View>
             <View style={{flex:3,padding:10}}>
               <ScrollView>
                   <View style={styles.info}>
                      <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                     <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
+                     <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
+                     <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
                   </View>
                   <View style={styles.info}>
                      <Text style={styles.flexStart}>Liga</Text>
@@ -206,6 +226,7 @@ export default class TeamDetail extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

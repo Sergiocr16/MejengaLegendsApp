@@ -78,8 +78,8 @@ export default class AccountInfo extends Component {
      color:'white',
    },
    profileImage:{
-     height:120,
-     width:120,
+     height:140,
+     width:140,
      borderWidth:2,
      borderColor:'white'
    },

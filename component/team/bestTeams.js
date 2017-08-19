@@ -281,6 +281,7 @@ export default class BestTeams extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+         textAlign:'center'
    },
    whiteFont:{
      color:'white',

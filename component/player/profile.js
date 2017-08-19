@@ -193,6 +193,7 @@ export default class Profile extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

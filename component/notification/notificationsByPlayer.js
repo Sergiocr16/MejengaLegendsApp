@@ -49,10 +49,12 @@ export default class NotificationsByPlayer extends Component {
                             </View>
                             <View style={{flex:4}}>
                                 <Text style={{fontSize:22,fontWeight:'bold',marginBottom:10}}>{val.titulo}</Text>
-                                 <Text style={{flex:6}}>¡{val.nombreEquipo} quiere que seas parte de su equipo!</Text>
+                                 <Text style={{flex:6}}>{val.message}</Text>
                             </View>
+
                               <Text style={{flex:2,fontSize:17}}>16/08/2017</Text>
                               <Text><Icon name="chevron-right" size={20} color={'#F4511E'} /> </Text>
+
                             </TouchableOpacity>
 
                        )}
@@ -114,7 +116,7 @@ export default class NotificationsByPlayer extends Component {
           return this.myNotifications();
           break;
         case 'notificationDetail':
-          return  (<AddToTeamNotificationDetail deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
+          return  (<AddToTeamNotificationDetail user={this.props.user} deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
           break;
 
         default:
