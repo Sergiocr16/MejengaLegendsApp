@@ -100,8 +100,8 @@ export default class CreateTeam extends Component {
            TeamService.newWithCallback(this.state.team,(equipo)=>{
              equiposDelJugador = this.props.teams;
              equiposDelJugador.push(equipo);
-             TeamService.newTeamsByPlayer(equiposDelJugador);
-              Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
+             TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
+             Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
              this.props.back();
            });
            resolve(url)
@@ -243,14 +243,14 @@ export default class CreateTeam extends Component {
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
    this.state.team.copas = 0;
-   this.state.team.estaVacio = true;
+   this.state.team.cantidadJugadores = 0;
    this.state.team.golesMarcados = 0;
    this.state.team.golesRecibidos = 0;
    this.state.team.rachaVictorias = 0;
    this.state.team.mayorPuntajeDeLaHistoria = 0;
    this.state.team.logo = 'shield';
    this.state.team.liga = 'Liga Amateur';
-   var equiposDelJugador = {};
+   var equiposDelJugador = [];
    this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
   SoundManager.playPushBtn();
    this.setState({submitted:true})
@@ -260,7 +260,7 @@ export default class CreateTeam extends Component {
      TeamService.newWithCallback(this.state.team,(equipo)=>{
        equiposDelJugador = this.props.teams;
        equiposDelJugador.push(equipo);
-       TeamService.newTeamsByPlayer(equiposDelJugador);
+       TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
        Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
        this.props.back();
      });

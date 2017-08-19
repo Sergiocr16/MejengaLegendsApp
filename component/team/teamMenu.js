@@ -16,9 +16,7 @@ import FadeInView from 'react-native-fade-in-view';
 import CreateTeam from '../team/createTeam';
 import TeamDetail from '../team/teamDetail';
 import TeamPositions from '../team/teamPositions';
-import PlayersByTeam from '../team/playersByTeam';
 import SoundManager from '../../services/soundManager';
-import AddPlayersToTeam from '../team/addPlayersToTeam';
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
 import RenderIf from '../app/renderIf';
@@ -97,20 +95,20 @@ teamNameFontSize = (option) =>{
 }
 
   showBorderTop = (equipo) => {
-    switch (equipo.estaVacio) {
-      case true: return {
+    switch (equipo.cantidadJugadores) {
+      case 0: return {
         flex:1,
         borderTopWidth:1,
-        margin:15,
-        borderColor:'#BDBDBD'
+        borderColor:'#BDBDBD',
+        marginHorizontal:15,
+        marginTop:38,
       }
       break;
       default: return {
         flex:1,
         borderTopWidth:1,
-        borderColor:'#BDBDBD',
-        marginHorizontal:15,
-          marginTop:38,
+        margin:15,
+        borderColor:'#BDBDBD'
       }
     }
   }
@@ -125,6 +123,7 @@ teamNameFontSize = (option) =>{
  }
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
+      console.log(val.cantidadJugadores)
             return <TouchableOpacity onPress={()=>{
                 SoundManager.playPushBtn()
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
@@ -138,8 +137,8 @@ teamNameFontSize = (option) =>{
                     <View style={this.showBorderTop(val)}>
                       <Text style={styles.ligaName}>{val.liga}</Text>
                     </View>
-                    {RenderIf(val.estaVacio==false,
-                        <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
+                    {RenderIf(val.cantidadJugadores==0,
+                        <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25,  textAlign:'center'}}>
                             <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay jugadores</Text>
                         </Text>
                     )}
@@ -182,14 +181,7 @@ teamNameFontSize = (option) =>{
     SoundManager.playPushBtn()
      this.setState({scene:'detalleEquipo'})
   }
-  setSceneAddPlayerToTeam = ()=>{
-    SoundManager.playPushBtn()
-     this.setState({scene:'agregarJugadoresAEquipo'})
-  }
-  setScenePlayersByTeam = ()=>{
-    SoundManager.playPushBtn()
-     this.setState({scene:'jugadoresPorEquipo'})
-  }
+
   setSceneRegistrarEquipo = () => {
     SoundManager.playPushBtn()
    this.setState({scene:'registrarEquipo'})
@@ -213,13 +205,7 @@ teamNameFontSize = (option) =>{
         return (<CreateTeam user={this.props.user} back={()=> {this.componentDidMount()}} addPlayers={()=> this.setAddPlayerToTeam()} teams={this.state.teams} style={{marginTop:35,flex:1}}/>);
         break;
       case 'detalleEquipo':
-        return (<TeamDetail showEditButton={true} myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} showBackButton={true} playersByTeam={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
-        break;
-      case 'agregarJugadoresAEquipo':
-        return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.state.currentTeam}/>);
-        break;
-      case 'jugadoresPorEquipo':
-        return (<PlayersByTeam addPlayers={()=> this.setSceneAddPlayerToTeam()} teamPositions={()=> this.setSceneTeamPositions()}  back={()=> this.setSceneDetalleEquipo()}  team={this.state.currentTeam}/>);
+        return (<TeamDetail showEditButton={true} myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} showBackButton={true} team={this.state.currentTeam}/>);
         break;
         case 'teamPositions':
           return (<TeamPositions showFieldViewImg={this.props.showFieldViewImg} hideFieldViewImg={this.props.hideFieldViewImg} back={()=> this.setScenePlayersByTeam()}  team={this.state.currentTeam}/>);

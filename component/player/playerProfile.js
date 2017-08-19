@@ -174,6 +174,7 @@ export default class PlayerProfile extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

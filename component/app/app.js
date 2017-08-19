@@ -30,7 +30,7 @@ export default class App extends Component {
     this.state = {
       user: {},
       scene:'loading',
-      notifications:{},
+      notifications:[],
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg',
       player:{},
       appState: AppState.currentState
@@ -77,16 +77,16 @@ export default class App extends Component {
         },()=>{
         })
      })
-     var notificationsafaf = [{equipoGUID:'1502971810816',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'Invitación a unirte a equipo',message:'unete al equoo',tipo:'1',nombreEquipo:'Barcelona'}]
-
-     firebase.database().ref('playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/').set(notificationsafaf)
+    //  var notificationsafaf = [{equipoGUID:'1502971810816',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'Invitación a unirte a equipo',message:'unete al equoo',tipo:'1',nombreEquipo:'Barcelona'}]
+     //
+    //  firebase.database().ref('playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/').set(notificationsafaf)
      Notification.getMyNotifications((notifications)=>{
        if(notifications){
          this.setState({notifications:notifications})
        }
      },()=>{
      })
-     
+
       SoundManager.startBackgroundMusic();
   }
 
@@ -120,7 +120,7 @@ export default class App extends Component {
         return(<Account user={this.state.player}/>)
         break;
     case 'notifications':
-        return(<NotificationsByPlayer estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} user={this.state.player}/>)
+        return(<NotificationsByPlayer user={this.state.player} estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} />)
         break;
     default:
   }

@@ -32,12 +32,15 @@ class TeamService {
     static newWithKey(objeto,key){
       FirebaseBasicService.newWithKey(Entities.TEAMS,objeto,key);
     }
-
     static newTeamsByPlayer(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,objeto);
     }
+
     static newTeamsByPlayer(objeto,uid){
       FirebaseBasicService.newWithKey(Entities.TEAMSBYPLAYER,uid,objeto);
+    }
+    static newPlayersByTeam(equipoGUID,objeto){
+      FirebaseBasicService.newWithKey(Entities.PLAYERSBYTEAM,equipoGUID,objeto);
     }
     static findTopTeams(callback,error){
       FirebaseBasicService.orderByAttribute('teams/active/','copas',callback,error)
@@ -47,6 +50,9 @@ class TeamService {
     }
     static getTeamsByPlayer(callBack,error){
       FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack,error)
+    }
+    static getPlayersByTeam(equipoGUID,callBack,error){
+      FirebaseBasicService.findActiveById(Entities.PLAYERSBYTEAM,equipoGUID,callBack,error)
     }
     static getMyNotifications(callBack,error){
       FirebaseBasicService.findActiveById(Entities.PLAYERNOTIFICATIONS,firebase.auth().currentUser.uid,callBack,error)

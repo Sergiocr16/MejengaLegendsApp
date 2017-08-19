@@ -13,13 +13,14 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import TeamService from '../../services/team';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import Player from '../../services/player';
 export default class AddToTeamNotificationDetail extends Component {
   constructor(props){
     super(props)
     this.state = {
           team:{},
           ownTeams: [],
+          players:[]
     }
   }
   componentDidMount() {
@@ -30,12 +31,16 @@ export default class AddToTeamNotificationDetail extends Component {
     },()=>{
       this.state.ownTeams = [];
     })
-
     TeamService.getTeam(this.props.notification.equipoGUID,(team)=>{
          this.setState({team:team})
         this.showTeamDetail();
     },()=>{})
-
+    TeamService.getPlayersByTeam(this.state.team.uid,(players)=>{
+      if(players){
+      this.setState(players);
+      }
+    },()=>{
+    })
   }
   showImage = () => {
     if(this.state.team.image !== undefined){
@@ -48,10 +53,17 @@ export default class AddToTeamNotificationDetail extends Component {
     }
 
       acceptInvitation = () => {
-          var equiposDelJugador = {};
+          var equiposDelJugador = [];
           equiposDelJugador = this.state.ownTeams;
           equiposDelJugador.push(this.state.team);
-          TeamService.newTeamsByPlayer(equiposDelJugador);
+          TeamService.newTeamsByPlayer(equiposDelJugador,this.props.user.uid);
+          var jugadoresDelEquipo = [];
+          jugadoresDelEquipo = this.state.players;
+          jugadoresDelEquipo.push(this.props.user);
+          TeamService.newPlayersByTeam(this.state.team.uid,jugadoresDelEquipo);
+          Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
+          this.state.team.cantidadJugadores = this.state.team.cantidadJugadores+1;
+          TeamService.update(this.props.user.uid,this.state.team.uid,jugadoresDelEquipo,this.state.team)
           this.props.deleteNotification();
           this.props.back();
           ToastAndroid.show('¡Felicidades ahora eres parte del equipo ' + this.state.team.nombre +'!!', ToastAndroid.LONG);

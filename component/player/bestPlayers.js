@@ -14,8 +14,8 @@ import EditPlayer from './editPlayer';
 import Loader from '../app/loading';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Player from '../../services/player'
-import PlayerProfile from './playerProfile'
+import Player from '../../services/player';
+import PlayerProfile from './playerProfile';
 import SoundManager from '../../services/soundManager';
 export default class BestPlayers extends Component {
   constructor(props){
@@ -280,6 +280,7 @@ export default class BestPlayers extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

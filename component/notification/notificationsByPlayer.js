@@ -114,7 +114,7 @@ export default class NotificationsByPlayer extends Component {
           return this.myNotifications();
           break;
         case 'notificationDetail':
-          return  (<AddToTeamNotificationDetail deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
+          return  (<AddToTeamNotificationDetail user={this.props.user} deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
           break;
 
         default:

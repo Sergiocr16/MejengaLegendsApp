@@ -44,9 +44,6 @@ export default class AddPlayersToTeam extends Component {
       return false;
   }
   sendRequestToPlayers = ()=>{
-      console.log('///////////////////')
-    console.log(this.state.notificationsByPLayer)
-      console.log(this.state.playersSelected)
     var notificationsTemporal = {};
     this.state.playersSelected.map((val, key) => {
         var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1};

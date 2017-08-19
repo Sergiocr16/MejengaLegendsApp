@@ -27,10 +27,29 @@ export default class Header extends Component {
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
    })
-   console.log(this.props.estadoNotification)
-      console.log('3333333333333333333333333333333333')
  }
+  showNotificationStyle(){
+    if(this.props.notifications.length==0){return(
+      <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
+    )} else if(this.props.notifications.length>0){
+        return(
+          <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
+             <View style={styles.notificationsBellIcon}>
+                 <Text style={{textAlign:'center'}}>
+                     <Icon name="bell" size={20} color="#1565C0"/>
+                 </Text>
+             </View>
+             <View style={styles.notificationsQuantity}>
+                 <Text style={styles.notificationText}>{this.props.notifications.length}</Text>
+             </View>
+          </TouchableOpacity>
+        )
 
+    }
+
+
+
+  }
 defineHeader = () =>{
   if(this.props.user.rol === "player"){
     return (
@@ -43,23 +62,7 @@ defineHeader = () =>{
         <View style={styles.accountnfoBox}>
          <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
 
-
-        {RenderIf(this.props.notifications.length==undefined,
-             <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
-         )}
-        {RenderIf(this.props.notifications.length>0,
-           <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
-              <View style={styles.notificationsBellIcon}>
-                  <Text style={{textAlign:'center'}}>
-                      <Icon name="bell" size={20} color="#1565C0"/>
-                  </Text>
-              </View>
-              <View style={styles.notificationsQuantity}>
-                  <Text style={styles.notificationText}>{this.props.notifications.length}</Text>
-              </View>
-           </TouchableOpacity>
-         )}
-
+         {this.showNotificationStyle()}
          <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
          <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
          </TouchableOpacity>
