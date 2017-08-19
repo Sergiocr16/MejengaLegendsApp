@@ -43,7 +43,7 @@ export default class NotificationsByPlayer extends Component {
             return (  <View key={key}>
                       {RenderIf(val.tipo==1,
                         <TouchableOpacity onPress={()=>this.setState({scene:'notificationDetail',currentNotification:val,notificationKey:key})}
-                            key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,paddingVertical:8,paddingHorizontal:15}}>
+                            key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,borderWidth:1,borderColor:'#FFCCBC',marginBottom:5,paddingVertical:8,paddingHorizontal:15}}>
                             <View style={{flex:1}}>
                               <Icon name="handshake-o" color="#F4511E" size={50}  />
                             </View>
@@ -52,7 +52,7 @@ export default class NotificationsByPlayer extends Component {
                                  <Text style={{flex:6}}>¡{val.nombreEquipo} quiere que seas parte de su equipo!</Text>
                             </View>
                               <Text style={{flex:2,fontSize:17}}>16/08/2017</Text>
-                              <Text><Icon name="chevron-right" size={20}  /> {val.score}</Text>
+                              <Text><Icon name="chevron-right" size={20} color={'#F4511E'} /> </Text>
                             </TouchableOpacity>
 
                        )}

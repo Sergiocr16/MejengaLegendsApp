@@ -158,7 +158,7 @@ class SoundManager {
       ambienteEstadio.stop()
     }
 
-    static playNotificationSound(){
+    static playNotificationsSound(){
      notification.play();
     }
 

@@ -46,11 +46,10 @@ defineHeader = () =>{
              <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
          )}
         {RenderIf(this.props.notifications.length>0,
-           <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
+           <TouchableOpacity activeOpacity={1} onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
               <View style={styles.notificationsBellIcon}>
-                  <Text style={{textAlign:'center'}}>
-                      <Icon name="bell" size={20} color="#1565C0"/>
-                  </Text>
+              <Image style={{height:25,width:25,marginLeft:3}} source={{uri: 'https://gifyu.com/images/ezgif.com-crop1729f.gif'}}>
+              </Image>
               </View>
               <View style={styles.notificationsQuantity}>
                   <Text style={styles.notificationText}>{this.props.notifications.length}</Text>
