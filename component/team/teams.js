@@ -159,7 +159,7 @@ showSearchingScene = () => {
 
 showResults = (teams) => {
   if(!this.state.areTeams && this.state.submitted){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontro ningun resultado.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:16}}>No se encontraron resultados.</Text></View>
   }else if(this.state.areTeams){
     return teams;
   }

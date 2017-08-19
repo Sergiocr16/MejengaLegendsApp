@@ -16,10 +16,11 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import TeamService from '../../services/team';
+import Notification from '../../services/notification';
 var t = require('tcomb-form-native');
 import RenderIf from '../app/renderIf';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import SoundManager from '../../services/soundManager';
 export default class AddPlayersToTeam extends Component {
   constructor(props){
     super(props)
@@ -31,7 +32,9 @@ export default class AddPlayersToTeam extends Component {
       notificationsByPLayer: [],
       currentPlayer: '',
       seEncontroJugador: 1,
-      hayJugadoresSeleccionados: 1
+      hayJugadoresSeleccionados: 1,
+      submitted:false,
+      estadoJugadorAInvitar:0
     }
   }
     containsObject = (obj, list)=> {
@@ -43,19 +46,38 @@ export default class AddPlayersToTeam extends Component {
       }
       return false;
   }
+  existeElId = (id, list)=> {
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].equipoGUID === id) {
+          return true;
+      }
+    }
+    return false;
+}
+existeElIdEnEquipos = (id, list)=> {
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (list[i].uid === id) {
+        return true;
+    }
+  }
+  return false;
+}
   sendRequestToPlayers = ()=>{
+    var fecha = moment().format('DD/MM/YYYY');
     var notificationsTemporal = {};
     this.state.playersSelected.map((val, key) => {
-        var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1};
+        var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipos!', titulo: "Invitación a unirte a equipo",tipo:1,fecha:fecha};
         if(this.state.notificationsByPLayer[key].length!==0){
           notificationsTemporal = this.state.notificationsByPLayer[key];
           notificationsTemporal.push(temporalNotification);
-          TeamService.addPlayersToTeam(val.uid,notificationsTemporal);
+          TeamService.sendNotificationToPlayers(val.uid,notificationsTemporal);
           this.props.back();
           ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
         } else {
-           var firstNotification = [{equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipo!', titulo: "Invitación a unirte a equipo",tipo:1}];
-            TeamService.addPlayersToTeam(val.jugadorGUID,firstNotification);
+           var firstNotification = [{equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipos!', titulo: "Invitación a unirte a equipo",tipo:1,fecha:fecha}];
+            TeamService.sendNotificationToPlayers(val.jugadorGUID,firstNotification);
             this.props.back();
             ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
         }
@@ -63,23 +85,44 @@ export default class AddPlayersToTeam extends Component {
 
 
   }
+
+  isInNotification = (val)=>{
+    Notification.getNotificationsByPlayer(val.uid,(notifications)=>{
+        if(notifications &&!this.existeElId(this.props.team.uid,notifications)){
+          if(!this.containsObject(val,this.state.playersSelected)){
+            this.setState({playersSelected:[...this.state.playersSelected,val]});
+            this.setState({hayJugadoresSeleccionados:2})
+            this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,notifications]});
+          };
+        }else {
+             ToastAndroid.show('Ya invitaste a ' + val.nombre + ' ' + val.primerApellido + ' a este equipo', ToastAndroid.LONG);
+        }
+    },()=>{
+      this.setState({playersSelected:[...this.state.playersSelected,val]});
+      this.setState({hayJugadoresSeleccionados:2})
+      this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,[]]});
+    })
+  }
+    isInTeam = (val)=>{
+      TeamService.getTeamsByEspecificPlayer(val.uid,(teams)=>{
+        if(teams &&!this.existeElIdEnEquipos(val.uid,teams)){
+             ToastAndroid.show('El jugador ' + val.nombre + ' ' + val.primerApellido + ' ya pertenece a este equipo', ToastAndroid.LONG);
+
+        }else{
+          this.isInNotification(val);
+        }
+      },()=>{
+          this.isInNotification(val);
+      })
+    }
+
+
   addPlayers = (val)=>{
       if(val.uid==firebase.auth().currentUser.uid){
           ToastAndroid.show('Ya perteneces a este equipo', ToastAndroid.LONG);
       }else{
-        if(!val.cantidadEquipos<=5){
-          if(!this.containsObject(val,this.state.playersSelected)){
-              this.setState({playersSelected:[...this.state.playersSelected,val]});
-              this.setState({hayJugadoresSeleccionados:2})
-                  TeamService.getNotificationsByPlayer(val.uid,(notifications)=>{
-                      if(notifications){
-                        this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,notifications]});
-                      }
-                  },()=>{
-                        console.log('/////////entre aqui//////////')
-                    this.setState({notificationsByPLayer:[...this.state.notificationsByPLayer,[]]});
-                  })
-          };
+        if(val.cantidadEquipos<5){
+          this.isInTeam(val)
         } else {
              ToastAndroid.show('Este jugador ya pertenece a 5 equipos, limite alcanzado', ToastAndroid.LONG);
         }
@@ -93,16 +136,49 @@ export default class AddPlayersToTeam extends Component {
     }
   }
   getPlayers = ()=>{
-    Player.findPlayerByUsername(this.state.username,(players)=>{
-      this.setState({players});
-      if(this.state.players!==[]){
-          this.setState({seEncontroJugador:2})
-      }
-    },()=>{
-      this.setState({seEncontroJugador:3})
-    });
+    SoundManager.playPushBtn();
+     this.setState({submitted:true})
+     if(this.isValid()){
+       Player.findPlayerByUsername(this.state.username.trim(),(players)=>{
+         this.setState({players});
+         if(this.state.players!==[]){
+             this.setState({seEncontroJugador:2})
+         }
+       },()=>{
+         this.setState({seEncontroJugador:3})
+       });
+     }
+
+
 
   }
+  isEmpty = (val) => {
+    if(this.state.submitted){
+      if(val===""){
+        return '#F44336';
+      }else{
+        return '#9E9E9E';
+      }
+    } else{
+      return '#9E9E9E';
+    }
+  }
+  isValid = () => {
+    var toValidate = [this.state.username]
+    var invalidItems = 0;
+   toValidate.map((val)=>{
+     if(val===""){
+       invalidItems++;
+     }
+   })
+   if(invalidItems==0){
+     return true;
+   }else{
+     ToastAndroid.show('Por favor digita un nombre de usuario para tu busqueda', ToastAndroid.LONG);
+     return false;
+   }
+  }
+
   showImage = (val) => {
     if(val.image !== undefined){
      return <Image style={{flex:1, alignItems:'center',marginRight:10}} borderRadius={5}   source={{uri: val.image}}></Image>
@@ -160,10 +236,10 @@ export default class AddPlayersToTeam extends Component {
               <TextInput
               underlineColorAndroid='white'
               placeholderTextColor="grey"
-              placeholder="Nombre de usuario"
+              placeholder="Nombre de equipo"
               autocapitalize={true}
               disableFullscreenUI={true}
-              style={[styles.inputText,{flex:2}]}
+              style={[styles.inputText,{flex:2,borderColor:this.isEmpty(this.state.username)}]}
               onChangeText={(username) => this.setState({username})}
               />
               <TouchableOpacity style={[styles.buttonBuscarJugador,{flex:1,alignItems:'flex-end'}]}  onPress={this.getPlayers} underlayColor='#99d9f4'>
@@ -182,8 +258,7 @@ export default class AddPlayersToTeam extends Component {
                  </View>
                )}
                {RenderIf(this.state.seEncontroJugador==2,
-                 <View style={[styles.resultadoBusqueda,{flex:1}]}>
-
+                  <View style={[styles.resultadoBusqueda,{flex:1,justifyContent:'center',alignItems:'center'}]}>
                    {players}
                  </View>
 

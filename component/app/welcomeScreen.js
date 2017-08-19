@@ -20,15 +20,41 @@ import SoundManager from '../../services/soundManager'
 export default class Welcome extends Component {
   constructor(props){
     super(props)
-    console.log(AppState.currentState)
+    this.state ={
+      scene: 'blackScreen'
+    }
   }
+  showScene = () => {
+    switch (this.state.scene) {
+      case 'blackScreen':
+        return this.showBlackScreen();
+        break;
+      case 'wellcomeScreen':
+        return this.showWellcomeScreen();
+        break;
+      default:
 
-  render(){
+    }
+  }
+  changeScene=()=>{
+  setTimeout(()=>{ this.setState({scene:'wellcomeScreen'}) }, 2000);
+
+  }
+    showBlackScreen = ()=>{
+      return (
+        <View style={{flex:1,backgroundColor:'black'}} >
+        <View duration={300}>
+        {this.changeScene()}
+        </View>
+        </View>
+      )
+    }
+
+  showWellcomeScreen = ()=>{
     return (
-      <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
-      <Image style={styles.bgImage} source={{uri: 'https://i.ytimg.com/vi/qe1CxIA-65A/maxresdefault.jpg'}}>
+      <FadeInView style={{flex:1,backgroundColor:'black'}} duration={700}>
+      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/oBCPBYS.jpg'}}>
      <View style={styles.centerItems}>
-      <Text style={styles.mainTitle}>Mejenga Legends</Text>
      <TouchableOpacity style={styles.initButton} onPress={()=>{
        SoundManager.playInitClickSound()
       SoundManager.stopAmbienteEstadio()
@@ -39,13 +65,21 @@ export default class Welcome extends Component {
       </FadeInView>
     )
   }
+
+  render(){
+    return (
+      <View style={{flex:1,backgroundColor:'black'}}>
+        {this.showScene()}
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
   centerItems:{
     flex:1,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent:'flex-end',
+    alignItems:'flex-end'
   },
   bgImage:{
     flex:1,
@@ -58,14 +92,15 @@ const styles = StyleSheet.create({
     color:'white'
   },
   initButton:{
-    marginTop:90,
     borderColor:'rgba(56, 45, 45,0.5)',
     backgroundColor:'rgba(255,255,255,0.5)',
     borderWidth: 6,
-    height:80,
-    width:80,
+    height:90,
+    width:90,
     borderRadius:100,
+    marginRight:50,
+    marginBottom:20,
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'flex-end'
   }
 })

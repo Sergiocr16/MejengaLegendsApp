@@ -43,9 +43,9 @@ export default class CreateTeam extends Component {
       source:'none',
       scene:'createTeam',
       submitted:false,
+      players: []
     }
   }
-
 
   isEmpty = (val) => {
     if(this.state.submitted){
@@ -101,6 +101,16 @@ export default class CreateTeam extends Component {
              equiposDelJugador = this.props.teams;
              equiposDelJugador.push(equipo);
              TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
+                var jugadoresDelEquipo = [];
+             TeamService.getPlayersByTeam(equipo.uid,(players)=>{
+               jugadoresDelEquipo = players;
+               jugadoresDelEquipo.push(this.props.user);
+               TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+             },()=>{
+                jugadoresDelEquipo.push(this.props.user);
+               TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+             })
+
              Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
              this.props.back();
            });
@@ -243,7 +253,7 @@ export default class CreateTeam extends Component {
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
    this.state.team.copas = 0;
-   this.state.team.cantidadJugadores = 0;
+   this.state.team.cantidadJugadores = 1;
    this.state.team.golesMarcados = 0;
    this.state.team.golesRecibidos = 0;
    this.state.team.rachaVictorias = 0;

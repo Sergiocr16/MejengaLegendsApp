@@ -51,7 +51,20 @@ export default class AddToTeamNotificationDetail extends Component {
         </Image>
     }
     }
+    showLema = (lema) =>{
+      if(lema==""){
+        return "No definido";
+      }else{
+        return '"'+lema+'"';
+      }
+    }
+    rechazarInvitacion = () => {
 
+        this.props.deleteNotification();
+        this.props.back();
+        ToastAndroid.show('Has denegado la invitación a unirte al equipo' + this.state.team.nombre +'!!', ToastAndroid.LONG);
+
+    }
       acceptInvitation = () => {
           var equiposDelJugador = [];
           equiposDelJugador = this.state.ownTeams;
@@ -81,7 +94,7 @@ export default class AddToTeamNotificationDetail extends Component {
                       <Text style={styles.whiteFont2}>¿Deseas aceptar la invitación a unirte a este equipo?</Text>
                   </View>
                   <View style={{flex:1}}>
-                  <TouchableOpacity style={[styles.buttonAceptDecline,{backgroundColor:'#D32F2F' }]} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="times" size={15} color="#FFFFFF"/> Denegar</Text></TouchableOpacity>
+                  <TouchableOpacity style={[styles.buttonAceptDecline,{backgroundColor:'#D32F2F' }]} onPress={()=>{this.rechazarInvitacion()}}><Text style={styles.textButton}><Icon name="times" size={15} color="#FFFFFF"/> Denegar</Text></TouchableOpacity>
 
                   </View>
                   <View style={{flex:1}}>
@@ -104,7 +117,11 @@ export default class AddToTeamNotificationDetail extends Component {
                   <ScrollView>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>"{this.state.team.lema}"</Text>
+                         <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                      </View>
+                      <View style={styles.info}>
+                         <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
+                         <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>

@@ -83,7 +83,13 @@ export default class TeamDetail extends Component {
     }
     return null;
   }
-
+  showLema = (lema) =>{
+    if(lema==""){
+      return "No definido";
+    }else{
+      return '"'+lema+'"';
+    }
+  }
   showTeamDetail = () => {
     return (
       <FadeInView style={styles.container} duration={600}>
@@ -94,13 +100,14 @@ export default class TeamDetail extends Component {
           <View style={styles.subtitle}>
               <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
           </View>
+
          <View style={styles.basicInfo}>
             <View style={{flex:1,alignItems:'center'}}>
                {this.showImage()}
               <View style={[styles.circularIcon,{margin:-30}]}>
                    <Icon name={"shield"}  size={40} color="#424242" />
               </View>
-              <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
+               <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} <Icon name="trophy" size={20} color="#FFB300" /> </Text>
               <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>this.setScenePlayersByTeam()} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
 
             </View>
@@ -108,7 +115,11 @@ export default class TeamDetail extends Component {
               <ScrollView>
                   <View style={styles.info}>
                      <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                     <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
+                     <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
+                     <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
                   </View>
                   <View style={styles.info}>
                      <Text style={styles.flexStart}>Liga</Text>

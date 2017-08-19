@@ -32,6 +32,7 @@ export default class Header extends Component {
     if(this.props.notifications.length==0){return(
       <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{alignItems:'center'}]}><Icon name="bell" size={18} color="#BDBDBD" /></TouchableOpacity>
     )} else if(this.props.notifications.length>0){
+          SoundManager.playNotificationsSound();
         return(
           <TouchableOpacity onPress={this.props.setSceneNotifications} style={[styles.notifications,{flexDirection:'row'}]}>
              <View style={styles.notificationsBellIcon}>

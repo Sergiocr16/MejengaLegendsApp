@@ -95,32 +95,21 @@ teamNameFontSize = (option) =>{
 }
 
   showBorderTop = (equipo) => {
-    switch (equipo.cantidadJugadores) {
-      case 0: return {
-        flex:1,
+      if(equipo.cantidadJugadores<5){
+        return {flex:1,
         borderTopWidth:1,
         borderColor:'#BDBDBD',
         marginHorizontal:15,
-        marginTop:38,
-      }
-      break;
-      default: return {
-        flex:1,
+        marginTop:38,}
+      }else{
+      return{ flex:1,
         borderTopWidth:1,
         margin:15,
-        borderColor:'#BDBDBD'
+        borderColor:'#BDBDBD'}
       }
-    }
+
   }
- showCreateTeamButton = () => {
-   if(this.props.user.cantidadEquipos<5){
-     return (   <View style={{flex:1, alignItems:'flex-end'}}>
-         <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
-       </View>)
-   }else{
-     return null;
-   }
- }
+
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
       console.log(val.cantidadJugadores)
@@ -137,9 +126,9 @@ teamNameFontSize = (option) =>{
                     <View style={this.showBorderTop(val)}>
                       <Text style={styles.ligaName}>{val.liga}</Text>
                     </View>
-                    {RenderIf(val.cantidadJugadores==0,
+                    {RenderIf(val.cantidadJugadores<5,
                         <Text style={{paddingHorizontal:10, paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25,  textAlign:'center'}}>
-                            <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No hay jugadores</Text>
+                            <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> Faltan {5-val.cantidadJugadores} jugadores</Text>
                         </Text>
                     )}
                   </View>
@@ -167,7 +156,9 @@ teamNameFontSize = (option) =>{
                   </Text>
               </View>
            </TouchableOpacity>
-          {this.showCreateTeamButton()}
+           <View style={{flex:1, alignItems:'flex-end'}}>
+               <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+            </View>
        </View>
     </FadeInView>
     )
@@ -183,8 +174,13 @@ teamNameFontSize = (option) =>{
   }
 
   setSceneRegistrarEquipo = () => {
-    SoundManager.playPushBtn()
-   this.setState({scene:'registrarEquipo'})
+      if(this.props.user.cantidadEquipos<5){
+        SoundManager.playPushBtn()
+        this.setState({scene:'registrarEquipo'})
+      }else{
+        ToastAndroid.show('No puedes estar en más de 5 equipos', ToastAndroid.LONG);
+      }
+
   }
   setSceneTeamPositions = () => {
     SoundManager.playPushBtn()

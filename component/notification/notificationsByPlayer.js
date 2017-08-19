@@ -49,9 +49,9 @@ export default class NotificationsByPlayer extends Component {
                             </View>
                             <View style={{flex:4}}>
                                 <Text style={{fontSize:22,fontWeight:'bold',marginBottom:10}}>{val.titulo}</Text>
-                                 <Text style={{flex:6}}>¡{val.nombreEquipo} quiere que seas parte de su equipo!</Text>
+                                 <Text style={{flex:6}}>{val.message}</Text>
                             </View>
-                              <Text style={{flex:2,fontSize:17}}>16/08/2017</Text>
+                              <Text style={{flex:2,fontSize:17}}>{val.fecha}</Text>
                               <Text><Icon name="chevron-right" size={20}  /> {val.score}</Text>
                             </TouchableOpacity>
 

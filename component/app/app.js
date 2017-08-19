@@ -77,9 +77,6 @@ export default class App extends Component {
         },()=>{
         })
      })
-    //  var notificationsafaf = [{equipoGUID:'1502971810816',jugadorGUID:'PcLNztdnI7eERNrQxVXuAl8hjt22',titulo:'Invitación a unirte a equipo',message:'unete al equoo',tipo:'1',nombreEquipo:'Barcelona'}]
-     //
-    //  firebase.database().ref('playerNotifications/active/PcLNztdnI7eERNrQxVXuAl8hjt22/').set(notificationsafaf)
      Notification.getMyNotifications((notifications)=>{
        if(notifications){
          this.setState({notifications:notifications})
