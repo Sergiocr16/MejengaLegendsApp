@@ -20,9 +20,27 @@ import SoundManager from '../../services/soundManager'
 export default class Welcome extends Component {
   constructor(props){
     super(props)
-    console.log(AppState.currentState)
+    this.state = {
+      appState: AppState.currentState
+    }
   }
+componentDidMount(){
+    AppState.addEventListener('change', this._handleAppStateChange);
+}
+componentWillUnmount() {
+  AppState.removeEventListener('change', this._handleAppStateChange);
+}
 
+_handleAppStateChange = (nextAppState) => {
+  if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+    console.log('App has come to the foreground!')
+    SoundManager.playAmbienteEstadio();
+  }else{
+    console.log('App has come to the background!')
+    SoundManager.pauseAmbienteEstadio();
+  }
+  this.setState({appState: nextAppState});
+}
   render(){
     return (
       <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
@@ -31,7 +49,7 @@ export default class Welcome extends Component {
       <Text style={styles.mainTitle}>Mejenga Legends</Text>
      <TouchableOpacity style={styles.initButton} onPress={()=>{
        SoundManager.playInitClickSound()
-      SoundManager.stopAmbienteEstadio()
+       SoundManager.stopAmbienteEstadio()
        this.props.showInitialView()}}>
      </TouchableOpacity>
      </View>

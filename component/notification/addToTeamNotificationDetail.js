@@ -42,7 +42,7 @@ export default class AddToTeamNotificationDetail extends Component {
      return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.team.image}}>
        </Image>
     }else{
-      return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+      return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
         </Image>
     }
     }

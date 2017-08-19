@@ -116,7 +116,7 @@ showResults = (players) => {
                 <Text style={styles.buttonText}><Icon name="search" size={13} color="#FFFFFF"/> Buscar</Text>
               </TouchableOpacity>
            </View>
-           <View style={{flex:5,flexDirection:'row',paddingHorizontal:10}}>
+           <View style={{flex:5,flexDirection:'row'}}>
               <View style={{flex:1}}>
               {this.showResults(players)}
               </View>

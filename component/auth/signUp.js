@@ -49,7 +49,20 @@ export default class SignUp extends Component {
       }
       this.sendVerification()
     } catch(error){
-      ToastAndroid.show(error.message, ToastAndroid.LONG);
+              console.log(error.message)
+      switch (error.message) {
+         case 'The email address is badly formatted.':
+ToastAndroid.show("La correo electrónico esta mal formateado.", ToastAndroid.LONG);
+         break;
+         case 'The password must be 6 characters long or more.':
+ToastAndroid.show("La contraseña debe de tener al menos 6 carácteres", ToastAndroid.LONG);
+         break;
+         case 'The email address is already in use by another account.':
+ToastAndroid.show("El correo electrónico ya está en uso por otra cuenta.", ToastAndroid.LONG);
+         break;
+        default:
+
+      }
     }
   }
 
