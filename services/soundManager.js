@@ -1,10 +1,10 @@
 var Sound = require('react-native-sound');
 Sound.setCategory('Playback');
-var songsQuantity = 5;
+var songsQuantity = 10;
 var backgroundMusic;
 var songs = [];
 var ambienteEstadio;
-
+var logoSound;
 
 // CLIKCS
 var initClick;
@@ -13,6 +13,8 @@ var notification;
 var switchBtn;
 var pushBtn;
 var backBtn;
+var startedBackground = false;
+var startedSonidoAmbiente = false;
 // CLIKCS
 
 class SoundManager {
@@ -28,9 +30,25 @@ class SoundManager {
     }))
     songs.push(new Sound("nothingholdingmeback.mp3",Sound.MAIN_BUNDLE, (error) => {
     }))
+    songs.push(new Sound("morethanuknow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("onmymind.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("ride.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("kmagic.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("dontwannaknow.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("shapeofu.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
+    songs.push(new Sound("coldwater.mp3",Sound.MAIN_BUNDLE, (error) => {
+    }))
     ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
 
+    logoSound = new Sound("logosound.wav",Sound.MAIN_BUNDLE, (error) => {
+    })
     // CLICKS
     switchBtn = new Sound("switchsound.wav",Sound.MAIN_BUNDLE, (error) => {
     })
@@ -46,6 +64,7 @@ class SoundManager {
   }
 
     static startBackgroundMusic(){
+      startedBackground = true;
       if(songs.length>0){
       playSong = (position) => {
       backgroundMusic = songs[position];
@@ -66,6 +85,16 @@ class SoundManager {
     }
   }
 
+
+  static playLogoSound(){
+    logoSound.play((success)=>{
+      if(success){
+
+      }else{
+        console.log("NO SIRVE")
+      }
+    })
+  }
     static playBackgroundMusic(){
       playSong = (position) => {
       backgroundMusic = songs[position];
@@ -107,15 +136,23 @@ class SoundManager {
         ambienteEstadio.play((success)=>{
           if(success){
           setTimeout(()=>{
-            playAmbiente()
+            if(!startedBackground){
+            playAmbiente();
+            }
           },15000)
         }else{
             console.log("AAA")
         }
         })
       }
-playAmbiente();
+      playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
+    }
+    static pauseBackgroundMusic(){
+      backgroundMusic.pause();
+    }
+    static pauseAmbienteEstadio(){
+      ambienteEstadio.pause();
     }
     static stopAmbienteEstadio(){
       ambienteEstadio.stop()

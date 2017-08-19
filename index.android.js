@@ -39,13 +39,17 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-    //  console.disableYellowBox = true;
+    console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
     SoundManager.loadSounds();
+      SoundManager.playLogoSound()
   }
 
   componentDidMount() {
+    setTimeout(()=>{
+     SoundManager.playLogoSound()
+    },20)
       setTimeout(()=>{this.setState({initialView:'Welcome'})
       SoundManager.playAmbienteEstadio()
     },4500)
@@ -90,7 +94,6 @@ export default class MejengaLegendsApp extends Component {
       return (<FadeInView style={{flex:1}} duration={900}><Welcome showInitialView={()=>this.getInitialView()}/></FadeInView>)
       break;
       default:
-
     }
   }
   render() {

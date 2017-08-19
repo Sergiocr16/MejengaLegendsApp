@@ -28,7 +28,20 @@ export default class Login extends Component {
     try {
       await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     } catch(error){
-      ToastAndroid.show(error.message, ToastAndroid.LONG);
+       switch (error.message) {
+          case 'The email address is badly formatted.':
+ToastAndroid.show("La correo electrónico esta mal formateado.", ToastAndroid.LONG);
+          break;
+          case 'The password is invalid or the user does not have a password.':
+ToastAndroid.show("La contraseña es incorrecta.", ToastAndroid.LONG);
+          break;
+          case 'There is no user record corresponding to this identifier. The user may have been deleted.':
+ToastAndroid.show("No existe ningún usuario registrado con ese correo.", ToastAndroid.LONG);
+          break;
+         default:
+
+       }
+
     }
   }
 

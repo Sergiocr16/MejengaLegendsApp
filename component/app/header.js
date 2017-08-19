@@ -26,7 +26,8 @@ export default class Header extends Component {
  componentDidMount(){
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
-   })
+
+  },()=>{})
  }
   showNotificationStyle(){
     if(this.props.notifications.length==0){return(
@@ -64,6 +65,7 @@ defineHeader = () =>{
          <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
 
          {this.showNotificationStyle()}
+
          <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
          <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
          </TouchableOpacity>

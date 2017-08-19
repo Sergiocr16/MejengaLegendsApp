@@ -21,7 +21,8 @@ export default class Welcome extends Component {
   constructor(props){
     super(props)
     this.state ={
-      scene: 'blackScreen'
+      scene: 'blackScreen',
+       appState: AppState.currentState
     }
   }
   showScene = () => {
@@ -36,6 +37,23 @@ export default class Welcome extends Component {
 
     }
   }
+  componentDidMount(){
+    AppState.addEventListener('change', this._handleAppStateChange);
+}
+componentWillUnmount() {
+  AppState.removeEventListener('change', this._handleAppStateChange);
+}
+
+_handleAppStateChange = (nextAppState) => {
+  if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+    console.log('App has come to the foreground!')
+    SoundManager.playAmbienteEstadio();
+  }else{
+    console.log('App has come to the background!')
+    SoundManager.pauseAmbienteEstadio();
+  }
+  this.setState({appState: nextAppState});
+}
   changeScene=()=>{
   setTimeout(()=>{ this.setState({scene:'wellcomeScreen'}) }, 2000);
 
@@ -52,14 +70,16 @@ export default class Welcome extends Component {
 
   showWellcomeScreen = ()=>{
     return (
-      <FadeInView style={{flex:1,backgroundColor:'black'}} duration={700}>
-      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/oBCPBYS.jpg'}}>
+      <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
+      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/68R2RJh.jpg'}}>
      <View style={styles.centerItems}>
+     <Image style={{height:80,width:80,marginRight:80,marginBottom:30}} source={{uri: 'http://www.inpris.co//wp-content/uploads/2016/07/loading-circles.gif'}}>
      <TouchableOpacity style={styles.initButton} onPress={()=>{
        SoundManager.playInitClickSound()
-      SoundManager.stopAmbienteEstadio()
+       SoundManager.stopAmbienteEstadio()
        this.props.showInitialView()}}>
      </TouchableOpacity>
+     </Image>
      </View>
       </Image>
       </FadeInView>
@@ -92,15 +112,14 @@ const styles = StyleSheet.create({
     color:'white'
   },
   initButton:{
-    borderColor:'rgba(56, 45, 45,0.5)',
-    backgroundColor:'rgba(255,255,255,0.5)',
-    borderWidth: 6,
-    height:90,
-    width:90,
+    borderColor:'white',
+    borderWidth: 4,
+    height:33,
+    width:33,
+    marginTop:26,
+    marginLeft:24,
     borderRadius:100,
-    marginRight:50,
-    marginBottom:20,
     justifyContent:'center',
-    alignItems:'flex-end'
+    alignItems:'center'
   }
 })

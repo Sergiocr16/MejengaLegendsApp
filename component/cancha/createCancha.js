@@ -10,72 +10,79 @@ import {
   ScrollView,
   DatePickerAndroid,
   Picker,
-  Platform
+  Platform,
+  Alert
 } from 'react-native'
-var moment = require('moment');
+
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-import Player from '../../services/player';
-import TeamService from '../../services/team';
+import CanchaService from '../../services/cancha';
 import Loader from '../app/loading';
-import Entities from '../../lib/fireBaseEntities'
-import SoundManager from '../../services/soundManager';
-import FirebaseBasicService from '../../lib/firebaseBasicService'
-var t = require('tcomb-form-native');
-var Form = t.form.Form;
-
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
+import SoundManager from '../../services/soundManager';
 const Blob = RNFetchBlob.polyfill.Blob
 var ImagePicker = require('react-native-image-picker')
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 const fs = RNFetchBlob.fs
 
-export default class EditTeam extends Component {
+export default class CreateCancha extends Component {
   constructor(props){
     super(props)
     this.state = {
-      nombre: this.props.team.nombre,
-      lema: this.props.team.lema,
-      genero:this.props.team.genero,
-      genders:['Masculino','Femenino'],
+      // Estados del constructor
+      gramilla: 'Sintética',
+      capacidad: '',
+      techo: 'No',
+      numero: '',
+      // Objeto para registrar y editar
+      cancha: {
+      },
+      canchas : this.props.canchas,
+      ///
+      techoOptions: ["Si","No"],
+      gramillaOptions: ["Sintética","Natural","Híbrida"],
+      imagePath: null,
+      imageHeight: null,
+      imageWidth: null,
       source:'none',
-      scene:'editTeam',
-
-      team:{},
-      teams:[]
+      scene:'CreateCancha',
+      submitted:false
     }
   }
 
-
   isEmpty = (val) => {
-
-      if(val===""){
+    if(this.state.submitted){
+      if(val==="" || this.numberExist()){
         return '#F44336';
       }else{
         return '#42A5F5';
       }
-
+    } else{
+      return '#42A5F5';
+    }
   }
-
+  numberExist = () => {
+    var exist = false;
+    this.props.canchas.map((val)=>{
+      if(this.state.numero == val.numero){
+        exist = true
+      }
+    })
+    return exist;
+  }
   isValid = () => {
-    var toValidate = [this.state.nombre]
-    var invalidItems = 0;
-   toValidate.map((val)=>{
-     if(val===""){
-       invalidItems++;
-     }
-   })
-   if(invalidItems==0){
-     return true;
-   }else{
+  if(this.state.numero===""){
      ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
      return false;
+   }else if(this.numberExist()){
+     ToastAndroid.show('Ya existe una cancha registrada con ese número', ToastAndroid.LONG);
+     return false;
+   }else {
+      return true;
    }
   }
-
 
   uploadImage = (uri, mime = 'application/octet-stream') => {
    return new Promise((resolve, reject) => {
@@ -97,83 +104,90 @@ export default class EditTeam extends Component {
          return imageRef.getDownloadURL()
        })
        .then((url) => {
-           this.state.team.image = url;
-           TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
-            this.props.back();
+           this.state.cancha.image = url;
+           var nuevoEstado = this.props.canchas;
+           nuevoEstado.push(this.state.cancha)
+           CanchaService.createCancha(nuevoEstado,this.props.complejo.uid,(cancha)=>{
+             this.props.back();
+           });
            resolve(url)
        })
        .catch((error) => {
          reject(error)
        })
    })
- }
+  }
+  setMyCanchaMenu = ()=>{
+    this.setState({scene:'CreateCancha'})
+  }
 
- showScene = () => {
-   switch (this.state.scene) {
-     case 'editTeam':
-       return this.showEditTeam()
-       break;
-     case 'loading':
-       return <Loader/>
-       break;
-     default:
+  showScene = () => {
+    switch (this.state.scene) {
+    case 'CreateCancha':
+      return this.showCreateCancha()
+      break;
+    case 'loading':
+      return <Loader/>
+      break;
+    default:
+    }
+  }
 
-   }
- }
- showEditTeam = () => {
+  showCreateCancha = () => {
+    let techoPicker = this.state.techoOptions.map( (s, i) => {
+      return <Picker.Item  key={i} value={s} label={s} />
+    });
+    let gramillaPicker = this.state.gramillaOptions.map( (s, i) => {
+      return <Picker.Item  key={i} value={s} label={s} />
+    });
 
-    let genderPicker = this.state.genders.map( (s, i) => {
-     return <Picker.Item  key={i} value={s} label={s} />
-   });
+
   return (
-    <View style={styles.container} duration={600}>
+    <FadeInView style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>{this.state.nombre.toUpperCase()}</Text>
+            <Text style={styles.whiteFont}>Crea una cancha en {this.props.complejo.nombre}</Text>
         </View>
         <View style={styles.subtitle}>
-            <Text style={styles.whiteFont2}>Edita la información básica de tu equipo</Text>
+            <Text style={styles.whiteFont2}>Información básica de cancha</Text>
         </View>
        <View style={{padding:20,flex:1}}>
        <ScrollView>
        <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',margin:15}}>
-       <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
-       {this.showImage()}
-       </View>
-       <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
-       <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
-       </TouchableOpacity>
-       </View>
-         <View style={{flexDirection:'row',flex:3}}>
-           <TextInput
-           underlineColorAndroid={this.isEmpty(this.state.nombre)}
-           placeholderTextColor="grey"
-           placeholder="Nombre del equipo"
-           autocapitalize={true}
-           disableFullscreenUI={true}
-           style={[styles.inputText,{flex:1}]}
-           onChangeText={(nombre) => this.setState({nombre})}
-           value={this.state.nombre}
-           />
-           <TextInput
-           underlineColorAndroid='#42A5F5'
-           placeholderTextColor="grey"
-           placeholder="Lema"
-           disableFullscreenUI={true}
-           style={[styles.inputText,{flex:1}]}
-            value={this.state.lema}
-           onChangeText={(lema) => this.setState({lema})}
-           />
+        <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
+        {this.showImage()}
         </View>
-        <View style={{flexDirection:'column',marginVertical:20}}>
-          <View style={{flex:1,marginBottom:25}}>
-             <Text style={styles.bold}>Selecciona el género del equipo</Text>
-             <Picker style={styles.androidPicker} selectedValue={this.state.genero}
-                onValueChange={ (genero) => (this.setState({genero})) } >
-                {genderPicker}
-             </Picker>
-          </View>
+        <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
+        <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
+        </TouchableOpacity>
        </View>
+       <View style={{flexDirection:'row',flex:3}}>
+         <TextInput
+         underlineColorAndroid={this.isEmpty(this.state.numero)}
+         placeholderTextColor="grey"
+         placeholder="Número de la cancha"
+         autocapitalize={true}
+         disableFullscreenUI={true}
+         style={[styles.inputText,{flex:1}]}
+         onChangeText={(numero) => this.setState({numero})}
+         />
+      </View>
+        <View style={{flexDirection:'column',marginTop:15}}>
+        <Text style={styles.bold}>Tipo de  gramilla</Text>
+        <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+            selectedValue = {this.state.gramilla} value = {this.state.gramilla} options={this.state.gramillaOptions}
+            onValueChange={(gramilla) => this.setState({gramilla})} >
+            {gramillaPicker}
+         </Picker>
+         </View>
+         <View style={{flexDirection:'column',marginVertical:5}}>
+         <Text style={styles.bold}>¿Se encuentra bajo techo?</Text>
+         <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+             selectedValue = {this.state.techo} value = {this.state.techo} options={this.state.techoOptions}
+             onValueChange={(techo) => this.setState({techo:techo})} >
+             {techoPicker}
+          </Picker>
+          </View>
        <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
            <Text style={styles.buttonText2}>¡Listo!</Text>
        </TouchableOpacity>
@@ -189,11 +203,8 @@ export default class EditTeam extends Component {
             </Text>
         </View>
      </TouchableOpacity>
-     <View style={{flex:1, alignItems:'flex-end'}}>
-
     </View>
-    </View>
-    </View>
+    </FadeInView>
   )
  }
  _takePicture = () => {
@@ -206,7 +217,7 @@ export default class EditTeam extends Component {
          noData: true,
        };
        var options = {
-          title: 'Selecciona la foto de tu equipo',
+          title: 'Selecciona la foto de la cancha',
           takePhotoButtonTitle: "Tomar una foto...",
           chooseFromLibraryButtonTitle: "Seleccionar desde la galería...",
           cameraType:'front'
@@ -227,34 +238,37 @@ export default class EditTeam extends Component {
          }
        })
      }
-
      showImage = () => {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       if(this.props.team.image==undefined){
        return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
-       }else{
-         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}></Image>
-       }
      }
      }
+
  submit = () =>{
-   this.state.team = this.props.team;
-   this.state.team.nombre = this.state.nombre;
-   this.state.team.nameToQuery = this.state.nombre.toLowerCase();
-   this.state.team.lema = this.state.lema;
-   this.state.team.genero = this.state.genero;
    SoundManager.playPushBtn();
-   if(this.isValid()){
-      this.setState({scene:'loading'})
-   if(this.state.source=='none'){
-     TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
-      this.props.back();
-   }else{
-   this.uploadImage(this.state.source)
-}
-}
+   this.state.cancha.numero = this.state.numero;
+   this.state.cancha.gramilla = this.state.gramilla;
+   this.state.cancha.techo = this.state.techo;
+   this.state.cancha.canton = this.props.complejo.canton;
+   this.state.cancha.provincia = this.props.complejo.provincia;
+   this.state.cancha.uid = Date.now();
+   this.state.cancha.complejo = {complejoGUID:this.props.complejo.uid,nombre: this.props.complejo.nombre};
+   this.setState({submitted:true})
+    if(this.isValid()){
+        this.setState({scene:'loading'})
+    if(this.state.source=='none'){
+      var nuevoEstado = this.props.canchas;
+      console.log(this.props.canchas)
+      nuevoEstado.push(this.state.cancha)
+      CanchaService.createCancha(nuevoEstado,this.props.complejo.uid,(cancha)=>{
+        this.props.back();
+      });
+    }else{
+    this.uploadImage(this.state.source)
+    }
+  }
  }
 
   render(){
@@ -403,92 +417,3 @@ borderRadius:20
 }
 
 })
-//
-// const styles = StyleSheet.create({
-//   androidPicker: {
-//     height: 40,
-//             alignSelf: 'stretch',
-//             alignItems:'center',
-//             justifyContent:'center',
-//         },
-//   inputText: {
-//     height: 40,
-//     paddingHorizontal: 20,
-//     paddingVertical: 10,
-//     color: 'grey',
-//     textAlign:'center',
-//   },
-//   boldSmall:{
-//     color:'#42A5F5',
-//     fontSize:10,
-//     textAlign:'center',
-//   },
-//   bold:{
-//       color:'#42A5F5',
-//       textAlign:'center',
-//       fontWeight:'bold'
-//   },
-//   ageText:{
-//     color:'orange',
-//     fontSize:28,
-//     textAlign:'center',
-//     fontWeight:'bold',
-//   },
-//   btnAge:{
-//     height: 40,
-//     paddingHorizontal: 20,
-//     paddingVertical: 10,
-//   },
-//   mainName:{
-//     backgroundColor:'#1A237E',
-//     padding:7,
-//    borderTopLeftRadius:10,
-//    borderTopRightRadius:10
-//   },
-//   subtitle:{
-//     backgroundColor:'#42A5F5',
-//     padding:8
-//   },
-//   whiteFont2:{
-//     color:'#1A237E',
-//     textAlign:'center'
-//   },
-//   whiteFont:{
-//     color:'white',
-//     fontWeight:'bold',
-//     textAlign:'center'
-//   },
-//   infoContainer:{
-//     flex:10,
-//     backgroundColor:'white',
-//     borderRadius:10,
-//     margin:20
-//   },
-//   container: {
-//      justifyContent: 'center',
-//      backgroundColor: '#ffffff',
-//      flex:1,
-//      margin:15,
-//      borderRadius:10
-//    },
-//    title: {
-//      fontSize: 30,
-//      alignSelf: 'center',
-//      marginBottom: 30
-//    },
-//    buttonText: {
-//      fontSize: 18,
-//      color: 'white',
-//      alignSelf: 'center'
-//    },
-//    button: {
-//      height: 36,
-//      backgroundColor: '#48BBEC',
-//      borderColor: '#48BBEC',
-//      borderWidth: 1,
-//      borderRadius: 8,
-//      marginBottom: 10,
-//      alignSelf: 'stretch',
-//      justifyContent: 'center'
-//    }
-// })

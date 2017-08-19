@@ -73,8 +73,8 @@ export default class App extends Component {
        FirebaseBasicService.findActiveById("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
              this.setState({scene:"menu"})
              this.setState({player:superAdmin})
-
         },()=>{
+
         })
      })
      Notification.getMyNotifications((notifications)=>{

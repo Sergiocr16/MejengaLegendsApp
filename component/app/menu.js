@@ -18,6 +18,8 @@ import BestPlayers from '../player/bestPlayers';
 import Players from '../player/players';
 import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
+import ComplejoMenu from '../complejo/complejoMenu';
+
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SoundManager from '../../services/soundManager'
 export default class Menu extends Component {
@@ -50,6 +52,12 @@ export default class Menu extends Component {
       SoundManager.playPushBtn();
    this.setState({scene:'bestTeams'})
   }
+
+  setSceneComplejos = () => {
+    SoundManager.playPushBtn();
+    this.setState({scene:'complejos'})
+   }
+
   setSceneAllJugadores = () => {
       SoundManager.playPushBtn();
    this.setState({scene:'allPlayers'})
@@ -180,7 +188,7 @@ defineMainButtons = () => {
     return(<GestureRecognizer config={config} style={styles.superAdminScene}>
               <View style={styles.row}>
                 <View style={styles.row}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneComplejos}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://stadiumdb.com/pictures/stadiums/jpn/kashima_soccer_stadium/kashima_soccer_stadium14.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"bank"}  size={30} color="#1565C0" />
@@ -506,15 +514,18 @@ defineMainButtons = () => {
       case 'bestPlayers':
         return <BestPlayers back={()=> this.setSceneButtons()}/>;
         break;
-        case 'allPlayers':
-          return <Players back={()=> this.setSceneButtons()}/>;
-          break;
-          case 'allTeams':
-            return <Teams back={()=> this.setSceneButtons()}/>;
-            break;
-        case 'bestTeams':
+      case 'allPlayers':
+        return <Players back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'allTeams':
+        return <Teams back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'bestTeams':
         return <BestTeams back={()=> this.setSceneButtons()}/>;
-         break;
+        break;
+      case 'complejos':
+        return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
+        break;
       default:
         return this.menuButtons();
     }

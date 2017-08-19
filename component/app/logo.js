@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager';
 export default class Logo extends Component {
   constructor(props){
     super(props)
