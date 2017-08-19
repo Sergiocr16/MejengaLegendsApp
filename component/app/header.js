@@ -26,9 +26,7 @@ export default class Header extends Component {
  componentDidMount(){
    Player.getCurrentPlayer((player)=>{
     this.setState({player})
-   })
-   console.log(this.props.estadoNotification)
-      console.log('3333333333333333333333333333333333')
+  },()=>{})
  }
 
 defineHeader = () =>{

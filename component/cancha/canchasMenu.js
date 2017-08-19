@@ -15,10 +15,10 @@ var moment = require('moment');
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import CreateCancha from './createCancha';
-import Complejo from '../../services/complejo'
+import Complejo from '../../services/complejo';
+import CanchaDetail from './canchaDetail';
 import Loader from '../app/loading';
 import SoundManager from '../../services/soundManager';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class CanchasMenu extends Component {
@@ -35,16 +35,20 @@ export default class CanchasMenu extends Component {
 
 componentDidMount(){
 Complejo.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
-  console.log(canchas)
   this.setState({scene:'allFields',canchas})
 },()=>{
-  this.setState({scene:'allFields'})
+  this.setState({scene:'allFields',canchas:[]})
 })
 }
 
 setSceneRegistrarCancha = () => {
   SoundManager.playPushBtn();
   this.setState({scene:'createCancha'})
+}
+
+setSceneCanchaDetail = () => {
+  SoundManager.playPushBtn();
+  this.setState({scene:'canchaDetail'})
 }
 
 showScene =() =>{
@@ -56,7 +60,7 @@ showScene =() =>{
       return <Loader/>
       break;
     case 'canchaDetail':
-     return <TeamDetail team={this.state.currentTeam} showEditButton={false} back={()=>{ this.setState({scene:"searching"}); SoundManager.playBackBtn() }} showBackButton={true}/>
+     return <CanchaDetail cancha={this.state.currentCancha} complejo={this.props.complejo} canchas={this.state.canchas} showEditButton={false} back={()=>{this.componentDidMount(); SoundManager.playBackBtn() }} showBackButton={true}/>
       break;
       case 'createCancha':
        return <CreateCancha canchas={this.state.canchas} complejo={this.props.complejo} back={()=>{ this.setState({scene:"allFields"}); SoundManager.playBackBtn() }}/>
@@ -66,11 +70,16 @@ showScene =() =>{
   }
 }
 
-
+centerNoText = (canchas) => {
+  if(canchas.length==0){
+    return {flex:5,flexDirection:'row',paddingHorizontal:10,alignItems:'center',justifyContent:'center'}
+  }
+  return {flex:5,flexDirection:'row',paddingHorizontal:10}
+}
 showSearchingScene = () => {
   let canchas =  this.state.canchas.map( (val, key) => {
         return <View key={key} style={{flex:1}}>
-        <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'fieldDetail'});SoundManager.playPushBtn();}}
+        <TouchableOpacity onPress={()=> { this.setState({currentCancha:val,scene:'canchaDetail'});SoundManager.playPushBtn();}}
                key={key} style={{flexDirection:'row', height:80, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
                <View style={{flex:3}}>
                 {this.showImage(val)}
@@ -90,7 +99,7 @@ showSearchingScene = () => {
 <View style={styles.mainName}><Text style={styles.whiteFont}>CANCHAS DE {this.props.complejo.nombre.toUpperCase()}</Text></View>
 <View style={styles.subtitle}><Text style={styles.whiteFont2}>Listado de canchas del complejo</Text></View>
   <View style={{flex:1,padding:10}}>
-         <View style={{flex:5,flexDirection:'row',paddingHorizontal:10,justifyContent:'center',alignItems:'center'}}>
+         <View style={this.centerNoText(canchas)}>
             <ScrollView style={{flex:1}}>
             {this.showResults(canchas)}
             </ScrollView>
@@ -132,13 +141,13 @@ showSearchingScene = () => {
      return <Image style={{flex:1, alignItems:'center',marginRight:10,borderColor:'white'}} borderRadius={5}   source={{uri: val.image}}></Image>
 
     }else{
-    return <Image style={{flex:1, alignItems:'center',marginRight:10,borderColor:'white'}} borderRadius={5}   source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+    return <Image style={{flex:1, alignItems:'center',marginRight:10,borderColor:'white'}} borderRadius={5}   source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
   }
 }
 
 showResults = (canchas) => {
   if(canchas.length==0){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center',alignItems:'center'}}><Text>No tiene ninguna cancha registrada.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No tiene ninguna cancha registrada.</Text></View>
   }else{
     return canchas;
   }

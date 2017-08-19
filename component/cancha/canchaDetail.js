@@ -6,40 +6,88 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  ToastAndroid
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import EditTeam from './editTeam';
+import EditCancha from './editCancha';
+import CanchaService from '../../services/cancha';
 import SoundManager from '../../services/soundManager';
 
-export default class TeamDetail extends Component {
+export default class CanchaDetail extends Component {
   constructor(props){
     super(props)
     this.state ={
-      scene: 'teamDetail'
+      scene: 'canchaDetail',
+      wantToDelete:false,
     }
   }
- setSceneTeamDetail =()=>{
+
+
+ setScenecanchaDetail =()=>{
    SoundManager.playBackBtn();
-   this.setState({scene:'teamDetail'})
+   this.setState({scene:'canchaDetail'})
  }
   showScene = () => {
     switch (this.state.scene) {
-      case 'teamDetail':
-        return this.showTeamDetail()
+      case 'canchaDetail':
+        return this.showCanchaDetail()
         break;
-        case 'editTeam':
-          return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
+        case 'editcancha':
+          return <EditCancha canchas={this.props.canchas} complejo={this.props.complejo} cancha={this.props.cancha} back={()=>{this.setScenecanchaDetail()}} />
           break;
       default:
 
     }
   }
+
+ setWantToDelete = () =>{
+   this.setState({wantToDelete:!this.state.wantToDelete})
+ }
+ delete = () => {
+   CanchaService.delete(this.props.canchas,this.props.cancha,this.props.complejo.uid);
+   ToastAndroid.show('Cancha eliminada correctamente', ToastAndroid.LONG);
+   this.props.back();
+ }
+
+  showButtonOptions = () =>{
+    if(!this.state.wantToDelete){
+  return  <View style={{flex:1,flexDirection:'row'}}>
+    <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.setWantToDelete();
+      }}><Text style={styles.textButton}>
+      <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
+   </TouchableOpacity>
+   <TouchableOpacity style={styles.button} onPress={()=>{
+     SoundManager.playPushBtn();
+     this.setState({scene:'editcancha'})}}><Text style={styles.textButton}>
+     <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
+  </TouchableOpacity>
+  </View>
+}else{
+  return <View style={{flex:1,flexDirection:'row'}}>
+    <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.delete()
+     }}><Text style={styles.textButton}>
+      <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
+   </TouchableOpacity>
+   <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
+     SoundManager.playPushBtn();
+     this.setWantToDelete();
+    }}><Text style={styles.textButton}>
+      <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
+  </TouchableOpacity>
+  </View>
+}
+  }
+
   showImage = () => {
-    if(this.props.team.image !== undefined){
-     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}>
+    if(this.props.cancha.image !== undefined){
+     return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.cancha.image}}>
        </Image>
     }else{
     return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
@@ -47,11 +95,14 @@ export default class TeamDetail extends Component {
   }
   }
   showEdit = () => {
-    if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid && this.props.showEditButton){
-    return <TouchableOpacity style={styles.button} onPress={()=>{
+    if(true){
+    return
+    <View style={{flex:1, alignItems:'flex-end'}}>
+    <TouchableOpacity style={styles.button} onPress={()=>{
       SoundManager.playPushBtn();
-      this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-  }
+      this.setState({scene:'editcancha'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+    </View>
+   }
   return null;
   }
 
@@ -67,67 +118,57 @@ export default class TeamDetail extends Component {
             </Text>
         </View>
      </TouchableOpacity>
-     <View style={{flex:1, alignItems:'flex-end'}}>
-     {this.showEdit()}
-    </View>
+     <View style={{flex:0.4,alignItems:'flex-end'}}>
+     {this.showButtonOptions()}
+     </View>
     </View>
   )
     }
     return null;
   }
 
-  showTeamDetail = () => {
+  showCanchaDetail = () => {
     return (
       <FadeInView style={styles.container} duration={600}>
         <View style={styles.infoContainer}>
           <View style={styles.mainName}>
-              <Text style={styles.whiteFont}>{this.props.team.nombre}</Text>
+              <Text style={styles.whiteFont}>CANCHA NÚMERO {this.props.cancha.numero}</Text>
           </View>
           <View style={styles.subtitle}>
-              <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
+              <Text style={styles.whiteFont2}>Información básica</Text>
           </View>
          <View style={styles.basicInfo}>
             <View style={{flex:1,alignItems:'center'}}>
-               {this.showImage()}
+               {this.showImage(this.props.cancha)}
               <View style={[styles.circularIcon,{margin:-30}]}>
-                   <Icon name={"shield"}  size={40} color="#424242" />
+                   <Icon name={"futbol-o"}  size={25} color="#424242" />
               </View>
-              <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
-              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
             </View>
             <View style={{flex:3,padding:10}}>
               <ScrollView>
                   <View style={styles.info}>
-                     <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                     <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
+                     <Text style={[styles.flexStart,{flex:1}]}>Número</Text>
+                     <Text style={[styles.flexEnd,{flex:5}]}>{this.props.cancha.numero}</Text>
                   </View>
                   <View style={styles.info}>
-                     <Text style={styles.flexStart}>Liga</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.liga}</Text>
+                     <Text style={styles.flexStart}>Gramilla</Text>
+                     <Text style={styles.flexEnd}>{this.props.cancha.gramilla}</Text>
                   </View>
                   <View style={styles.info}>
-                     <Text style={styles.flexStart}>Copas</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.copas}</Text>
+                     <Text style={styles.flexStart}>Techada</Text>
+                     <Text style={styles.flexEnd}>{this.props.cancha.techo}</Text>
                   </View>
                   <View style={styles.info}>
-                     <Text style={styles.flexStart}>Género</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.genero}</Text>
+                     <Text style={styles.flexStart}>Complejo</Text>
+                     <Text style={styles.flexEnd}>{this.props.cancha.complejo.nombre}</Text>
                   </View>
                   <View style={styles.info}>
-                     <Text style={styles.flexStart}>Goles marcados</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.golesMarcados}</Text>
+                     <Text style={styles.flexStart}>Provincia</Text>
+                     <Text style={styles.flexEnd}>{this.props.cancha.provincia}</Text>
                   </View>
                   <View style={styles.info}>
-                     <Text style={styles.flexStart}>Goles recibidos</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.golesRecibidos}</Text>
-                  </View>
-                  <View style={styles.info}>
-                     <Text style={styles.flexStart}>Mayor puntaje de la historia</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.mayorPuntajeDeLaHistoria}</Text>
-                  </View>
-                  <View style={styles.info}>
-                     <Text style={styles.flexStart}>Racha de victorias</Text>
-                     <Text style={styles.flexEnd}>{this.props.team.rachaVictorias}</Text>
+                     <Text style={styles.flexStart}>Cantón</Text>
+                     <Text style={styles.flexEnd}>{this.props.cancha.canton}</Text>
                   </View>
                 </ScrollView>
               </View>
@@ -236,24 +277,45 @@ export default class TeamDetail extends Component {
      color:'white',
      textAlign:'center'
    },
-   buttonEdit:{
-     marginRight:5,
-     marginBottom:5,
-     paddingHorizontal:10,
-     paddingVertical:4,
-     alignItems:'center',
-     justifyContent:'center',
-     borderRadius:9,
-     backgroundColor:'#F4511E',
-     flex:3,
-   },
    button:{
      alignItems:'center',
      justifyContent:'center',
-     paddingHorizontal:10,
+     padding:10,
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,
+     marginBottom:4,
+     marginRight:4
+   },
+   buttonConfirm:{
+     alignItems:'center',
+     justifyContent:'center',
+     padding:10,
+     borderRadius:9,
+     backgroundColor:'#388E3C',
+     flex:3,
+     marginBottom:4,
+     marginRight:4
+   },
+   buttonEliminar:{
+     alignItems:'center',
+     justifyContent:'center',
+     padding:10,
+     borderRadius:9,
+     backgroundColor:'#512DA8',
+     flex:3,
+     marginBottom:4,
+     marginRight:4
+   },
+   buttonEliminarAccept:{
+     alignItems:'center',
+     justifyContent:'center',
+     padding:10,
+     borderRadius:9,
+     backgroundColor:'#D32F2F',
+     flex:3,
+     marginBottom:4,
+     marginRight:4
    },
    textButton: {
      textAlign:'center',

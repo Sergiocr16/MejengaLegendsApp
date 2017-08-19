@@ -7,16 +7,34 @@ class CanchaService {
       FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,canchas);
     }
 
-    static newCanchaByComplejo(objeto){
-      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,objeto.uid,objeto);
+    static updateCancha(canchas,cancha,complejoUID){
+      updatedCanchas = [];
+      canchas.map((val)=>{
+        var canchaNueva = val;
+        if(val.uid === cancha.uid){
+          canchaNueva = cancha;
+        }
+        updatedCanchas.push(canchaNueva)
+      })
+      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,updatedCanchas);
     }
-    static findTopComplejos(callback,error){
-      FirebaseBasicService.orderByAttribute('complejos/active/','canton',callback,error)
+    
+    static replace(canchas,complejoUID){
+      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,canchas);
     }
 
-    static getCanchasByComplejo(idComplejo, callback,error){
-      FirebaseBasicService.findActiveById(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
+    static delete(canchas,cancha,complejoUID){
+      updatedCanchas = [];
+      canchas.map((val)=>{
+        var canchaNueva = val;
+        if(val.uid !== cancha.uid){
+            updatedCanchas.push(canchaNueva)
+        }
+      })
+      FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,updatedCanchas);
     }
+
+
 }
 
 

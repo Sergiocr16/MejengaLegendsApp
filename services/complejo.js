@@ -14,12 +14,13 @@ class ComplejoService {
       FirebaseBasicService.newWithKey(Entities.COMPLEJOS, objeto.uid,objeto);
     }
 
-    static updateComplejo(complejo){
+    static update(complejo){
         FirebaseBasicService.update(Entities.COMPLEJOS,complejo.uid, complejo)
     }
 
-    static deleteComplejo(key){
+    static delete(key){
       FirebaseBasicService.deleteForever(Entities.COMPLEJOS + '/active/',key)
+      FirebaseBasicService.deleteForever(Entities.CANCHASBYCOMPLEJO + '/active/',key)
     }
 
     static updateCancha(key, cancha){
@@ -39,6 +40,9 @@ class ComplejoService {
 
     static getCanchasByComplejo(idComplejo, callback,error){
       FirebaseBasicService.findActiveById(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
+    }
+    static getCanchasByComplejoOnce(idComplejo, callback,error){
+      FirebaseBasicService.findActiveByIdOnce(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
     }
 }
 

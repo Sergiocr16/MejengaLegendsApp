@@ -18,10 +18,11 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 //import Cancha from '../../services/cancha';
 import ComplejoService from '../../services/complejo';
+import CanchaService from '../../services/cancha';
 import Loader from '../app/loading';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
-
+import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import RNFetchBlob from 'react-native-fetch-blob'
@@ -35,64 +36,74 @@ export default class EditComplejo extends Component {
   constructor(props){
     super(props)
     this.state = {
-      provinciaList: ["Seleccionar", 'Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San Jose'],
-      cantonList: ["Seleccionar"],
+      provinciaList: ['Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San José'],
+      cantonList:  [],
       // Estados del constructor
       uid: null,
-      nombre: '',
-      provincia: '',
-      canton: '',
-      comodidades: '',
-      imagen: '',
-      administrador: {nombre:null, jugadorGUID:null},
+      nombre: this.props.complejo.nombre,
+      provincia: this.props.complejo.provincia,
+      canton: this.props.complejo.canton,
+      comodidades: this.props.complejo.comodidades,
+      comodidadesDefault: [{nombre:"Parqueo",icono:"car",selected:false},
+                           {nombre:"Se aceptan tarjetas",icono:"credit-card-alt",selected:false},
+                           {nombre:"Restaurante",icono:"cutlery",selected:false},
+                           {nombre:"Vestidores",icono:"black-tie",selected:false},
+                           {nombre:"Duchas",icono:"shower",selected:false},
+                           {nombre:"Cajero Automático",icono:"money",selected:false},
+                           {nombre:"Wifi gratis",icono:"wifi",selected:false},
+                           {nombre:"Cafetería",icono:"coffee",selected:false},
+                           {nombre:"Graderías",icono:"tty",selected:false}],
       // Objeto para registrar y editar
-      newComplejo: {
-          uid: null,
-          nombre: '',
-          provincia: '',
-          canton: '',
-          comodidades: '',
-          imagen: '',
-          administrador: {nombre:null, jugadorGUID:null}
-      },
-      ///
-      cancha:{ nombre: '',capacidad:'',gramilla:'',techo: false},
+      newComplejo: this.props.complejo,
       imagePath: null,
       imageHeight: null,
       imageWidth: null,
       source:'none',
-      scene:'EditComplejo',
+      scene:'createComplejo',
       submitted:false
-    }   
+    }
   }
 
+
+  defineSelectedComodidades = () => {
+    var comodidadesDefault = [];
+    this.state.comodidadesDefault.map((val)=>{
+      this.state.comodidades.map((already)=>{
+        if(already.nombre === val.nombre){
+          val.selected = true;
+        }
+      })
+      comodidadesDefault.push(val)
+    })
+    this.setState({comodidadesDefault})
+  }
   handleProvinciaChange(idProv){
     this.setState({provincia: idProv})
     switch (idProv) {
-        case 'San Jose':
-            this.setState({cantonList : ["Seleccionar","Aserrí","Coronado","Curridabat","Desamparados","Dota","Escazú", "Montes de Oca","Mora",
-            "Moravia","San José Central","Perez Zeledón","Santa Ana","Alajuelita","Tarrazú","Tibás"]})  
+        case 'San José':
+            this.setState({cantonList : ["Aserrí","Coronado","Curridabat","Desamparados","Dota","Escazú", "Montes de Oca","Mora",
+            "Moravia","San José Central","Perez Zeledón","Santa Ana","Alajuelita","Tarrazú","Tibás"]})
             break;
         case 'Alajuela':
-            this.setState({cantonList :["Seleccionar",'Alajuela','San Ramón','Grecia','San Mateo','Atenas','Naranjo','Palmares',
+            this.setState({cantonList :['Alajuela','San Ramón','Grecia','San Mateo','Atenas','Naranjo','Palmares',
             'Poás','Orotina','San Carlos','Zarcero','Valverde Vega','Upala','Los Chiles','Guatuzo','Rio Cuarto']})
             break;
         case 'Cartago':
-            this.setState({cantonList : ["Seleccionar","Cartago","Paraíso","La Unión","Jiménez","Turrialba","Alvarado","Oreamuno","El Guarco"]})
+            this.setState({cantonList : ["Cartago","Paraíso","La Unión","Jiménez","Turrialba","Alvarado","Oreamuno","El Guarco"]})
             break;
         case 'Guanacaste':
-            this.setState({cantonList : ["Seleccionar",'Liberia','Nicoya','Santa Cruz','Bagaces','Carrillo',
+            this.setState({cantonList : ['Liberia','Nicoya','Santa Cruz','Bagaces','Carrillo',
             'Cañas','Abangares','Tilarán','Nandayure','La Cruz','Hojancha']})
             break;
         case 'Heredia':
-            this.setState({cantonList : ["Seleccionar",'Heredia','Barva','Santo Domingo','Santa Bárbara',
+            this.setState({cantonList : ['Heredia','Barva','Santo Domingo','Santa Bárbara',
             'San Rafael','San Isidro','Belén','Flores','San Pablo','Sarapiquí']})
             break;
         case 'Limon':
-            this.setState({cantonList : ["Seleccionar",'Limón','Pococí','Siquirres','Talamanca','Matina','Guácimo']})
+            this.setState({cantonList : ['Limón','Pococí','Siquirres','Talamanca','Matina','Guácimo']})
             break;
         case 'Puntarenas':
-            this.setState({cantonList : ["Seleccionar",'Puntarenas','Esparza','Buenos Aires','Montes de Oro',
+            this.setState({cantonList : ['Puntarenas','Esparza','Buenos Aires','Montes de Oro',
             'Osa','Quepos','Golfito','Cotobrus','Parrita','Corredores','Garabito']})
             break;
         default:
@@ -104,18 +115,16 @@ export default class EditComplejo extends Component {
   }
   componentDidMount() {
     this.setMyComplejoMenu();
+    this.defineSelectedComodidades();
+    this.handleProvinciaChange(this.props.complejo.provincia);
   }
 
   isEmpty = (val) => {
-    if(this.state.submitted){
       if(val===""){
         return '#F44336';
       }else{
         return '#42A5F5';
       }
-    } else{
-      return '#42A5F5';
-    }
   }
 
   isValid = () => {
@@ -147,13 +156,20 @@ export default class EditComplejo extends Component {
          return imageRef.getDownloadURL()
        })
        .then((url) => {
-           this.state.newComplejo.imagen = url;
-           ComplejoService.newWithCallback(this.state.newComplejo,(cancha)=>{
-             canchasDelComplejo = this.props.canchas;
-             canchasDelComplejo.push(cancha);
-             ComplejoService.newCanchasByComplejo(canchasDelComplejo);
-             this.props.back();
-           });
+           this.state.newComplejo.image = url;
+           ComplejoService.update(this.state.newComplejo)
+           var updatedCanchas = [];
+           getCanchasByComplejo(this.state.newComplejo.uid,(canchas)=>{
+             canchas.map((val)=>{
+               val.complejo = {complejoGUID:this.state.newComplejo.uid,nombre: this.state.newComplejo.nombre}
+               val.provincia = this.state.newComplejo.provincia;
+               val.canton = this.state.newComplejo.canton;
+               updatedCanchas.push(val)
+             })
+               CanchaService.replace(updatedCanchas,this.state.newComplejo.uid)
+           },()=>{
+           })
+           this.props.back();
            resolve(url)
        })
        .catch((error) => {
@@ -162,12 +178,12 @@ export default class EditComplejo extends Component {
    })
   }
   setMyComplejoMenu = ()=>{
-    this.setState({scene:'EditComplejo'})
+    this.setState({scene:'createComplejo'})
   }
   showScene = () => {
     switch (this.state.scene) {
-    case 'EditComplejo':
-      return this.showEditComplejo()
+    case 'createComplejo':
+      return this.showCreateComplejo()
       break;
     case 'loading':
       return <Loader/>
@@ -175,7 +191,43 @@ export default class EditComplejo extends Component {
     default:
     }
   }
-  showEditComplejo = () => {
+
+  defineComodidades = () => {
+    var comodidades = []
+    this.state.comodidadesDefault.map((val)=>{
+      if(val.selected){
+        comodidades.push({nombre:val.nombre,icono:val.icono})
+      }
+    })
+    return comodidades;
+  }
+  seleccionaComodidad = (key) => {
+    SoundManager.playBackBtn()
+    var updatedArray = this.state.comodidadesDefault;
+    updatedArray[key].selected = !updatedArray[key].selected;
+    this.setState({comodidadesDefault:updatedArray})
+  }
+  showComodidades = () => {
+    return this.state.comodidadesDefault.map( (val, key) => {
+      if(!val.selected){
+        return <TouchableOpacity key={key} onPress={()=>{this.seleccionaComodidad(key)}}>
+        <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+        <Icon name={val.icono} size={25} color="#9E9E9E"/>
+        <Text style={{textAlign:'center',color:"#9E9E9E",textAlign:'center'}}>{val.nombre}</Text>
+        </View>
+        </TouchableOpacity>
+      }else{
+        return (<TouchableOpacity key={key} onPress={()=>{this.seleccionaComodidad(key)}}>
+        <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+        <Icon name={val.icono} size={25} color="#1565C0"/>
+        <Text style={{textAlign:'center',color:"#1565C0",textAlign:'center'}}>{val.nombre}</Text>
+        </View>
+        </TouchableOpacity>)
+    }
+    });
+  }
+
+  showCreateComplejo = () => {
     let provinciaPicker = this.state.provinciaList.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
     });
@@ -188,54 +240,13 @@ export default class EditComplejo extends Component {
     <FadeInView style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>Editar complejo</Text>
+            <Text style={styles.whiteFont}>{this.props.complejo.nombre.toUpperCase()}</Text>
         </View>
         <View style={styles.subtitle}>
             <Text style={styles.whiteFont2}>Información básica</Text>
         </View>
        <View style={{padding:20,flex:1}}>
        <ScrollView>
-         <View style={{flexDirection:'row',flex:3}}>
-           <TextInput
-           underlineColorAndroid={this.isEmpty(this.state.nombre)}
-           placeholderTextColor="grey"
-           placeholder="Nombre del complejo"
-           autocapitalize={true}
-           disableFullscreenUI={true}
-           style={[styles.inputText,{flex:1}]}
-           onChangeText={(nombre) => this.setState({nombre})}
-           />
-        </View>
-        <View style={{flexDirection:'column',marginVertical:20}}>
-          <View style={{flex:1,marginBottom:25}}>
-             <Text style={styles.bold}>Selecciona la provincia</Text>
-             <Picker style={styles.androidPicker} ref='provincia' label='Provincia' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                selectedValue = {this.state.provincia} value = {this.state.provincia}                              
-                onValueChange={this.handleProvinciaChange.bind(this) } >
-                {provinciaPicker} 
-             </Picker>
-          <Text style={styles.bold}>Selecciona el cantón</Text>
-          <Picker style={styles.androidPicker} ref='canton' label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                            options={this.state.cantonList} 
-                            value ={this.state.canton} selectedValue = {this.state.canton}
-                            onChange={this.handleCantonChange.bind(this)}
-            onValueChange={ (canton) => (this.setState({canton})) } >
-            {cantonPicker}
-          </Picker>
-          <TextInput style={{width: '49.5%', height: 100, backgroundColor: 'transparent'}}
-          label='Comodidades:'
-          ref='comodidades' 
-          placeholder='Comodidades' 
-          placeholderTextColor="#888888"
-          underlineColorAndroid = "transparent"
-          multiline={true}
-          numberOfLines={4}
-          value ={this.state.comodidades}
-          onChangeText={(comodidades) => this.setState({comodidades})}
-          />
-        </View>
-      </View>
-
        <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',margin:15}}>
         <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
         {this.showImage()}
@@ -244,6 +255,42 @@ export default class EditComplejo extends Component {
         <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
         </TouchableOpacity>
        </View>
+         <View style={{flexDirection:'row',flex:3}}>
+           <TextInput
+           underlineColorAndroid={this.isEmpty(this.state.nombre)}
+           placeholderTextColor="grey"
+           placeholder="Nombre del complejo"
+           autocapitalize={true}
+           disableFullscreenUI={true}
+           style={[styles.inputText,{flex:1}]}
+           value={this.state.nombre}
+           onChangeText={(nombre) => this.setState({nombre})}
+           />
+        </View>
+        <View style={{flexDirection:'column',marginVertical:20}}>
+          <View style={{flex:1}}>
+             <Text style={styles.bold}>Selecciona la provincia</Text>
+             <Picker style={styles.androidPicker} ref='provincia' label='Provincia' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+                selectedValue = {this.state.provincia} value = {this.state.provincia}
+                onValueChange={this.handleProvinciaChange.bind(this)} >
+                {provinciaPicker}
+             </Picker>
+          <Text style={styles.bold}>Selecciona el cantón</Text>
+          <Picker style={styles.androidPicker} ref='canton' label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+                            options={this.state.cantonList}
+                            value ={this.state.canton} selectedValue = {this.state.canton}
+                            onChange={this.handleCantonChange.bind(this)}
+            onValueChange={ (canton) => (this.setState({canton})) } >
+            {cantonPicker}
+          </Picker>
+        </View>
+        <View style={{flex:1}}>
+        <Text style={styles.bold,{marginBottom:8}}>Selecciona las comodidades</Text>
+          <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+            {this.showComodidades()}
+          </View>
+        </View>
+      </View>
        <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
            <Text style={styles.buttonText2}>¡Listo!</Text>
        </TouchableOpacity>
@@ -259,11 +306,15 @@ export default class EditComplejo extends Component {
             </Text>
         </View>
      </TouchableOpacity>
+     <View style={{flex:1, alignItems:'flex-end'}}>
+
+    </View>
     </View>
     </FadeInView>
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -272,7 +323,7 @@ export default class EditComplejo extends Component {
          noData: true,
        };
        var options = {
-          title: 'Selecciona tu foto de perfil',
+          title: 'Selecciona la foto de tu complejo deportivo',
           takePhotoButtonTitle: "Tomar una foto...",
           chooseFromLibraryButtonTitle: "Seleccionar desde la galería...",
           cameraType:'front'
@@ -283,7 +334,6 @@ export default class EditComplejo extends Component {
          else if (response.error) {
          }
          else {
-
            this.setState({
              imagePath: response.uri,
              imageHeight: response.height,
@@ -297,31 +347,39 @@ export default class EditComplejo extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       if(this.props.complejo.image==undefined){
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
+       }else{
+         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.complejo.image}}></Image>
+       }
      }
      }
-
  submit = () =>{
-   this.state.newComplejo.uid = Date.now();
    this.state.newComplejo.nombre = this.state.nombre;
    this.state.newComplejo.provincia = this.state.provincia;
    this.state.newComplejo.canton = this.state.canton;
-   this.state.newComplejo.comodidades = this.state.comodidades;
-   this.state.newComplejo.imagen = this.state.imagen;
-
-   var canchasDelComplejo = {};
-   this.state.newComplejo.administrador = { nombre: '',jugadorGUID:firebase.auth().currentUser.uid};
-
+   this.state.newComplejo.comodidades = this.defineComodidades();
+   SoundManager.playPushBtn();
    this.setState({submitted:true})
-
     if(this.isValid()){
         this.setState({scene:'loading'})
-    // if(this.state.source=='none'){
-      ComplejoService.newWithKey(this.state.newComplejo)
+     if(this.state.source=='none'){
+      ComplejoService.update(this.state.newComplejo)
+      var updatedCanchas = [];
+      ComplejoService.getCanchasByComplejoOnce(this.state.newComplejo.uid,(canchas)=>{
+        canchas.map((val)=>{
+          val.complejo = {complejoGUID:this.state.newComplejo.uid,nombre: this.state.newComplejo.nombre}
+          val.provincia = this.state.newComplejo.provincia;
+          val.canton = this.state.newComplejo.canton;
+          updatedCanchas.push(val)
+        })
+          CanchaService.replace(updatedCanchas,this.state.newComplejo.uid)
+      },()=>{
+      })
       this.props.back();
-    // }else{
-    // this.uploadImage(this.state.source)
-    // }
+    }else{
+    this.uploadImage(this.state.source)
+    }
   }
  }
 

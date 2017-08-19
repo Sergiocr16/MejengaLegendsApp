@@ -42,7 +42,7 @@ export default class Complejo extends Component {
             this.setState({complejosArray:complejos,scene:"myComplejos"})
             },()=>{
                 // this.setState({scene:"registrarComplejo"})
-               this.setState({scene:"noComplejos"})
+               this.setState({scene:"noComplejos",complejosArray:[]})
             }
         )
     }
@@ -101,7 +101,7 @@ export default class Complejo extends Component {
              </View>
          </Image>
         }else{
-        return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+        return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
             <View style={[styles.circularIcon,{margin:-30}]}>
                <Icon name={"futbol-o"}  size={27} color="#424242" />
             </View>
@@ -142,7 +142,7 @@ export default class Complejo extends Component {
             return (<CreateComplejo complejo={this.props.complejo} back={()=>{SoundManager.playBackBtn(); this.componentDidMount()}} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
             break;
         case 'detalleComplejo':
-            return (<ComplejoDetail back={()=> this.setMyComplejoMenu()} complejo={this.state.currentComplejo}/>);
+            return (<ComplejoDetail back={()=>{this.componentDidMount();SoundManager.playBackBtn()}} complejo={this.state.currentComplejo}/>);
             break;
         default:
         }

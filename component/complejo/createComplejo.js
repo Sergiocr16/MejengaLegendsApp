@@ -52,7 +52,6 @@ export default class CreateComplejo extends Component {
                            {nombre:"Wifi gratis",icono:"wifi",selected:false},
                            {nombre:"Cafetería",icono:"coffee",selected:false},
                            {nombre:"Graderías",icono:"tty",selected:false}],
-      administrador: {nombre:null, jugadorGUID:null},
       // Objeto para registrar y editar
       newComplejo: {
           uid: null,
@@ -60,12 +59,9 @@ export default class CreateComplejo extends Component {
           provincia: '',
           canton: '',
           comodidades: [],
-          imagen: '',
           noAdmin:true,
           administrador: {nombre:null, jugadorGUID:null}
       },
-      ///
-      cancha:{ nombre: '',capacidad:'',gramilla:'',techo: false},
       imagePath: null,
       imageHeight: null,
       imageWidth: null,
@@ -336,7 +332,7 @@ export default class CreateComplejo extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
      }
      }
  submit = () =>{

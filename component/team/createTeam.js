@@ -234,7 +234,7 @@ export default class CreateTeam extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
      }
      }
  submit = () =>{

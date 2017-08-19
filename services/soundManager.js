@@ -4,7 +4,7 @@ var songsQuantity = 10;
 var backgroundMusic;
 var songs = [];
 var ambienteEstadio;
-
+var logoSound;
 
 // CLIKCS
 var initClick;
@@ -14,6 +14,7 @@ var switchBtn;
 var pushBtn;
 var backBtn;
 var startedBackground = false;
+var startedSonidoAmbiente = false;
 // CLIKCS
 
 class SoundManager {
@@ -46,6 +47,8 @@ class SoundManager {
     ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
 
+    logoSound = new Sound("logosound.wav",Sound.MAIN_BUNDLE, (error) => {
+    })
     // CLICKS
     switchBtn = new Sound("switchsound.wav",Sound.MAIN_BUNDLE, (error) => {
     })
@@ -82,6 +85,16 @@ class SoundManager {
     }
   }
 
+
+  static playLogoSound(){
+    logoSound.play((success)=>{
+      if(success){
+
+      }else{
+        console.log("NO SIRVE")
+      }
+    })
+  }
     static playBackgroundMusic(){
       playSong = (position) => {
       backgroundMusic = songs[position];
@@ -135,11 +148,17 @@ class SoundManager {
       playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
     }
+    static pauseBackgroundMusic(){
+      backgroundMusic.pause();
+    }
+    static pauseAmbienteEstadio(){
+      ambienteEstadio.pause();
+    }
     static stopAmbienteEstadio(){
       ambienteEstadio.stop()
     }
 
-    static playNotificationsSound(){
+    static playNotificationSound(){
      notification.play();
     }
 

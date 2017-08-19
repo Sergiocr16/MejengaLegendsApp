@@ -39,16 +39,20 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-    //  console.disableYellowBox = true;
+    console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
     SoundManager.loadSounds();
+      SoundManager.playLogoSound()
   }
 
   componentDidMount() {
+    setTimeout(()=>{
+     SoundManager.playLogoSound()
+    },20)
       setTimeout(()=>{this.setState({initialView:'Welcome'})
-      SoundManager.playAmbienteEstadio()
-    },2000)
+       SoundManager.playAmbienteEstadio()
+    },3000)
   }
   async getInitialView(){
      await firebase.auth().onAuthStateChanged( async (user) => {
@@ -90,7 +94,6 @@ export default class MejengaLegendsApp extends Component {
       return (<Welcome showInitialView={()=>this.getInitialView()}/>)
       break;
       default:
-
     }
   }
   render() {

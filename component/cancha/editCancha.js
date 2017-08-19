@@ -16,8 +16,8 @@ import {
 var moment = require('moment');
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-//import Cancha from '../../services/cancha';
-import ComplejoService from '../../services/complejo';
+import SoundManager from '../../services/soundManager';
+import CanchaService from '../../services/cancha';
 import Loader from '../app/loading';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -39,33 +39,56 @@ export default class EditCancha extends Component {
       source:'none',
       scene:'EditCancha',
       submitted:false,
-       // Estados del constructor
-       nombre: this.props.cancha.nombre,
-       gramilla: this.props.cancha.gramilla,
-       capacidad : this.props.cancha.capacidad,
-       numero: this.props.cancha.numero,
-       techo: this.props.cancha.techo
-    }   
-  }
-
-  isEmpty = (val) => {
-    if(this.state.submitted){
-      if(val===""){
-        return '#F44336';
-      }else{
-        return '#42A5F5';
-      }
-    } else{
-      return '#42A5F5';
+      canchas : this.props.canchas,
+      techoOptions: ["Si","No"],
+      gramillaOptions: ["Sintética","Natural","Híbrida"],
+      cancha:this.props.cancha,
+      numero: this.props.cancha.numero,
+      gramilla: this.props.cancha.gramilla,
+      techo: this.props.cancha.techo,
+      source:'none',
+      alreadyRegistered:false
     }
   }
 
+  numberExist = () => {
+    var exist = false;
+    if(this.state.numero!==this.props.cancha.numero){
+    this.props.canchas.map((val)=>{
+      if(this.state.numero === val.numero){
+        exist = true;
+      }
+    })
+  }
+  return exist;
+  }
+  isEmpty = (val) => {
+      if(val===""){
+        return '#F44336';
+      }else if(this.numberExist()){
+         ToastAndroid.show('Ya existe una cancha registrada con ese número', ToastAndroid.LONG);
+          return '#F44336';
+      }else{
+        return '#42A5F5';
+      }
+  }
+  showImage = () => {
+    if(this.state.source!=='none'){
+     return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
+    }else{
+    if(this.props.cancha.image==undefined){
+    return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
+    }else{
+      return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.cancha.image}}></Image>
+    }
+  }
+  }
   isValid = () => {
-   if(this.state.nombre===""){
+  if(this.state.numero===""){
      ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
      return false;
    }else{
-     return true;
+      return true;
    }
   }
 
@@ -84,12 +107,43 @@ export default class EditCancha extends Component {
     default:
     }
   }
+  uploadImage = (uri, mime = 'application/octet-stream') => {
+   return new Promise((resolve, reject) => {
+     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : this.state.imagePath
+       const sessionId = new Date().getTime()
+       let uploadBlob = null
+       const imageRef = firebase.storage().ref('images').child(`${sessionId}`)
 
+       fs.readFile(uploadUri, 'base64')
+       .then((data) => {
+         return Blob.build(data, { type: `${mime};BASE64` })
+       })
+       .then((blob) => {
+         uploadBlob = blob
+         return imageRef.put(blob, { contentType: mime })
+       })
+       .then(() => {
+         uploadBlob.close()
+         return imageRef.getDownloadURL()
+       })
+       .then((url) => {
+           this.state.cancha.image = url;
+           CanchaService.updateCancha(this.props.canchas,this.state.cancha,this.props.complejo.uid);
+           this.props.back();
+           resolve(url)
+       })
+       .catch((error) => {
+         reject(error)
+       })
+   })
+  }
   showEditCancha = () => {
     let techoPicker = this.state.techoOptions.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
     });
-
+    let gramillaPicker = this.state.gramillaOptions.map( (s, i) => {
+      return <Picker.Item  key={i} value={s} label={s} />
+    });
 
   return (
     <FadeInView style={styles.container} duration={600}>
@@ -99,53 +153,43 @@ export default class EditCancha extends Component {
         </View>
        <View style={{padding:20,flex:1}}>
        <ScrollView>
-          <View style={{flexDirection:'row',flex:3}}>
-            <TextInput
-            underlineColorAndroid={this.isEmpty(this.state.nombre)}
-            placeholderTextColor="grey"
-            placeholder="Nombre de la cancha"
-            value={this.state.nombre}
-            autocapitalize={true}
-            disableFullscreenUI={true}
-            style={[styles.inputText,{flex:1}]}
-            onChangeText={(nombre) => this.setState({nombre})}
-            />
+       <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',margin:15}}>
+        <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
+        {this.showImage(this.props.cancha)}
+        </View>
+        <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
+        <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
+        </TouchableOpacity>
+       </View>
+       <View style={{flexDirection:'row',flex:3}}>
+         <TextInput
+         underlineColorAndroid={this.isEmpty(this.state.numero)}
+         placeholderTextColor="grey"
+         placeholder="Número de la cancha"
+         autocapitalize={true}
+         disableFullscreenUI={true}
+         style={[styles.inputText,{flex:1}]}
+         value={this.state.numero}
+         onChangeText={(numero) => {this.setState({numero}); this.numberExist() }}
+         />
+      </View>
+        <View style={{flexDirection:'column',marginTop:15}}>
+        <Text style={styles.bold}>Tipo de  gramilla</Text>
+        <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+            selectedValue = {this.state.gramilla} value = {this.state.gramilla} options={this.state.gramillaOptions}
+            onValueChange={(gramilla) => this.setState({gramilla})} >
+            {gramillaPicker}
+         </Picker>
+         </View>
+         <View style={{flexDirection:'column',marginVertical:5}}>
+         <Text style={styles.bold}>¿Se encuentra bajo techo?</Text>
+         <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+             selectedValue = {this.state.techo} value = {this.state.techo} options={this.state.techoOptions}
+             onValueChange={(techo) => this.setState({techo:techo})} >
+             {techoPicker}
+          </Picker>
           </View>
-          <View style={{flexDirection:'row',flex:3}}>
-            <TextInput
-            underlineColorAndroid={this.isEmpty(this.state.capacidad)}
-            placeholderTextColor="grey"
-            placeholder="Capacidad de la cancha"
-            value={this.state.capacidad}
-            autocapitalize={true}
-            disableFullscreenUI={true}
-            keyboardType={'numeric'}
-            style={[styles.inputText,{flex:1}]}
-            onChangeText={(capacidad) => this.setState({capacidad})}
-            />
-            </View>
-          <View style={{flexDirection:'row',flex:3}}>           
-            <TextInput
-            underlineColorAndroid={this.isEmpty(this.state.numero)}
-            placeholderTextColor="grey"
-            placeholder="Numero de la cancha"
-            value={this.state.numero}
-            autocapitalize={true}
-            disableFullscreenUI={true}
-            keyboardType={'numeric'}
-            style={[styles.inputText,{flex:1}]}
-            onChangeText={(numero) => this.setState({numero})}
-            />
-            </View>
-            <View style={{flexDirection:'column',marginVertical:20}}>
-            <Text style={styles.bold}>Bajo techo</Text>
-            <Picker style={styles.androidPicker} ref='techo' label='Techo' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                selectedValue = {this.state.techo} value ={this.state.techo} options={this.state.techoOptions}                              
-                onValueChange={(techo) => this.setState({techo:techo})} >
-                {techoPicker} 
-             </Picker>
-             </View>
-       <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
+       <TouchableOpacity style={styles.button2}  disabled={this.numberExist()} onPress={this.submit} underlayColor='#99d9f4'>
            <Text style={styles.buttonText2}>¡Listo!</Text>
        </TouchableOpacity>
      </ScrollView>
@@ -161,33 +205,58 @@ export default class EditCancha extends Component {
         </View>
      </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={()=>{this.deleteCancha()}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Eliminar</Text></TouchableOpacity>
     </View>
     </View>
     </FadeInView>
   )
  }
 
- deleteCancha(){
-    this.setState({scene:'loading'})
-    ComplejoService.deleteCancha(this.props.cancha.uid);
-    this.props.back();
- }
+ _takePicture = () => {
+   SoundManager.playPushBtn()
+       const cam_options = {
+         mediaType: 'photo',
+         maxWidth: 1000,
+         maxHeight: 1000,
+         quality: 1,
+         noData: true,
+       };
+       var options = {
+          title: 'Selecciona la foto de la cancha',
+          takePhotoButtonTitle: "Tomar una foto...",
+          chooseFromLibraryButtonTitle: "Seleccionar desde la galería...",
+          cameraType:'front'
+         };
+       ImagePicker.showImagePicker(options, (response) => {
+         if (response.didCancel) {
+         }
+         else if (response.error) {
+         }
+         else {
 
+           this.setState({
+             imagePath: response.uri,
+             imageHeight: response.height,
+             imageWidth: response.width,
+             source:response.uri
+           })
+         }
+       })
+     }
  submit = () =>{
-   this.props.cancha.nombre = this.state.nombre;
-   this.props.cancha.gramilla = this.state.gramilla;
-   this.props.cancha.capacidad = this.state.capacidad;
-   this.props.cancha.numero = this.state.numero;
-   this.props.cancha.techo = this.state.techo;
-
-   this.setState({submitted:true})
-
-    if(this.isValid()){
-        this.setState({scene:'loading'})
-        ComplejoService.updateCancha(this.props.cancha.uid, this.props.cancha);
-        this.props.back();
-  }
+   SoundManager.playPushBtn()
+   this.state.cancha.gramilla = this.state.gramilla;
+   this.state.cancha.numero = this.state.numero;
+   this.state.cancha.techo = this.state.techo;
+   console.log(this.isValid())
+   if(this.isValid()){
+   this.setState({scene:'loading'})
+   if(this.state.source=='none'){
+     CanchaService.updateCancha(this.props.canchas,this.state.cancha,this.props.complejo.uid);
+     this.props.back();
+   }else{
+   this.uploadImage(this.state.source)
+}
+}
  }
 
   render(){

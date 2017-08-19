@@ -19,7 +19,8 @@ import FadeInView from 'react-native-fade-in-view';
 import CanchaService from '../../services/cancha';
 import Loader from '../app/loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
+import SoundManager from '../../services/soundManager';
 const Blob = RNFetchBlob.polyfill.Blob
 var ImagePicker = require('react-native-image-picker')
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
@@ -31,7 +32,7 @@ export default class CreateCancha extends Component {
     super(props)
     this.state = {
       // Estados del constructor
-      gramilla: 'Síntetica',
+      gramilla: 'Sintética',
       capacidad: '',
       techo: 'No',
       numero: '',
@@ -41,7 +42,7 @@ export default class CreateCancha extends Component {
       canchas : this.props.canchas,
       ///
       techoOptions: ["Si","No"],
-      gramillaOptions: ["Síntetica","Natural","Híbrida"],
+      gramillaOptions: ["Sintética","Natural","Híbrida"],
       imagePath: null,
       imageHeight: null,
       imageWidth: null,
@@ -53,7 +54,7 @@ export default class CreateCancha extends Component {
 
   isEmpty = (val) => {
     if(this.state.submitted){
-      if(val===""){
+      if(val==="" || this.numberExist()){
         return '#F44336';
       }else{
         return '#42A5F5';
@@ -62,13 +63,24 @@ export default class CreateCancha extends Component {
       return '#42A5F5';
     }
   }
-
+  numberExist = () => {
+    var exist = false;
+    this.props.canchas.map((val)=>{
+      if(this.state.numero == val.numero){
+        exist = true
+      }
+    })
+    return exist;
+  }
   isValid = () => {
-   if(this.state.numero===""){
+  if(this.state.numero===""){
      ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
      return false;
-   }else{
-     return true;
+   }else if(this.numberExist()){
+     ToastAndroid.show('Ya existe una cancha registrada con ese número', ToastAndroid.LONG);
+     return false;
+   }else {
+      return true;
    }
   }
 
@@ -196,6 +208,7 @@ export default class CreateCancha extends Component {
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -229,16 +242,18 @@ export default class CreateCancha extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
      }
      }
 
  submit = () =>{
+   SoundManager.playPushBtn();
    this.state.cancha.numero = this.state.numero;
    this.state.cancha.gramilla = this.state.gramilla;
    this.state.cancha.techo = this.state.techo;
    this.state.cancha.canton = this.props.complejo.canton;
    this.state.cancha.provincia = this.props.complejo.provincia;
+   this.state.cancha.uid = Date.now();
    this.state.cancha.complejo = {complejoGUID:this.props.complejo.uid,nombre: this.props.complejo.nombre};
    this.setState({submitted:true})
     if(this.isValid()){

@@ -188,7 +188,7 @@ defineMainButtons = () => {
     return(<GestureRecognizer config={config} style={styles.superAdminScene}>
               <View style={styles.row}>
                 <View style={styles.row}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneComplejos}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://stadiumdb.com/pictures/stadiums/jpn/kashima_soccer_stadium/kashima_soccer_stadium14.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"bank"}  size={30} color="#1565C0" />
@@ -375,15 +375,15 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}></Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonMainMenu} onPress={this.setSceneComplejos}>
+                <TouchableOpacity style={styles.buttonMainMenu}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
-                    <Text style={styles.buttonSmallTitle}>Complejos</Text>
-                    <Text style={styles.buttonSubtitle}>Complejos y sus canchas</Text>
+                    <Text style={styles.buttonSmallTitle}>RETO</Text>
+                    <Text style={styles.buttonSubtitle}>Tu euipo VS El mundo</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonMainMenu}>
