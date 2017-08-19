@@ -226,9 +226,8 @@ export default class TeamDetail extends Component {
      fontSize:15,
      color:'white',
    },
-   profileImage:{
-     height:130,
-     width:130,
+   profileImage:{   height:110,
+      width:130,
      borderWidth:2,
      borderColor:'white'
    },

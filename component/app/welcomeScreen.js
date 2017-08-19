@@ -44,14 +44,15 @@ _handleAppStateChange = (nextAppState) => {
   render(){
     return (
       <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
-      <Image style={styles.bgImage} source={{uri: 'https://i.ytimg.com/vi/qe1CxIA-65A/maxresdefault.jpg'}}>
+      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/68R2RJh.jpg'}}>
      <View style={styles.centerItems}>
-      <Text style={styles.mainTitle}>Mejenga Legends</Text>
+     <Image style={{height:80,width:80,marginRight:80,marginBottom:30}} source={{uri: 'http://www.inpris.co//wp-content/uploads/2016/07/loading-circles.gif'}}>
      <TouchableOpacity style={styles.initButton} onPress={()=>{
        SoundManager.playInitClickSound()
        SoundManager.stopAmbienteEstadio()
        this.props.showInitialView()}}>
      </TouchableOpacity>
+     </Image>
      </View>
       </Image>
       </FadeInView>
@@ -62,8 +63,8 @@ _handleAppStateChange = (nextAppState) => {
 const styles = StyleSheet.create({
   centerItems:{
     flex:1,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent:'flex-end',
+    alignItems:'flex-end'
   },
   bgImage:{
     flex:1,
@@ -76,12 +77,12 @@ const styles = StyleSheet.create({
     color:'white'
   },
   initButton:{
-    marginTop:90,
-    borderColor:'rgba(56, 45, 45,0.5)',
-    backgroundColor:'rgba(255,255,255,0.5)',
-    borderWidth: 6,
-    height:80,
-    width:80,
+    borderColor:'white',
+    borderWidth: 4,
+    height:33,
+    width:33,
+    marginTop:26,
+    marginLeft:24,
     borderRadius:100,
     justifyContent:'center',
     alignItems:'center'

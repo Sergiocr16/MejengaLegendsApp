@@ -232,8 +232,8 @@ export default class AddToTeamNotificationDetail extends Component {
      color:'white',
    },
    profileImage:{
-     height:130,
-     width:150,
+     height:110,
+     width:130,
      borderWidth:2,
      borderColor:'white'
    },
