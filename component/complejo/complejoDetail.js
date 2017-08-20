@@ -59,7 +59,7 @@ export default class ComplejoDetail extends Component {
         return (<EditCancha cancha={this.state.currentCancha} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
           break;
           case 'editComplejo':
-          return (<EditComplejo cancha={this.state.currentCancha} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
+          return (<EditComplejo complejo={this.props.complejo} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
             break;
       default:
 

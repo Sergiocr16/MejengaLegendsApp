@@ -39,12 +39,12 @@ export default class EditComplejo extends Component {
       cantonList: ["Seleccionar"],
       // Estados del constructor
       uid: null,
-      nombre: '',
-      provincia: '',
-      canton: '',
-      comodidades: '',
+      nombre: this.props.complejo.nombre,
+      provincia: this.props.complejo.provincia,
+      canton: this.props.complejo.canton,
+      comodidades: this.props.complejo.comodidades,
       imagen: '',
-      administrador: {nombre:null, jugadorGUID:null},
+      administrador: this.props.complejo.administrador,
       // Objeto para registrar y editar
       newComplejo: {
           uid: null,
@@ -63,7 +63,7 @@ export default class EditComplejo extends Component {
       source:'none',
       scene:'EditComplejo',
       submitted:false
-    }   
+    }
   }
 
   handleProvinciaChange(idProv){
@@ -203,6 +203,7 @@ export default class EditComplejo extends Component {
            autocapitalize={true}
            disableFullscreenUI={true}
            style={[styles.inputText,{flex:1}]}
+           value={this.state.nombre}
            onChangeText={(nombre) => this.setState({nombre})}
            />
         </View>
@@ -210,16 +211,14 @@ export default class EditComplejo extends Component {
           <View style={{flex:1,marginBottom:25}}>
              <Text style={styles.bold}>Selecciona la provincia</Text>
              <Picker style={styles.androidPicker} ref='provincia' label='Provincia' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                selectedValue = {this.state.provincia} value = {this.state.provincia}                              
-                onValueChange={this.handleProvinciaChange.bind(this) } >
+                selectedValue = {this.props.complejo.provincia}                              
+                onValueChange={this.handleProvinciaChange.bind(this) } value={this.state.provincia} >
                 {provinciaPicker} 
              </Picker>
           <Text style={styles.bold}>Selecciona el cantón</Text>
-          <Picker style={styles.androidPicker} ref='canton' label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
-                            options={this.state.cantonList} 
-                            value ={this.state.canton} selectedValue = {this.state.canton}
-                            onChange={this.handleCantonChange.bind(this)}
-            onValueChange={ (canton) => (this.setState({canton})) } >
+          <Picker style={styles.androidPicker} ref='canton' label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}                             
+                 selectedValue = {this.props.complejo.canton} value ={this.state.canton} 
+                 onValueChange={ (canton) => (this.setState({canton})) } >
             {cantonPicker}
           </Picker>
           <TextInput style={{width: '49.5%', height: 100, backgroundColor: 'transparent'}}
@@ -309,21 +308,14 @@ export default class EditComplejo extends Component {
    this.state.newComplejo.comodidades = this.state.comodidades;
    this.state.newComplejo.imagen = this.state.imagen;
 
-   var canchasDelComplejo = {};
-   this.state.newComplejo.administrador = { nombre: '',jugadorGUID:firebase.auth().currentUser.uid};
-
    this.setState({submitted:true})
 
-    if(this.isValid()){
-        this.setState({scene:'loading'})
-    // if(this.state.source=='none'){
-      ComplejoService.newWithKey(this.state.newComplejo)
+  if(this.isValid()){
+      this.setState({scene:'loading'})
+      ComplejoService.updateCancha(this.props.complejo.uid, this.state.newComplejo);
       this.props.back();
-    // }else{
-    // this.uploadImage(this.state.source)
-    // }
   }
- }
+}
 
   render(){
       return(<View style={{flex:1}}>
