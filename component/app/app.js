@@ -7,16 +7,21 @@ import {
   TouchableOpacity,
   Image,
   ToastAndroid,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  AppState
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import FirebaseBasicService from '../../lib/firebaseBasicService'
 import CreatePlayer from '../player/createPlayer'
+import NotificationsByPlayer from '../notification/notificationsByPlayer';
 import Account from '../account/account'
+import TeamService from '../../services/team';
+import Notification from '../../services/notification';
 import Header from './header'
 import Loader from './loading'
 import Menu from './menu'
+import SoundManager from '../../services/soundManager'
 
 export default class App extends Component {
   constructor(props){
@@ -25,12 +30,36 @@ export default class App extends Component {
     this.state = {
       user: {},
       scene:'loading',
+      notifications:[],
+      backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg',
       player:{},
-      backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'
+      appState: AppState.currentState
+
     }
 
   }
+
+
+
+    componentWillUnmount() {
+      AppState.removeEventListener('change', this._handleAppStateChange);
+    }
+
+    _handleAppStateChange = (nextAppState) => {
+      if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!')
+        this.setState({scene:'menu'})
+        SoundManager.playBackgroundMusic();
+      }else{
+        console.log('App has come to the background!')
+        SoundManager.pauseBackgroundMusic();
+      }
+      this.setState({appState: nextAppState});
+    }
+
+
   componentDidMount() {
+      AppState.addEventListener('change', this._handleAppStateChange);
     FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
         if(player.firstTime===true){
           this.setState({scene:"firstTime"})
@@ -38,23 +67,39 @@ export default class App extends Component {
           this.setState({scene:"menu",initView:"partido"})
         }
         this.setState({player})
+
      },()=>{
        this.setState({initView:"superAdmin"})
        FirebaseBasicService.findActiveById("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
              this.setState({scene:"menu"})
              this.setState({player:superAdmin})
         },()=>{
+
         })
      })
+     Notification.getMyNotifications((notifications)=>{
+       if(notifications){
+         this.setState({notifications:notifications})
+       }
+     },()=>{
+     })
+
+      SoundManager.startBackgroundMusic();
   }
 
 
   setSceneAccount = () =>{
+    SoundManager.playSwitchClick();
    this.setState({scene:'account'})
   }
 
   setSceneMenu = () =>{
+    SoundManager.playSwitchClick();
    this.setState({scene:'menu'})
+  }
+  setSceneNotifications = () =>{
+   this.setState({scene:'notifications'})
+
   }
 
  showView(){
@@ -71,13 +116,16 @@ export default class App extends Component {
     case 'account':
         return(<Account user={this.state.player}/>)
         break;
+    case 'notifications':
+        return(<NotificationsByPlayer user={this.state.player} estadoNotification={this.state.estadoNotification} back={()=>this.setSceneMenu()} notifications={this.state.notifications} />)
+        break;
     default:
   }
  }
 showHeader = () => {
   if(this.state.player.firstTime!==true || this.state.superAdmin!==undefined){
     return  <View style={{flex:1}}>
-            <Header user={this.state.player} setSceneAccount={()=>this.setSceneAccount()} setSceneMenu={()=>this.setSceneMenu()} />
+            <Header user={this.state.player} notifications={this.state.notifications} setSceneAccount={()=>this.setSceneAccount()} setSceneNotifications={()=>this.setSceneNotifications()} setSceneMenu={()=>this.setSceneMenu()} />
             </View>
   }
   return null;

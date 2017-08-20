@@ -9,14 +9,14 @@ class Player {
     static update(key, player){
       FirebaseBasicService.update('users/players/',key, player)
     }
-    static findPlayerByUsername(filterData,callback){
-      FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback)
+    static findPlayerByUsername(filterData,callback,error){
+      FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback,error)
     }
     static findPlayerByUsername(filterData,callback,error){
       FirebaseBasicService.filterByAttribute('users/players/active/','username',filterData,callback,error)
     }
-    static getCurrentPlayer(callback){
-      FirebaseBasicService.findActiveById('users/players/',firebase.auth().currentUser.uid,callback)
+    static getCurrentPlayer(callback,error){
+      FirebaseBasicService.findActiveById('users/players/',firebase.auth().currentUser.uid,callback,error)
     }
     static findTopPlayers(callback,error){
       FirebaseBasicService.orderByAttribute('users/players/active/','score',callback,error)

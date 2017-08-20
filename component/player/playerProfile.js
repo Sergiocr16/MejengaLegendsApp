@@ -30,6 +30,17 @@ export default class PlayerProfile extends Component {
       return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.user.image}}></Image>
     }
   }
+
+  showTitle = () =>{
+    if(this.props.showBackButton!==true){
+      return
+      <View>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
+      </View>
+   }
+     return null;
+  }
   showBackButton = () =>{
     if(this.props.showBackButton==true){
       return <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
@@ -47,8 +58,7 @@ export default class PlayerProfile extends Component {
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-      <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text></View>
-      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
+     {this.showTitle()}
        <View style={styles.basicInfo}>
        <View style={{flex:1,alignItems:'center'}}>
         {this.showImage()}
@@ -174,6 +184,7 @@ export default class PlayerProfile extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

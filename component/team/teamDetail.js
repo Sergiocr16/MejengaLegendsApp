@@ -12,6 +12,9 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EditTeam from './editTeam';
+import SoundManager from '../../services/soundManager';
+
+import PlayersByTeam from '../team/playersByTeam';
 export default class TeamDetail extends Component {
   constructor(props){
     super(props)
@@ -20,16 +23,24 @@ export default class TeamDetail extends Component {
     }
   }
  setSceneTeamDetail =()=>{
+   SoundManager.playBackBtn();
    this.setState({scene:'teamDetail'})
+ }
+ setScenePlayersByTeam = ()=>{
+   SoundManager.playPushBtn()
+    this.setState({scene:'jugadoresPorEquipo'})
  }
   showScene = () => {
     switch (this.state.scene) {
       case 'teamDetail':
         return this.showTeamDetail()
         break;
-        case 'editTeam':
-          return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
-          break;
+      case 'editTeam':
+        return <EditTeam myTeams={this.props.myTeams} team={this.props.team} user={this.props.user} back={()=>{this.setSceneTeamDetail()}} />
+        break;
+      case 'jugadoresPorEquipo':
+        return (<PlayersByTeam showAddPlayerButton={true} addPlayers={()=> this.setSceneAddPlayerToTeam()} teamPositions={()=> this.setSceneTeamPositions()}  back={()=> this.setSceneTeamDetail()}  team={this.props.team}/>);
+        break;
       default:
 
     }
@@ -39,13 +50,15 @@ export default class TeamDetail extends Component {
      return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}>
        </Image>
     }else{
-    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
       </Image>
   }
   }
   showEdit = () => {
     if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid && this.props.showEditButton){
-    return <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+    return <TouchableOpacity style={[styles.button,{marginRight:5,marginBottom:5}]} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.setState({scene:'editTeam'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
   }
   return null;
   }
@@ -53,15 +66,15 @@ export default class TeamDetail extends Component {
   showBackButton= () =>{
     if(this.props.showBackButton == true){
       return (
-<View style={{flex:1,flexDirection:'row'}}>
-      <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-        <View style={styles.buttonBackPadre}>
-          <View style={styles.buttonBackHijo}/>
-            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-            </Text>
-        </View>
-     </TouchableOpacity>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
      {this.showEdit()}
     </View>
@@ -70,7 +83,13 @@ export default class TeamDetail extends Component {
     }
     return null;
   }
-
+  showLema = (lema) =>{
+    if(lema==""){
+      return "No definido";
+    }else{
+      return '"'+lema+'"';
+    }
+  }
   showTeamDetail = () => {
     return (
       <FadeInView style={styles.container} duration={600}>
@@ -81,21 +100,26 @@ export default class TeamDetail extends Component {
           <View style={styles.subtitle}>
               <Text style={styles.whiteFont2}>Estadisticas e información básica</Text>
           </View>
+
          <View style={styles.basicInfo}>
             <View style={{flex:1,alignItems:'center'}}>
                {this.showImage()}
               <View style={[styles.circularIcon,{margin:-30}]}>
                    <Icon name={"shield"}  size={40} color="#424242" />
               </View>
-              <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} copas</Text>
-              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={this.props.playersByTeam} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
+               <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} <Icon name="trophy" size={20} color="#FFB300" /> </Text>
+              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>this.setScenePlayersByTeam()} ><Text style={styles.textButton}><Icon name="user" size={15} color="#FFFFFF"/> Ver jugadores</Text></TouchableOpacity>
 
             </View>
             <View style={{flex:3,padding:10}}>
               <ScrollView>
                   <View style={styles.info}>
                      <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                     <Text style={[styles.flexEnd,{flex:5}]}>"{this.props.team.lema}"</Text>
+                     <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
+                     <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
                   </View>
                   <View style={styles.info}>
                      <Text style={styles.flexStart}>Liga</Text>
@@ -128,8 +152,7 @@ export default class TeamDetail extends Component {
                 </ScrollView>
               </View>
           </View>
-      </View>
-
+  </View>
        {this.showBackButton()}
 
       </FadeInView>
@@ -198,11 +221,12 @@ export default class TeamDetail extends Component {
      padding:7
    },
    subtitle:{
-     backgroundColor:'#42A5F5',
+     backgroundColor:'#BBDEFB',
      padding:8
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',
@@ -223,9 +247,8 @@ export default class TeamDetail extends Component {
      fontSize:15,
      color:'white',
    },
-   profileImage:{
-     height:130,
-     width:130,
+   profileImage:{   height:110,
+      width:130,
      borderWidth:2,
      borderColor:'white'
    },
@@ -233,11 +256,21 @@ export default class TeamDetail extends Component {
      color:'white',
      textAlign:'center'
    },
-   button:{
+   buttonEdit:{
      marginRight:5,
      marginBottom:5,
      paddingHorizontal:10,
      paddingVertical:4,
+     alignItems:'center',
+     justifyContent:'center',
+     borderRadius:9,
+     backgroundColor:'#F4511E',
+     flex:3,
+   },
+   button:{
+     alignItems:'center',
+     justifyContent:'center',
+     paddingHorizontal:10,
      borderRadius:9,
      backgroundColor:'#F4511E',
      flex:3,

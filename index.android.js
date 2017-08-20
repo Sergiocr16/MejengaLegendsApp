@@ -23,7 +23,8 @@ import App from './component/app/app'
 import Logo from './component/app/logo'
 import Welcome from './component/app/welcomeScreen'
 import Firebase from './lib/firebase'
-
+import SoundManager from './services/soundManager'
+import FadeInView from 'react-native-fade-in-view';
 // import TeamComponent from './component/team/teamCmp'
 import FirebaseBasicService from './lib/firebaseBasicService'
 import Entities from './lib/fireBaseEntities'
@@ -38,13 +39,20 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-    //  console.disableYellowBox = true;
+    console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
+    SoundManager.loadSounds();
+      SoundManager.playLogoSound()
   }
 
   componentDidMount() {
-      setTimeout(()=>{this.setState({initialView:'Welcome'})},2000)
+    setTimeout(()=>{
+     SoundManager.playLogoSound()
+    },20)
+      setTimeout(()=>{this.setState({initialView:'Welcome'})
+      SoundManager.playAmbienteEstadio()
+    },4500)
   }
   async getInitialView(){
      await firebase.auth().onAuthStateChanged( async (user) => {
@@ -83,19 +91,17 @@ export default class MejengaLegendsApp extends Component {
       return (<Logo showInitialView={()=>{this.setState({initialView:"Welcome"})}}/>)
       break;
       case 'Welcome':
-      return (<Welcome showInitialView={()=>this.getInitialView()}/>)
+      return (<FadeInView style={{flex:1}} duration={900}><Welcome showInitialView={()=>this.getInitialView()}/></FadeInView>)
       break;
       default:
-
     }
   }
   render() {
     return (
-      <View style={{flexDirection:'column',flex:1,backgroundColor:'#EEEEEE'}}>
+      <FadeInView style={{flexDirection:'column',flex:1,backgroundColor:'white'}} duration={900}>
             <StatusBar hidden={true} />
             {this.showInitialView()}
-            </View>
-
+</FadeInView>
     );
   }
 }

@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
+import SoundManager from '../../services/soundManager';
 export default class RecoverPassword extends Component {
   constructor(props){
     super(props)
@@ -21,6 +22,7 @@ export default class RecoverPassword extends Component {
     this.recoverPassword = this.recoverPassword.bind(this)
   }
   async sendVerification() {
+
     try {
       firebase.auth().currentUser.sendEmailVerification().then(function() {
         // Email sent.
@@ -36,11 +38,24 @@ export default class RecoverPassword extends Component {
   }
 
   async recoverPassword() {
+      SoundManager.playPushBtn();
     try {
       await firebase.auth().sendPasswordResetEmail(this.state.email)
       ToastAndroid.show('Verifica tu correo electrónico para restaurar tu contraseña', ToastAndroid.LONG);
     } catch(error){
-      ToastAndroid.show(error.message, ToastAndroid.LONG);
+      switch (error.message) {
+         case 'The email address is badly formatted.':
+ToastAndroid.show("La correo electrónico esta mal formateado.", ToastAndroid.LONG);
+         break;
+         case 'The password is invalid or the user does not have a password.':
+ToastAndroid.show("La contraseña es incorrecta.", ToastAndroid.LONG);
+         break;
+         case 'There is no user record corresponding to this identifier. The user may have been deleted.':
+ToastAndroid.show("No existe ningún usuario registrado con ese correo.", ToastAndroid.LONG);
+         break;
+        default:
+
+      }
     }
   }
 

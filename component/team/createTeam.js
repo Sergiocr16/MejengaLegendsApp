@@ -20,7 +20,7 @@ import TeamService from '../../services/team';
 import Loader from '../app/loading';
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
-
+import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import RNFetchBlob from 'react-native-fetch-blob'
@@ -43,9 +43,9 @@ export default class CreateTeam extends Component {
       source:'none',
       scene:'createTeam',
       submitted:false,
+      players: []
     }
   }
-
 
   isEmpty = (val) => {
     if(this.state.submitted){
@@ -100,8 +100,18 @@ export default class CreateTeam extends Component {
            TeamService.newWithCallback(this.state.team,(equipo)=>{
              equiposDelJugador = this.props.teams;
              equiposDelJugador.push(equipo);
-             TeamService.newTeamsByPlayer(equiposDelJugador);
-              Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
+             TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
+                var jugadoresDelEquipo = [];
+             TeamService.getPlayersByTeam(equipo.uid,(players)=>{
+               jugadoresDelEquipo = players;
+               jugadoresDelEquipo.push(this.props.user);
+               TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+             },()=>{
+                jugadoresDelEquipo.push(this.props.user);
+               TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+             })
+
+             Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
              this.props.back();
            });
            resolve(url)
@@ -192,13 +202,14 @@ export default class CreateTeam extends Component {
         </View>
      </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
-      <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+
     </View>
     </View>
     </FadeInView>
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -233,7 +244,7 @@ export default class CreateTeam extends Component {
        if(this.state.source!=='none'){
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
      }
      }
  submit = () =>{
@@ -242,16 +253,16 @@ export default class CreateTeam extends Component {
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
    this.state.team.copas = 0;
-   this.state.team.estaVacio = true;
+   this.state.team.cantidadJugadores = 1;
    this.state.team.golesMarcados = 0;
    this.state.team.golesRecibidos = 0;
    this.state.team.rachaVictorias = 0;
    this.state.team.mayorPuntajeDeLaHistoria = 0;
    this.state.team.logo = 'shield';
    this.state.team.liga = 'Liga Amateur';
-   var equiposDelJugador = {};
+   var equiposDelJugador = [];
    this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
-
+  SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
       this.setState({scene:'loading'})
@@ -259,7 +270,8 @@ export default class CreateTeam extends Component {
      TeamService.newWithCallback(this.state.team,(equipo)=>{
        equiposDelJugador = this.props.teams;
        equiposDelJugador.push(equipo);
-       TeamService.newTeamsByPlayer(equiposDelJugador);
+       TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
+
        Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
        this.props.back();
      });

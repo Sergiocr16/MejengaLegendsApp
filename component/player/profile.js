@@ -13,6 +13,7 @@ import * as firebase from 'firebase'
 import EditPlayer from './editPlayer';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SoundManager from '../../services/soundManager';
 export default class Profile extends Component {
   constructor(props){
     super(props)
@@ -24,6 +25,7 @@ export default class Profile extends Component {
   }
 
   setSceneInfo = () => {
+    SoundManager.playBackBtn();
     this.setState({scene:'info'})
   }
   showScene(){
@@ -102,7 +104,9 @@ export default class Profile extends Component {
           </View>
        </TouchableOpacity>
        <View style={{flex:1, alignItems:'flex-end'}}>
-        <TouchableOpacity style={styles.button} onPress={()=>{this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={()=>{
+          SoundManager.playPushBtn();
+          this.setState({scene:'editInfo'})}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
       </View>
       </View>
       </FadeInView>
@@ -189,6 +193,7 @@ export default class Profile extends Component {
    },
    whiteFont2:{
      color:'#1A237E',
+     textAlign:'center'
    },
    whiteFont:{
      color:'white',

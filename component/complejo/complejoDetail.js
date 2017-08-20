@@ -6,44 +6,86 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  ToastAndroid
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Loader from '../app/loading';
-import CreateCancha from '../complejo/createCancha';
-import EditCancha from '../complejo/editCancha';
 import EditComplejo from '../complejo/editComplejo';
+import CanchasMenu from '../cancha/canchasMenu'
 import ComplejoService from '../../services/complejo';
+import SoundManager from '../../services/soundManager';
 export default class ComplejoDetail extends Component {
   constructor(props){
     super(props)
     this.state = {
-      scene: 'loading',
+      scene: 'complejoInformation',
       currentCancha: null,
-      canchasArray: [
-      ]
+      wantToDelete:false,
+      canchas:[]
     }
   }
 
-  componentDidMount() {
-    ComplejoService.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
-        this.setState({canchasArray:canchas,scene:"complejoInformation"})
-    })
-    this.setState({scene:"complejoInformation"})
+  setWantToDelete = () =>{
+    this.setState({wantToDelete:!this.state.wantToDelete})
+  }
+  showButtonOptions = () => {
+    if(!this.state.wantToDelete){
+  return  <View style={{flex:1,flexDirection:'row'}}>
+    <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.setWantToDelete();
+      }}><Text style={styles.textButton}>
+      <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
+   </TouchableOpacity>
+   <TouchableOpacity style={styles.button} onPress={()=>{
+     SoundManager.playPushBtn();
+     this.setState({scene:'editComplejo'})}}><Text style={styles.textButton}>
+     <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
+  </TouchableOpacity>
+  </View>
+}else{
+  return <View style={{flex:1,flexDirection:'row'}}>
+    <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.delete()
+     }}><Text style={styles.textButton}>
+      <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
+   </TouchableOpacity>
+   <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
+     SoundManager.playPushBtn();
+     this.setWantToDelete();
+    }}><Text style={styles.textButton}>
+      <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
+  </TouchableOpacity>
+  </View>
 }
-
+  }
+  delete = () => {
+    ComplejoService.delete(this.props.complejo.uid);
+    ToastAndroid.show('Complejo eliminada correctamente', ToastAndroid.LONG);
+    this.props.back();
+  }
   showImage = () => {
     if(this.props.complejo.image !== undefined){
      return   <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.complejo.image}}>
        </Image>
     }else{
-    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+    return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
       </Image>
   }
   }
 
+  setComplejoInformationScene = () => {
+    SoundManager.playBackBtn();
+    this.setState({scene:'complejoInformation'})
+  }
+  setSceneCanchas = () => {
+    SoundManager.playPushBtn();
+    this.setState({scene:'menuCanchas'})
+  }
   showScene(){
     switch (this.state.scene) {
       case 'complejoInformation':
@@ -52,62 +94,83 @@ export default class ComplejoDetail extends Component {
       case 'loading':
         return (<Loader/>)
         break;
-      case 'agregarCancha':
-      return (<CreateCancha complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
-        break;
-        case 'editarCancha':
-        return (<EditCancha cancha={this.state.currentCancha} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
-          break;
+      case 'menuCanchas':
+       return (<CanchasMenu canchas={this.state.canchas} back={()=>{this.setComplejoInformationScene()}} complejo={this.props.complejo}/>)
+      break;
           case 'editComplejo':
-          return (<EditComplejo complejo={this.props.complejo} back={()=> this.componentDidMount()} style={{marginTop:35,flex:1}}/>);
+          return (<EditComplejo complejo={this.props.complejo} back={()=> this.setSceneComplejoDetail()} style={{flex:1}}/>);
             break;
       default:
-
     }
   }
-      complejoInformation(){
-        let canchas = []; 
-        canchas.push(
-          <TouchableOpacity onPress={()=>{
-            this.setState({scene:'agregarCancha'})}} style={styles.canchasContainer}>
-              <View style={{flex:1}}>
-                  <Text style={styles.canchasName}>Agregar Cancha</Text>
-                  <Icon name="trophy" size={30} color="yellow" />
-              </View>
-          </TouchableOpacity>
-         );
-        this.state.canchasArray.map((val, key) => {
-              canchas.push(
-                <TouchableOpacity onPress={()=>{
-                    this.setState({currentCancha: val, scene:'editarCancha'})}} key={key} style={styles.canchasContainer}>
-                  <View style={{flex:1}}>
-                    <View style={{flex:2}}>
-                      <Text style={styles.canchasName}>{val.nombre}</Text>
-                      <Text style={styles.gramilla}>{val.numero}</Text>
-                      <Text style={styles.gramilla}>{val.gramilla}</Text>
-                      <Text style={[styles.capacidad,{marginHorizontal:10}]}><Icon name="trophy" size={20} color="yellow" /> {val.capacidad}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-               );
-        });
-        
+ setSceneComplejoDetail = () => {
+   this.setState({scene:'complejoInformation'});
+   SoundManager.playBackBtn();
+ }
+  showComodidades = () => {
+    if(this.props.complejo.comodidades!==undefined){
+    return this.props.complejo.comodidades.map( (val, key) => {
+        return (<View key={key}>
+        <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+        <Icon name={val.icono} size={15} color="#1565C0"/>
+        <Text style={{textAlign:'center',color:"#1565C0",textAlign:'center'}}>{val.nombre}</Text>
+        </View>
+        </View>)
+    });
+  }else{
+    return <View>
+    <View style={{margin:3,padding:2,backgroundColor:"#E0E0E0",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+    <Text style={{textAlign:'center',color:"#1565C0",textAlign:'center'}}>Ninguna</Text>
+    </View>
+    </View>
+  }
+  }
 
+  showBackButton= () =>{
+    if(true){
+      return (
+<View style={{flex:1,flexDirection:'row'}}>
+      <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+        <View style={styles.buttonBackPadre}>
+          <View style={styles.buttonBackHijo}/>
+            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+            </Text>
+        </View>
+     </TouchableOpacity>
+     <View style={{flex:0.4,alignItems:'flex-end'}}>
+     {this.showButtonOptions()}
+     </View>
+    </View>
+  )
+    }
+    return null;
+  }
+      complejoInformation(){
         return (
           <FadeInView style={styles.container} duration={600}>
             <View style={styles.infoContainer}>
-              <View style={styles.mainName}>
-                  <Text style={styles.whiteFont}>Información básica</Text>
-              </View>
+            <View style={styles.mainName}>
+                <Text style={styles.whiteFont}>{this.props.complejo.nombre.toUpperCase()}</Text>
+            </View>
+            <View style={styles.subtitle}>
+                <Text style={styles.whiteFont2}>Información básica</Text>
+            </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
+                <View style={{flex:6,alignItems:'center'}}>
                    {this.showImage()}
                   <View style={[styles.circularIcon,{margin:-30}]}>
-                       <Icon name={"shield"}  size={40} color="#424242" />
+                       <Icon name={"bank"}  size={24} color="#424242" />
                   </View>
+                    </View>
+                  <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                  <TouchableOpacity style={[styles.button,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.setSceneCanchas} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver Canchas</Text></TouchableOpacity>
+                      </View>
                 </View>
                 <View style={{flex:3,padding:10}}>
-                  <View>
+                  <View style={{flex:2}}>
+                      <View style={{flex:1}}>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Nombre</Text>
                          <Text style={[styles.flexEnd,{flex:5}]}>{this.props.complejo.nombre}</Text>
@@ -120,41 +183,25 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexStart}>Canton</Text>
                          <Text style={styles.flexEnd}>{this.props.complejo.canton}</Text>
                       </View>
-                      <View style={styles.info}>
-                         <Text style={styles.flexStart}>Comodidades</Text>
-                         <Text style={styles.flexEnd}>{this.props.complejo.comodidades}</Text>
-                      </View>                   
+                      </View>
+                      <View style={{flex:0.7}}>
+                         <Text style={{marginBottom:5}}>Comodidades</Text>
+                         <View style={{flex:1,flexDirection:'column'}}>
+                         <ScrollView horizontal={true}>
+                         {this.showComodidades()}
+                         </ScrollView>
+                         </View>
+                      </View>
                     </View>
                   </View>
               </View>
-              <View style={{flex:0.75,padding:10}}>
-                <ScrollView horizontal={true} style={[styles.canchasList,{flex:1}]}>
-                    {canchas}
-                </ScrollView>
-            </View>
           </View>
-          <View style={{flex:1,flexDirection:'row'}}>
-            <TouchableOpacity onPress={()=>{this.setState({scene:'loading'});
-            this.props.back()}} style={{flex:1, alignItems:'flex-start'}}>
-              <View style={styles.buttonBackPadre}>
-                <View style={styles.buttonBackHijo}/>
-                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-                  </Text>
-              </View>
-            </TouchableOpacity>
-           <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={()=>{this.editComplejo()}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text></TouchableOpacity>
-          </View>
-          <View style={{flex:1, alignItems:'flex-end'}}>
-            <TouchableOpacity style={styles.button} onPress={()=>{this.deleteComplejo()}}><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Eliminar</Text></TouchableOpacity>
-          </View>
-          </View>
+             {this.showBackButton()}
           </FadeInView>
         )
       }
 
-      deleteComplejo(){
+      delete(){
         ComplejoService.deleteComplejo(this.props.complejo.uid);
         this.props.back();
      }
@@ -170,17 +217,53 @@ export default class ComplejoDetail extends Component {
             {this.showScene()}
         </FadeInView>
         )
-    } 
+    }
 
 }
 
     const styles = StyleSheet.create({
+      buttonConfirm:{
+        alignItems:'center',
+        justifyContent:'center',
+        padding:10,
+        borderRadius:9,
+        backgroundColor:'#388E3C',
+        flex:3,
+        marginBottom:4,
+        marginRight:4
+      },
+      buttonEliminar:{
+        alignItems:'center',
+        justifyContent:'center',
+        padding:10,
+        borderRadius:9,
+        backgroundColor:'#512DA8',
+        flex:3,
+        marginBottom:4,
+        marginRight:4
+      },
+      buttonEliminarAccept:{
+        alignItems:'center',
+        justifyContent:'center',
+        padding:10,
+        borderRadius:9,
+        backgroundColor:'#D32F2F',
+        flex:3,
+        marginBottom:4,
+        marginRight:4
+      },
     info:{
      borderBottomWidth:1,
      borderBottomColor:'#9E9E9E',
      margin:5,
      flexDirection:'row',
    },
+   comodidades:{
+    borderBottomWidth:1,
+    borderBottomColor:'#9E9E9E',
+    margin:5,
+    flexDirection:'row',
+  },
    flexStart:{
      textAlign:'left',
      color:'black',

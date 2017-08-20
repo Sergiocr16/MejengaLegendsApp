@@ -16,7 +16,8 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Team from '../../services/team';
 import TeamService from '../../services/team';
-import TeamDetail from './teamDetail'
+import TeamDetail from './teamDetail';
+import SoundManager from '../../services/soundManager';
 var t = require('tcomb-form-native');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -39,7 +40,7 @@ showScene =() =>{
       return this.showSearchingScene()
       break;
     case 'teamDetail':
-     return <TeamDetail team={this.state.currentTeam} showEditButton={false} back={()=>{ this.setState({scene:"searching"})  }} showBackButton={true}/>
+     return <TeamDetail team={this.state.currentTeam} showEditButton={false} back={()=>{ this.setState({scene:"searching"}); SoundManager.playBackBtn() }} showBackButton={true}/>
       break;
     default:
 
@@ -51,7 +52,7 @@ showSearchingScene = () => {
   let teams =  this.state.teams.map( (val, key) => {
     if(val.nombre!==undefined){
         return <ScrollView key={key} style={{flex:1}}>
-        <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamDetail'});}}
+        <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamDetail'});SoundManager.playPushBtn();}}
                key={key} style={{flexDirection:'row', height:80, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
                <View style={{flex:3}}>
                 {this.showImage(val)}
@@ -137,6 +138,7 @@ showSearchingScene = () => {
   }
 
   getPlayers = ()=>{
+    SoundManager.playPushBtn()
    this.setState({submitted:true,areTeams:false})
    if(this.isValid()){
     TeamService.findTeamsByTeamName(this.state.teamName,(teams)=>{
@@ -157,7 +159,7 @@ showSearchingScene = () => {
 
 showResults = (teams) => {
   if(!this.state.areTeams && this.state.submitted){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontro ningun resultado.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:16}}>No se encontraron resultados.</Text></View>
   }else if(this.state.areTeams){
     return teams;
   }

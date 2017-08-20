@@ -19,6 +19,7 @@ import Player from '../../services/player';
 import TeamService from '../../services/team';
 import Loader from '../app/loading';
 import Entities from '../../lib/fireBaseEntities'
+import SoundManager from '../../services/soundManager';
 import FirebaseBasicService from '../../lib/firebaseBasicService'
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -189,13 +190,14 @@ export default class EditTeam extends Component {
         </View>
      </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
-     
+
     </View>
     </View>
     </View>
   )
  }
  _takePicture = () => {
+   SoundManager.playPushBtn();
        const cam_options = {
          mediaType: 'photo',
          maxWidth: 1000,
@@ -231,7 +233,7 @@ export default class EditTeam extends Component {
         return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.state.source}}></Image>
        }else{
        if(this.props.team.image==undefined){
-       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+       return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
        }else{
          return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.team.image}}></Image>
        }
@@ -243,7 +245,7 @@ export default class EditTeam extends Component {
    this.state.team.nameToQuery = this.state.nombre.toLowerCase();
    this.state.team.lema = this.state.lema;
    this.state.team.genero = this.state.genero;
-
+   SoundManager.playPushBtn();
    if(this.isValid()){
       this.setState({scene:'loading'})
    if(this.state.source=='none'){

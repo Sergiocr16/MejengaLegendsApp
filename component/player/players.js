@@ -16,7 +16,8 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Player from '../../services/player';
 import TeamService from '../../services/team';
-import PlayerProfile from './playerProfile'
+import PlayerProfile from './playerProfile';
+import SoundManager from '../../services/soundManager';
 var t = require('tcomb-form-native');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -62,9 +63,10 @@ export default class Players extends Component {
   }
 
   getPlayers = ()=>{
+  SoundManager.playPushBtn();
    this.setState({submitted:true})
    if(this.isValid()){
-    Player.findPlayerByUsername(this.state.username,(players)=>{
+    Player.findPlayerByUsername(this.state.username.trim(),(players)=>{
       this.setState({players,arePlayers:true});
     },()=>{
       this.setState({arePlayers:false});
@@ -82,7 +84,7 @@ export default class Players extends Component {
 
 showResults = (players) => {
   if(!this.state.arePlayers && this.state.submitted){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No se encontraron resultados.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:16}}>No se encontraron resultados.</Text></View>
   }else if(this.state.arePlayers){
     return players;
   }
@@ -90,7 +92,7 @@ showResults = (players) => {
   render(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
-          return <ScrollView key={key} style={{flex:1}}><PlayerProfile user={val} showBackButton={false}/></ScrollView>
+          return <ScrollView key={key} style={{flex:1,marginTop:10}}><PlayerProfile user={val} showBackButton={false}/></ScrollView>
       }
     });
 
@@ -114,7 +116,7 @@ showResults = (players) => {
                 <Text style={styles.buttonText}><Icon name="search" size={13} color="#FFFFFF"/> Buscar</Text>
               </TouchableOpacity>
            </View>
-           <View style={{flex:5,flexDirection:'row',paddingHorizontal:10}}>
+           <View style={{flex:5,flexDirection:'row'}}>
               <View style={{flex:1}}>
               {this.showResults(players)}
               </View>

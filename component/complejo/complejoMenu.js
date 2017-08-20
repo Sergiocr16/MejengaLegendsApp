@@ -16,6 +16,7 @@ import Loader from '../app/loading';
 import ComplejoService from '../../services/complejo';
 import CreateComplejo from '../complejo/createComplejo';
 import ComplejoDetail from '../complejo/complejoDetail';
+import SoundManager from '../../services/soundManager';
 import RenderIf from '../app/renderIf';
 
 export default class Complejo extends Component {
@@ -30,19 +31,18 @@ export default class Complejo extends Component {
                 provincia: '',
                 canton: '',
                 imagen: '',
-                comodidades: ''
+                comodidades: []
             }
         }
     }
 
     componentDidMount() {
-        ComplejoService.findTopComplejos((complejos)=>{
-            if(complejos){
+        ComplejoService.getAll((complejos)=>{
+          console.log(complejos)
             this.setState({complejosArray:complejos,scene:"myComplejos"})
-            }
             },()=>{
-                this.setState({scene:"registrarComplejo"})
-            // this.setState({scene:"noComplejos"})
+                // this.setState({scene:"registrarComplejo"})
+               this.setState({scene:"noComplejos",complejosArray:[]})
             }
         )
     }
@@ -66,7 +66,7 @@ export default class Complejo extends Component {
                         </View>
                     </TouchableOpacity>
                     <View style={{flex:1, alignItems:'flex-end'}}>
-                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
                     </View>
                 </View>
             </FadeInView>
@@ -74,15 +74,19 @@ export default class Complejo extends Component {
     }
 
     setMyComplejoMenu = ()=>{
+      SoundManager.playBackBtn();
         this.setState({scene:'myComplejos'})
     }
     setSceneRegistrarComplejo = () => {
+      SoundManager.playPushBtn();
         this.setState({scene:'registrarComplejo'})
     }
     setAddCanchaToComplejo = ()=> {
+        SoundManager.playPushBtn();
         this.setState({scene:'agregarCanchaComplejo'})
     }
     setSceneDetalleComplejo = ()=>{
+        SoundManager.playPushBtn();
         this.setState({scene:'detalleComplejo'})
     }
     setSceneCanchasByComplejo = () =>{
@@ -93,13 +97,13 @@ export default class Complejo extends Component {
         if(val.image !== undefined){
          return <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: val.image}}>
              <View style={[styles.circularIcon,{margin:-30}]}>
-                <Icon name={"shield"}  size={40} color="#424242" />
+                <Icon name={"futbol-o"}  size={27} color="#424242" />
              </View>
          </Image>
         }else{
-        return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.0-9/20476594_10214031690128577_3616314918798365302_n.jpg?oh=bcb06b98a71b00fbedfaceea246e0f53&oe=59EFEB80'}}>
+        return  <Image style={{flex:1,justifyContent:'flex-end', alignItems:'center'}} borderTopLeftRadius={15}  borderTopRightRadius={15} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
             <View style={[styles.circularIcon,{margin:-30}]}>
-               <Icon name={"shield"}  size={40} color="#424242" />
+               <Icon name={"futbol-o"}  size={27} color="#424242" />
             </View>
         </Image>
       }
@@ -135,33 +139,39 @@ export default class Complejo extends Component {
         return (this.showNoComplejos())
             break;
         case 'registrarComplejo':
-            return (<CreateComplejo complejo={this.props.complejo} back={()=> this.componentDidMount()} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
+            return (<CreateComplejo complejo={this.props.complejo} back={()=>{SoundManager.playBackBtn(); this.componentDidMount()}} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
             break;
         case 'detalleComplejo':
-            return (<ComplejoDetail back={()=> this.setMyComplejoMenu()} playersByTeam={()=> this.setSceneCanchasByComplejo()} complejo={this.state.currentComplejo}/>);
+            return (<ComplejoDetail back={()=>{this.componentDidMount();SoundManager.playBackBtn()}} complejo={this.state.currentComplejo}/>);
             break;
         default:
         }
     }
     myComplejos(){
-        let comps = []; 
-        this.state.complejosArray.map((val, key) => {
+        let comps = this.state.complejosArray.map((val, key) => {
               //Alert.alert(val.nombre);
-               comps.push(
+               return (
                 <TouchableOpacity onPress={()=>{
-                    this.setState({scene:'detalleComplejo',currentComplejo:val})}} key={key} style={styles.complejoContainer}>
+                    this.setState({currentComplejo:val})
+                    this.setSceneDetalleComplejo()}} key={key} style={styles.complejoContainer}>
                     {this.showImage(val)}
                     <View style={{flex:1}}>
-                        <View style={{flex:2}}>
+                        <View style={{flex:2,justifyContent:'center',alignItems:'center'}}>
                             <Text style={styles.complejoName}>{val.nombre}</Text>
-                            <Text style={[styles.provincia,{marginHorizontal:30}]}>{val.provincia}</Text>    
                         </View>
-                        <Text style={styles.canton}>{val.canton}</Text>
+                        <View style={{flex:2,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={styles.canton}>{val.provincia}, {val.canton}</Text>
+                        </View>
+                        {RenderIf(val.noAdmin==true,
+                            <Text style={{paddingHorizontal:10,textAlign:'center', paddingVertical:4,borderBottomLeftRadius:9,borderBottomRightRadius:9,backgroundColor:'#D32F2F',height:25}}>
+                                <Text style={[styles.textButton,{fontSize:12}]}><Icon name="warning" size={12} color="#FFFFFF"/> No tiene un administrador</Text>
+                            </Text>
+                        )}
                     </View>
                 </TouchableOpacity>
                );
         });
-              
+
     return (
         <FadeInView style={styles.container} duration={30}>
             <View style={styles.myTeamsList}>
@@ -195,7 +205,7 @@ export default class Complejo extends Component {
             {this.showScene()}
         </FadeInView>
         )
-    }  
+    }
 }
 const styles = StyleSheet.create({
     info:{
@@ -305,8 +315,8 @@ const styles = StyleSheet.create({
      borderColor:'rgba(0,0,0,0.2)',
      alignItems:'center',
      justifyContent:'center',
-     width:50,
-     height:50,
+     width:60,
+     height:60,
      backgroundColor:'#EEEEEE',
      borderRadius:100,
    },
@@ -344,21 +354,25 @@ const styles = StyleSheet.create({
     color: '#0D47A1'
   },
   provincia:{
-    backgroundColor:'#FDD835',
+    backgroundColor:'green',
     padding:5,
     borderRadius:5,
     borderWidth:1,
     borderColor:'white',
-    height:30,
     color:'white',
     paddingHorizontal:10,
     fontWeight:'bold',
     textAlign:'center'
   },
   canton: {
-    margin:10,
-    fontSize: 15,
-    alignSelf: 'center',
-    color: 'black'
-  }
+    backgroundColor:'#388E3C',
+    padding:5,
+    borderRadius:5,
+    borderWidth:1,
+    borderColor:'white',
+    color:'white',
+    paddingHorizontal:10,
+    fontWeight:'bold',
+    textAlign:'center'
+  },
     })
