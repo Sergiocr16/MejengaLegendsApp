@@ -49,9 +49,8 @@ export default class MejengaLegendsApp extends Component {
   componentDidMount() {
     setTimeout(()=>{
      SoundManager.playLogoSound()
-    },20)
+   },1000)
       setTimeout(()=>{this.setState({initialView:'Welcome'})
-      SoundManager.playAmbienteEstadio()
     },4500)
   }
   async getInitialView(){
@@ -91,7 +90,7 @@ export default class MejengaLegendsApp extends Component {
       return (<Logo showInitialView={()=>{this.setState({initialView:"Welcome"})}}/>)
       break;
       case 'Welcome':
-      return (<FadeInView style={{flex:1}} duration={900}><Welcome showInitialView={()=>this.getInitialView()}/></FadeInView>)
+      return (<FadeInView style={{flex:1}} duration={1000}><Welcome showInitialView={()=>this.getInitialView()}/></FadeInView>)
       break;
       default:
     }

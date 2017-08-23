@@ -149,6 +149,14 @@ export default class TeamDetail extends Component {
                      <Text style={styles.flexStart}>Racha de victorias</Text>
                      <Text style={styles.flexEnd}>{this.props.team.rachaVictorias}</Text>
                   </View>
+                  <View style={styles.info}>
+                     <Text style={styles.flexStart}>Provincia</Text>
+                     <Text style={styles.flexEnd}>{this.props.team.provincia}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={styles.flexStart}>Cantón</Text>
+                     <Text style={styles.flexEnd}>{this.props.team.canton}</Text>
+                  </View>
                 </ScrollView>
               </View>
           </View>

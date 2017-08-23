@@ -46,7 +46,7 @@ class SoundManager {
     }))
     ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
-
+    ambienteEstadio.setVolume(0.0)
     logoSound = new Sound("logosound.wav",Sound.MAIN_BUNDLE, (error) => {
     })
     // CLICKS
@@ -144,6 +144,7 @@ class SoundManager {
             console.log("AAA")
         }
         })
+        ambienteEstadio.setVolume(0.1)
       }
       playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
@@ -167,6 +168,7 @@ class SoundManager {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
   switchBtn.play();
+  switchBtn.setVolume(0.1)
 });
 
     }
@@ -175,13 +177,14 @@ class SoundManager {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
   pushBtn.play();
+    pushBtn.setVolume(0.1)
 });
     }
     static playBackBtn(){
       backBtn.stop(() => {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
-  backBtn.play();
+  backBtn.setVolume(0.1)
 });
     }
 }
