@@ -38,6 +38,9 @@ export default class Welcome extends Component {
     }
   }
   componentDidMount(){
+    setTimeout(()=>{
+      SoundManager.playAmbienteEstadio()
+    },1000)
     AppState.addEventListener('change', this._handleAppStateChange);
 }
 componentWillUnmount() {
@@ -55,13 +58,13 @@ _handleAppStateChange = (nextAppState) => {
   this.setState({appState: nextAppState});
 }
   changeScene=()=>{
-  setTimeout(()=>{ this.setState({scene:'wellcomeScreen'}) }, 2000);
+  setTimeout(()=>{ this.setState({scene:'wellcomeScreen'}) }, 3000);
 
   }
     showBlackScreen = ()=>{
       return (
         <View style={{flex:1,backgroundColor:'black'}} >
-        <View duration={300}>
+        <View style={{flex:1,backgroundColor:'black'}}>
         {this.changeScene()}
         </View>
         </View>
@@ -70,8 +73,8 @@ _handleAppStateChange = (nextAppState) => {
 
   showWellcomeScreen = ()=>{
     return (
-      <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
-      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/68R2RJh.jpg'}}>
+      <FadeInView style={{flex:1,backgroundColor:'black'}} duration={300}>
+      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/xbkH86U.jpg'}}>
      <View style={styles.centerItems}>
      <Image style={{height:80,width:80,marginRight:80,marginBottom:30}} source={{uri: 'http://www.inpris.co//wp-content/uploads/2016/07/loading-circles.gif'}}>
      <TouchableOpacity style={styles.initButton} onPress={()=>{

@@ -67,14 +67,18 @@ export default class EditComplejo extends Component {
 
   defineSelectedComodidades = () => {
     var comodidadesDefault = [];
+
     this.state.comodidadesDefault.map((val)=>{
+          if(this.state.comodidades!==undefined){
       this.state.comodidades.map((already)=>{
         if(already.nombre === val.nombre){
           val.selected = true;
         }
       })
+      }
       comodidadesDefault.push(val)
     })
+
     this.setState({comodidadesDefault})
   }
   handleProvinciaChange(idProv){

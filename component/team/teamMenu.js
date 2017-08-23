@@ -64,7 +64,7 @@ export default class TeamMenu extends Component {
                       </View>
                    </TouchableOpacity>
                    <View style={{flex:1, alignItems:'flex-end'}}>
-                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
                   </View>
                </View>
             </FadeInView>
@@ -157,7 +157,7 @@ teamNameFontSize = (option) =>{
               </View>
            </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-               <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+               <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
             </View>
        </View>
     </FadeInView>

@@ -36,8 +36,7 @@ export default class CreateComplejo extends Component {
     super(props)
     this.state = {
       provinciaList: ['Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San José'],
-      cantonList:  ["Aserrí","Coronado","Curridabat","Desamparados","Dota","Escazú", "Montes de Oca","Mora",
-      "Moravia","San José Central","Perez Zeledón","Santa Ana","Alajuelita","Tarrazú","Tibás"],
+      cantonList:  [],
       // Estados del constructor
       uid: null,
       nombre: '',
@@ -109,6 +108,7 @@ export default class CreateComplejo extends Component {
   }
   componentDidMount() {
     this.setMyComplejoMenu();
+    this.handleProvinciaChange(this.state.provincia);
   }
 
   isEmpty = (val) => {

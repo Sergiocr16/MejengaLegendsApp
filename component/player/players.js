@@ -92,7 +92,7 @@ showResults = (players) => {
   render(){
     let players =  this.state.players.map( (val, key) => {
       if(val.nombre!==undefined){
-          return <ScrollView key={key} style={{flex:1,marginTop:10}}><PlayerProfile user={val} showBackButton={false}/></ScrollView>
+          return <ScrollView key={key} style={{flex:1,marginTop:10}}><PlayerProfile user={val} showTitle={true} showBackButton={false}/></ScrollView>
       }
     });
 
