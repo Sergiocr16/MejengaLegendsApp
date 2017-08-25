@@ -52,7 +52,7 @@ export default class NotificationsByPlayer extends Component {
                                  <Text style={{flex:6}}>{val.message}</Text>
                             </View>
 
-                              <Text style={{flex:2,fontSize:17}}>16/08/2017</Text>
+                              <Text style={{flex:2,fontSize:17}}>{val.fecha}</Text>
                               <Text><Icon name="chevron-right" size={20} color={'#F4511E'} /> </Text>
 
                             </TouchableOpacity>

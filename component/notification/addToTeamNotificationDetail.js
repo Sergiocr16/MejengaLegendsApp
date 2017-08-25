@@ -32,15 +32,19 @@ export default class AddToTeamNotificationDetail extends Component {
       this.state.ownTeams = [];
     })
     TeamService.getTeam(this.props.notification.equipoGUID,(team)=>{
+
          this.setState({team:team})
         this.showTeamDetail();
+        TeamService.getPlayersByTeam(team.uid,(players)=>{
+          if(players){
+            console.log('afafafddddddddddddddddddd')
+            console.log(players)
+          this.setState({players});
+          }
+        },()=>{
+        })
     },()=>{})
-    TeamService.getPlayersByTeam(this.state.team.uid,(players)=>{
-      if(players){
-      this.setState(players);
-      }
-    },()=>{
-    })
+
   }
   showImage = () => {
     if(this.state.team.image !== undefined){
@@ -117,11 +121,11 @@ export default class AddToTeamNotificationDetail extends Component {
                   <ScrollView>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                         <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.state.team.lema)}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
-                         <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
+                         <Text style={[styles.flexEnd,{flex:3}]}>{this.state.cantidadJugadores}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>

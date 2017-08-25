@@ -18,7 +18,7 @@ class CanchaService {
       })
       FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,updatedCanchas);
     }
-    
+
     static replace(canchas,complejoUID){
       FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,canchas);
     }
