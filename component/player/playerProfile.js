@@ -32,9 +32,8 @@ export default class PlayerProfile extends Component {
   }
 
   showTitle = () =>{
-    if(this.props.showBackButton!==true){
-      return
-      <View>
+    if(this.props.showBackButton){
+      return <View>
       <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
       </View>
@@ -58,7 +57,7 @@ export default class PlayerProfile extends Component {
     return (
       <FadeInView style={styles.container}>
       <FadeInView style={styles.infoContainer} duration={300}>
-     {this.showTitle()}
+       {this.showTitle()}
        <View style={styles.basicInfo}>
        <View style={{flex:1,alignItems:'center'}}>
         {this.showImage()}

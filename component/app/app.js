@@ -48,7 +48,11 @@ export default class App extends Component {
     _handleAppStateChange = (nextAppState) => {
       if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
         console.log('App has come to the foreground!')
+        if(this.state.player.firstTime){
+              this.setState({scene:'firstTime'})
+        }else{
         this.setState({scene:'menu'})
+        }
         SoundManager.playBackgroundMusic();
       }else{
         console.log('App has come to the background!')
@@ -61,7 +65,7 @@ export default class App extends Component {
   componentDidMount() {
       AppState.addEventListener('change', this._handleAppStateChange);
     FirebaseBasicService.findActiveById("users/players",firebase.auth().currentUser.uid,(player)=>{
-        if(player.firstTime===true){
+        if(player.firstTime){
           this.setState({scene:"firstTime"})
         }else{
           this.setState({scene:"menu",initView:"partido"})

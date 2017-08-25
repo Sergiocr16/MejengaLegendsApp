@@ -9,6 +9,7 @@ import {
   ToastAndroid,
   ScrollView,
   DatePickerAndroid,
+  TimePickerAndroid,
   Picker,
   Platform,
   Alert
@@ -36,13 +37,18 @@ export default class CreateComplejo extends Component {
     super(props)
     this.state = {
       provinciaList: ['Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San José'],
-      cantonList:  ["Aserrí","Coronado","Curridabat","Desamparados","Dota","Escazú", "Montes de Oca","Mora",
-      "Moravia","San José Central","Perez Zeledón","Santa Ana","Alajuelita","Tarrazú","Tibás"],
+      cantonList:  [],
+      dayList:  ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
       // Estados del constructor
+      diaInicial:'Domingo',
+      diaFinal:'Domingo',
+      horaInicial:'7:00 am',
+      horaFinal:'10:00 pm',
       uid: null,
       nombre: '',
       provincia: 'San José',
       canton: 'Aserrí',
+      numeroTelefono:'',
       comodidadesDefault: [{nombre:"Parqueo",icono:"car",selected:false},
                            {nombre:"Se aceptan tarjetas",icono:"credit-card-alt",selected:false},
                            {nombre:"Restaurante",icono:"cutlery",selected:false},
@@ -109,6 +115,7 @@ export default class CreateComplejo extends Component {
   }
   componentDidMount() {
     this.setMyComplejoMenu();
+    this.handleProvinciaChange(this.state.provincia);
   }
 
   isEmpty = (val) => {
@@ -124,7 +131,7 @@ export default class CreateComplejo extends Component {
   }
 
   isValid = () => {
-   if(this.state.nombre===""){
+   if(this.state.nombre===""|| this.state.numeroTelefono===""){
      ToastAndroid.show('Por favor verifica el formulario', ToastAndroid.LONG);
      return false;
    }else{
@@ -211,7 +218,50 @@ export default class CreateComplejo extends Component {
     }
     });
   }
+  defineHoursMinutes = (option) =>{
+    var hoursMinutes = {}
+    if(option=='inicial'){
+    var newInitialHour = parseInt(this.state.horaInicial.split(":")[0])
+    var newInitialMinute = parseInt(this.state.horaInicial.split(':')[1].split(' ')[0])
+    this.setState({newInitialHour});
+    this.setState({newInitialMinute});
+  }else{
+    var a = this.state.horaFinal.split(" ")[1];
+    var newFinalHour = parseInt(this.state.horaFinal.split(":")[0])
+    var newFinallMinute = parseInt(this.state.horaFinal.split(':')[1].split(' ')[0])
+    if(a=='pm'){
+      newFinalHour=newFinalHour+12;
+    }
+    this.setState({newFinalHour});
+    this.setState({newFinallMinute});
+  }
 
+  }
+  openTimePicker = async (option) =>{
+    var config = {}
+    if(option=='inicial'){
+      config = {hour:this.state.newInitialHour,minute:this.state.newInitialMinute,defineState:()=>{this.setState({horaInicial: moment(newTime).format('h:mm a')})}}
+    }else{
+      config = {hour:this.state.newFinalHour,minute:this.state.newFinalMinute,defineState:()=>{this.setState({horaFinal: moment(newTime).format('h:mm a')})}}
+    }
+    try {
+       const {action, hour, minute} = await TimePickerAndroid.open({
+         hour: config.hour,
+         minute: config.minute,
+        minHour:3,
+         is24Hour: false, // Will display '2 PM'
+       });
+       if (action !== TimePickerAndroid.dismissedAction) {
+         var newTime = new Date()
+         newTime.setHours(hour);
+         newTime.setMinutes(minute);
+         console.log(moment(newTime).format('h:mm a'))
+        config.defineState()
+       }
+      } catch ({code, message}) {
+       console.warn('Cannot open time picker', message);
+      }
+   }
   showCreateComplejo = () => {
     let provinciaPicker = this.state.provinciaList.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
@@ -220,6 +270,9 @@ export default class CreateComplejo extends Component {
     let cantonPicker = this.state.cantonList.map( (s, i) => {
       return <Picker.Item  key={i} value={s} label={s} />
   });
+  let dayPicker = this.state.dayList.map( (s, i) => {
+    return <Picker.Item  key={i} value={s} label={s} />
+});
 
   return (
     <FadeInView style={styles.container} duration={600}>
@@ -240,7 +293,7 @@ export default class CreateComplejo extends Component {
         <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
         </TouchableOpacity>
        </View>
-         <View style={{flexDirection:'row',flex:3}}>
+         <View style={{flexDirection:'column',flex:3}}>
            <TextInput
            underlineColorAndroid={this.isEmpty(this.state.nombre)}
            placeholderTextColor="grey"
@@ -249,6 +302,15 @@ export default class CreateComplejo extends Component {
            disableFullscreenUI={true}
            style={[styles.inputText,{flex:1}]}
            onChangeText={(nombre) => this.setState({nombre})}
+           />
+           <TextInput
+           underlineColorAndroid={this.isEmpty(this.state.numeroTelefono)}
+           placeholderTextColor="grey"
+           placeholder="Número telefónico del complejo"
+           autocapitalize={true}
+           disableFullscreenUI={true}
+           style={[styles.inputText,{flex:1}]}
+           onChangeText={(numeroTelefono) => this.onChangedOnlyNumbers(numeroTelefono)}
            />
         </View>
         <View style={{flexDirection:'column',marginVertical:20}}>
@@ -273,6 +335,44 @@ export default class CreateComplejo extends Component {
           <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             {this.showComodidades()}
           </View>
+        </View>
+
+        <View style={{flex:1,marginTop:10}}>
+        <Text style={styles.bold,{marginVertical:10,fontSize:16}}>Define el horario</Text>
+        <View style={{flex:1,paddingHorizontal:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+        <View style={{flex:1}}>
+        <Text style={styles.bold}>Día que abre</Text>
+        <Picker style={styles.androidPicker} label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+                          options={this.state.dayList}
+                          value ={this.state.diaInicial} selectedValue = {this.state.diaInicial}
+          onValueChange={ (diaInicial) => (this.setState({diaInicial})) } >
+          {dayPicker}
+        </Picker>
+        </View>
+        <View style={{flex:1}}>
+        <Text style={styles.bold}>Día que cierra</Text>
+        <Picker style={styles.androidPicker} label='Canton' style={{backgroundColor: 'rgba(0, 0, 0, 0.0)'}}
+        options={this.state.dayList}
+        value ={this.state.diaFinal} selectedValue = {this.state.diaFinal}
+      onValueChange={ (diaFinal) => (this.setState({diaFinal})) } >
+          {dayPicker}
+        </Picker>
+        </View>
+        </View>
+        <View style={{flex:1,paddingHorizontal:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+        <View style={{flex:1}}>
+        <Text style={styles.bold,{marginBottom:8}}>Hora que abre</Text>
+         <TouchableOpacity onPress={()=>{this.defineHoursMinutes('inicial');setTimeout(()=>{this.openTimePicker('inicial')},100)}}>
+         <Text style={{fontSize:15,color:'black',marginLeft:5}}>{this.state.horaInicial}</Text>
+         </TouchableOpacity>
+        </View>
+        <View style={{flex:1}}>
+        <Text style={styles.bold,{marginBottom:8}}>Hora que cierra</Text>
+      <TouchableOpacity onPress={()=>{this.defineHoursMinutes('final');setTimeout(()=>{this.openTimePicker('final')},100)}}>
+        <Text style={{fontSize:15,color:'black',marginLeft:5}}>{this.state.horaFinal}</Text>
+        </TouchableOpacity>
+        </View>
+        </View>
         </View>
       </View>
        <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
@@ -335,6 +435,19 @@ export default class CreateComplejo extends Component {
        return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}></Image>
      }
      }
+     onChangedOnlyNumbers(text){
+        var newText = '';
+        var numbers = '0123456789';
+        if(text.length < 1){
+          this.setState({ numeroTelefono: '' });
+        }
+        for (var i=0; i < text.length; i++) {
+             if(numbers.indexOf(text[i]) > -1 ) {
+                  newText = newText + text[i];
+             }
+             this.setState({ numeroTelefono: newText });
+         }
+     }
  submit = () =>{
    this.state.newComplejo.uid = Date.now();
    this.state.newComplejo.nombre = this.state.nombre;
@@ -342,6 +455,8 @@ export default class CreateComplejo extends Component {
    this.state.newComplejo.canton = this.state.canton;
    this.state.newComplejo.comodidades = this.defineComodidades();
    this.state.newComplejo.administrador = {};
+   this.state.newComplejo.numeroTelefono = this.state.numeroTelefono;
+   this.state.newComplejo.horario = {diaAbre:this.state.diaInicial,diaCierra:this.state.diaFinal,horaAbre:this.state.horaInicial,horaCierra:this.state.horaFinal}
    SoundManager.playPushBtn();
    this.setState({submitted:true})
     if(this.isValid()){
