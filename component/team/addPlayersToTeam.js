@@ -40,7 +40,7 @@ export default class AddPlayersToTeam extends Component {
     containsObject = (obj, list)=> {
       var i;
       for (i = 0; i < list.length; i++) {
-        if (list[i] === obj) {
+        if (list[i].uid === obj.uid) {
             return true;
         }
       }
@@ -77,7 +77,7 @@ existeElIdEnEquipos = (id, list)=> {
           ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
         } else {
            var firstNotification = [{equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipos!', titulo: "Invitación a unirte a equipo",tipo:1,fecha:fecha}];
-            TeamService.sendNotificationToPlayers(val.jugadorGUID,firstNotification);
+            TeamService.sendNotificationToPlayers(val.uid,firstNotification);
             this.props.back();
             ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
         }
@@ -105,7 +105,7 @@ existeElIdEnEquipos = (id, list)=> {
   }
     isInTeam = (val)=>{
       TeamService.getTeamsByEspecificPlayer(val.uid,(teams)=>{
-        if(teams &&!this.existeElIdEnEquipos(val.uid,teams)){
+        if(teams &&this.existeElIdEnEquipos(this.props.team.uid,teams)){
              ToastAndroid.show('El jugador ' + val.nombre + ' ' + val.primerApellido + ' ya pertenece a este equipo', ToastAndroid.LONG);
 
         }else{
@@ -118,6 +118,9 @@ existeElIdEnEquipos = (id, list)=> {
 
 
   addPlayers = (val)=>{
+    if(this.containsObject(val,this.state.playersSelected)){
+          ToastAndroid.show('Ya seleccionaste a este jugador', ToastAndroid.LONG);
+    }else{
       if(val.uid==firebase.auth().currentUser.uid){
           ToastAndroid.show('Ya perteneces a este equipo', ToastAndroid.LONG);
       }else{
@@ -126,6 +129,7 @@ existeElIdEnEquipos = (id, list)=> {
         } else {
              ToastAndroid.show('Este jugador ya pertenece a 5 equipos, limite alcanzado', ToastAndroid.LONG);
         }
+      }
       }
   }
   deletePlayers = (key)=>{
@@ -236,7 +240,7 @@ existeElIdEnEquipos = (id, list)=> {
               <TextInput
               underlineColorAndroid='white'
               placeholderTextColor="grey"
-              placeholder="Nombre de equipo"
+              placeholder="Nombre de usuario"
               autocapitalize={true}
               disableFullscreenUI={true}
               style={[styles.inputText,{flex:2,borderColor:this.isEmpty(this.state.username)}]}

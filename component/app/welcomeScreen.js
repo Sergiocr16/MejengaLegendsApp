@@ -71,7 +71,7 @@ _handleAppStateChange = (nextAppState) => {
   showWellcomeScreen = ()=>{
     return (
       <FadeInView style={{flex:1,backgroundColor:'white'}} duration={300}>
-      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/68R2RJh.jpg'}}>
+      <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/xbkH86U.jpg'}}>
      <View style={styles.centerItems}>
      <Image style={{height:80,width:80,marginRight:80,marginBottom:30}} source={{uri: 'http://www.inpris.co//wp-content/uploads/2016/07/loading-circles.gif'}}>
      <TouchableOpacity style={styles.initButton} onPress={()=>{

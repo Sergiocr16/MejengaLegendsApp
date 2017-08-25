@@ -79,6 +79,7 @@ export default class App extends Component {
      })
      Notification.getMyNotifications((notifications)=>{
        if(notifications){
+        SoundManager.playNotificationsSound();
          this.setState({notifications:notifications})
        }
      },()=>{

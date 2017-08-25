@@ -19,7 +19,7 @@ import Players from '../player/players';
 import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
 import ComplejoMenu from '../complejo/complejoMenu';
-
+import AdminMenuDeSuperAdmin from '../administrador/adminMenuDeSuperAdmin';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SoundManager from '../../services/soundManager'
 export default class Menu extends Component {
@@ -57,7 +57,10 @@ export default class Menu extends Component {
     SoundManager.playPushBtn();
     this.setState({scene:'complejos'})
    }
-
+   setSceneAdministradores= () =>{
+    SoundManager.playPushBtn()
+    this.setState({scene:'administradores'})
+   }
   setSceneAllJugadores = () => {
       SoundManager.playPushBtn();
    this.setState({scene:'allPlayers'})
@@ -92,10 +95,7 @@ export default class Menu extends Component {
       SoundManager.playSwitchClick()
    this.setState({menuScene:'superAdmin'})
   }
-  setSceneAdministradores= () =>{
-      SoundManager.playSwitchClick()
-   this.setState({menuScene:'administradores'})
-  }
+
   setSceneMenuMisEquipos = () => {
       SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
@@ -148,16 +148,16 @@ defineMainButtons = () => {
   switch (this.props.user.rol) {
     case "player":
     return <View style={styles.mainButtonsContainer}>
-    <TouchableOpacity style={this.activeMainButton('partido')} onPress={this.setScenePartido}>
+    <TouchableOpacity style={this.activeMainButton('partido')} activeOpacity={1}  onPress={this.setScenePartido}>
      <Text style={this.activeMainText('partido')}>PARTIDO</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={this.activeMainButton('equipos')} onPress={this.setSceneEquipos}>
+    <TouchableOpacity style={this.activeMainButton('equipos')} activeOpacity={1}  onPress={this.setSceneEquipos}>
      <Text style={this.activeMainText('equipos')} >EQUIPOS</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={this.activeMainButton('jugadores')} onPress={this.setSceneJugadores}>
+    <TouchableOpacity style={this.activeMainButton('jugadores')} activeOpacity={1}   onPress={this.setSceneJugadores}>
      <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={this.activeMainButton('contratos')} onPress={this.setSceneContratos}>
+    <TouchableOpacity style={this.activeMainButton('contratos')}activeOpacity={1}   onPress={this.setSceneContratos}>
      <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
     </TouchableOpacity>
     </View>
@@ -199,7 +199,7 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Visualiza todos los complejos</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneAdministradores}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://cdn23.merca20.com/wp-content/uploads/2017/02/bigstock-144060173.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"pie-chart"}  size={30} color="#1565C0" />
@@ -525,6 +525,9 @@ defineMainButtons = () => {
         break;
       case 'complejos':
         return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'administradores':
+        return <AdminMenuDeSuperAdmin back={()=> this.setSceneButtons()}/>;
         break;
       default:
         return this.menuButtons();
