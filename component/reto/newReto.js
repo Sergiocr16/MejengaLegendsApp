@@ -58,10 +58,9 @@ export default class NewReto extends Component {
 }
 
   defineAllMatches = () => {
-    var allRetos = []
-      Reto.getRetosByCancha(this.state.complejo.uid,(retos)=>{
-        var recorrido = 0;
-        console.log(retos)
+    var allRetos = [];
+      var recorrido = 0;
+      Reto.getRetosByComplejo(this.state.complejo.uid,(retos)=>{
         retos.map((reto)=>{
           this.props.complejos.map((val)=>{
             if(reto.complejoGUID==val.uid){
@@ -78,6 +77,7 @@ export default class NewReto extends Component {
               }
             })
             if(!existe){
+              reto.wantToPlay = false;
                 allRetos.push(reto)
             }
             if(recorrido==retos.length){
@@ -88,9 +88,7 @@ export default class NewReto extends Component {
         })
       },()=>{
         recorrido++;
-        if(recorrido==retos.length){
-            this.setState({retos:allRetos,sceneIn:'retosDisponibles'})
-        }
+            this.setState({retos:[],sceneIn:'retosDisponibles'})
       })
 
   }
@@ -193,20 +191,153 @@ export default class NewReto extends Component {
     }
   }
 
+setWantToPlay = (val) => {
+  var retos = []
+  SoundManager.playPushBtn()
+  this.state.retos.map((reto)=>{
+    if(reto.uid==val.uid){
+      reto.wantToPlay = !reto.wantToPlay;
+    }
+    retos.push(reto)
+  })
+  this.setState({retos})
+}
+
+createNotifications = (equipo1,equipo2,matchNuevo) => {
+
+  Team.getPlayersByTeam(equipo2.uid,(players)=>{
+  players.map((player)=>{
+    Partido.getPartidosByPlayer(player.uid,(partidos)=>{
+      var newPartidos = partidos;
+      newPartidos.push(matchNuevo)
+       Partido.agregarPartidoAJugadores(player.uid,newPartidos)
+       var noti = []
+       Team.getNotificationsByPlayerOnce(player.uid,(notis)=>{
+         noti = notis;
+         console.log(notis)
+         var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'El equipo '+matchNuevo.equipo1.nombre+' ha aceptado el reto contra tu equipo '+ this.props.team.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+         noti.push(firstNotification)
+        Team.sendNotificationToPlayers(player.uid,noti);
+       },()=>{
+         var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'El equipo '+matchNuevo.equipo1.nombre+' ha aceptado el reto contra tu equipo '+ this.props.team.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+         noti.push(firstNotification)
+        Team.sendNotificationToPlayers(player.uid,noti);
+       })
+    },()=>{
+      var newPartidos = [];
+      newPartidos.push(matchNuevo)
+      Partido.agregarPartidoAJugadores(player.uid,newPartidos)
+      var noti = []
+      Team.getNotificationsByPlayerOnce(player.uid,(notis)=>{
+        console.log(notis)
+        noti = notis;
+        var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'El equipo '+matchNuevo.equipo1.nombre+' ha aceptado el reto contra tu equipo '+ this.props.team.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+        noti.push(firstNotification)
+       Team.sendNotificationToPlayers(player.uid,noti);
+      },()=>{
+        console.log("AAAA")
+        var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'El equipo '+matchNuevo.equipo1.nombre+' ha aceptado el reto contra tu equipo '+ this.props.team.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+       noti.push(firstNotification)
+       Team.sendNotificationToPlayers(player.uid,noti);
+      })
+    })
+  })
+  },()=>{})
+
+
+   Team.getPlayersByTeam(equipo1.uid,(players)=>{
+   players.map((player)=>{
+     Partido.getPartidosByPlayer(player.uid,(partidos)=>{
+       var newPartidos = partidos;
+       newPartidos.push(matchNuevo)
+        Partido.agregarPartidoAJugadores(player.uid,newPartidos)
+        var noti = []
+        Team.getNotificationsByPlayerOnce(player.uid,(notis)=>{
+          noti = notis;
+          console.log(notis)
+          var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'Tu equipo '+this.props.team.nombre+' ha aceptado el reto contra el equipo '+ matchNuevo.equipo1.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+          noti.push(firstNotification)
+         Team.sendNotificationToPlayers(player.uid,noti);
+        },()=>{
+          var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'Tu equipo '+ this.props.team.nombre+' ha aceptado el reto contra el equipo '+ matchNuevo.equipo1.nombre +' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+          noti.push(firstNotification)
+         Team.sendNotificationToPlayers(player.uid,noti);
+        })
+     },()=>{
+       var newPartidos = [];
+       newPartidos.push(matchNuevo)
+       Partido.agregarPartidoAJugadores(player.uid,newPartidos)
+       var noti = []
+       Team.getNotificationsByPlayerOnce(player.uid,(notis)=>{
+         console.log(notis)
+         noti = notis;
+         var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'Tu equipo '+ this.props.team.nombre+' ha aceptado un reto contra el equipo '+ matchNuevo.equipo1.nombre+' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+         noti.push(firstNotification)
+        Team.sendNotificationToPlayers(player.uid,noti);
+       },()=>{
+         console.log("AAAA")
+         var firstNotification = {matchGUID:matchNuevo.uid,jugadorGUID:player.uid,message:'Tu equipo '+ this.props.team.nombre+' ha aceptado un reto contra el equipo '+ matchNuevo.equipo1.nombre+' para el día '+moment(matchNuevo.fecha).format('LL')+' a las '+moment(matchNuevo.fecha).format('hh:mm a'), titulo: "¡Se armó una mejenga!",tipo:2,fecha:moment().format('DD/MM/YYYY')};
+        noti.push(firstNotification)
+        Team.sendNotificationToPlayers(player.uid,noti);
+       })
+     })
+   })
+   },()=>{})
+}
+
+crearPartido = (val) => {
+  var newMatches = []
+  var matchNuevo;
+  this.setState({sceneIn:'loading'})
+      Cancha.getMatchesByCanchaOnce(val.cancha.canchaGUID,(matches)=>{
+       matches.map((match)=>{
+         if(match.uid === val.uid){
+           match.equipo2 = { nombre: this.props.team.nombre, equipoGUID: this.props.team.uid}
+           matchNuevo = match;
+         }
+         newMatches.push(match)
+       })
+       Reto.delete(val.uid)
+       Partido.crearPartidoApartirDeReto(val.cancha,newMatches)
+       this.createNotifications(this.props.team,val.equipo,matchNuevo)
+       this.props.back();
+       ToastAndroid.show("Has aceptado el reto contra "+ val.equipo.nombre + " para la fecha "+ moment(val.fecha).format('LL hh:mm a'), ToastAndroid.LONG);
+      },()=>{
+        val.equipo2 = { nombre: this.props.team.nombre, equipoGUID: this.props.team.uid}
+        matchNuevo = val
+        newMatches.push(val)
+        Reto.delete(val.uid)
+        Partido.crearPartidoApartirDeReto(val.cancha,newMatches)
+        this.createNotifications(this.props.team,val.equipo,matchNuevo)
+        this.props.back();
+        ToastAndroid.show("Has aceptado el reto contra "+ val.equipo.nombre + " para la fecha "+ moment(val.fecha).format('LL hh:mm a'), ToastAndroid.LONG);
+      })
+}
+showWantToPlay = (val) => {
+  if(val.wantToPlay){
+    return <View style={{flexDirection:'row'}}>
+    <TouchableOpacity style={{backgroundColor:'purple',padding:3,borderRadius:5,marginTop:10,marginHorizontal:2.5}}   onPress={()=>{this.crearPartido(val)}} ><Text style={styles.textButton,{padding:2,fontSize:15,color:'white',textAlign:'center'}}>¡Claro que sí!</Text></TouchableOpacity>
+    <TouchableOpacity style={{backgroundColor:'#F44336',padding:3,borderRadius:5,marginTop:10,marginHorizontal:2.5}}   onPress={()=>{this.setWantToPlay(val)}}><Text style={styles.textButton,{padding:2,fontSize:15,color:'white',textAlign:'center'}}>¡Mejor no!</Text></TouchableOpacity>
+    </View>
+  }else{
+    return <TouchableOpacity style={{backgroundColor:'purple',padding:3,borderRadius:5,marginTop:10}}   onPress={()=>{this.setWantToPlay(val)}} ><Text style={styles.textButton,{padding:2,fontSize:15,color:'white',textAlign:'center'}}>¡ACEPTO EL RETO!</Text></TouchableOpacity>
+  }
+}
+
  showRetosDisponibles = () => {
    let retos =  this.state.retos.map((val, key) => {
          return <View key={key} style={{flex:1}}>
          <View key={key} style={{flexDirection:'row', height:200,backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
-                 <View style={{flex:2,justifyContent:'center',alignItems:'center'}}>
+                 <View style={{flex:3,justifyContent:'center',alignItems:'center'}}>
                 <Image style={styles.imageVS} borderRadius={10} source={{uri: 'https://userscontent2.emaze.com/images/12385dc1-2370-4411-a3cd-4003f24a88cf/9bf191e90aa3928848849406d236da99.png'}}>
                 </Image>
                 </View>
-                 <View style={{flex:7,flexDirection:'row'}}>
-                  <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
+                 <View style={{flex:10,flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:val.equipo})}} style={{flex:4,justifyContent:'center',alignItems:'center'}}>
                   {this.showImage2(val.equipo)}
-                  <TouchableOpacity onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:val.equipo})}} ><Text style={styles.textButton,{padding:2,fontSize:20,color:'#1565C0'}}>{val.equipo.nombre}</Text></TouchableOpacity>
-                  </View>
-                  <View style={{flex:3,justifyContent:'center'}}>
+                  <TouchableOpacity><Text style={styles.textButton,{padding:2,fontSize:20,color:'#1565C0'}}>{val.equipo.nombre}</Text></TouchableOpacity>
+                  </TouchableOpacity>
+                  <View style={{flex:5,justifyContent:'center'}}>
                   <View style={{flex:1,justifyContent:'center',padding:5}}>
                   <Text style={{textAlign:'left'}}>Lugar:</Text>
                     <TouchableOpacity onPress={()=>{this. setSceneComplejoDetail(); this.setState({currentComplejo:val.complejo})}} ><Text style={styles.textButton,{padding:2,fontSize:20,color:'#1565C0'}}>{val.complejoNombre}</Text></TouchableOpacity>
@@ -214,7 +345,7 @@ export default class NewReto extends Component {
                       <Text style={styles.textButton,{padding:2,fontSize:16}}>{moment(val.fecha).format('LL')}</Text>
                     <Text style={{textAlign:'left'}}>Hora:</Text>
                   <Text style={styles.textButton,{padding:2,fontSize:16}}>{moment(val.fecha).format("hh:mm a")}</Text>
-                  <TouchableOpacity style={{backgroundColor:'purple',padding:3,borderRadius:5,marginTop:10}}   onPress={()=>{this. setSceneComplejoDetail(); this.setState({currentComplejo:val.complejo})}} ><Text style={styles.textButton,{padding:2,fontSize:15,color:'white',textAlign:'center'}}>¡ACEPTO EL RETO!</Text></TouchableOpacity>
+                  {this.showWantToPlay(val)}
                   </View>
                   </View>
                   </View>
@@ -262,7 +393,7 @@ export default class NewReto extends Component {
      </Picker>
      </View>
      <View style={{flex:1,justifyContent:'center'}}>
-    <TouchableOpacity style={[styles.buttonComplejoDetail]} onPress={()=>{this.setState({currentComplejo:this.state.complejo});this.setSceneComplejoDetail()}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.state.complejo.nombre}</Text></TouchableOpacity>
+    <TouchableOpacity style={styles.buttonComplejoDetail}onPress={()=>{this.setState({currentComplejo:this.state.complejo});this.setSceneComplejoDetail()}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.state.complejo.nombre}</Text></TouchableOpacity>
       </View>
     </View>
    </View>
@@ -327,25 +458,29 @@ verificarPartidos = () => {
 
 createMatchesByCanchas = () => {
   var canchasFinal = [];
+    var recorrido = 0;
   Complejo.getCanchasByComplejo(this.state.complejo.uid,(canchas)=>{
-    var recorrido = 0
     canchas.map((cancha)=>{
       Cancha.getMatchesByCancha(cancha.uid,(matches)=>{
         cancha.matches = matches;
         canchasFinal.push(cancha)
+        if(recorrido!=undefined){
         recorrido++;
         if(recorrido==canchas.length){
           this.setState({canchas:canchasFinal})
           setTimeout(()=>{this.defineAllMatches()},200)
+        }
         }
       },()=>{
         cancha.matches = [];
         canchasFinal.push(cancha)
+          if(recorrido!=undefined){
         recorrido++;
         if(recorrido==canchas.length){
           this.setState({canchas:canchasFinal})
           setTimeout(()=>{this.defineAllMatches()},200)
         }
+      }
       })
     })
   },()=>{
@@ -375,15 +510,16 @@ creacionReto = () => {
               uid: Date.now()}
   Reto.crearSolicitudReto(reto,()=>{
     var partidos = []
-    var partido = {equipo1:reto.equipo,equipo2:'ninguno',fecha:reto.fecha,complejoNombre:reto.complejoNombre,complejoGUID:reto.complejoGUID,cancha:reto.cancha,uid:reto.uid}
+    var partido = {equipo1:reto.equipo,equipo2:'ninguno',status:'sinEmpezar',fecha:reto.fecha,complejoNombre:reto.complejoNombre,complejoGUID:reto.complejoGUID,cancha:reto.cancha,uid:reto.uid}
      Cancha.getMatchesByCanchaOnce(reto.cancha.canchaGUID,(partidosCancha)=>{
        partidos = partidosCancha;
+       partidos.push(partido)
        Partido.crearPartidoApartirDeReto(reto.cancha,partidos)
      },()=>{
-       partidos.push(partido)
+        partidos.push(partido)
       Partido.crearPartidoApartirDeReto(reto.cancha,partidos)
      })
-     ToastAndroid.show("Se ha creado el reto en "+this.state.complejo.nombre+" en la siguiente fecha: "+moment(this.state.fecha).format("LL hh:mm a"), 4000);
+     ToastAndroid.show("Se ha creado el reto en "+this.state.complejo.nombre+" en la siguiente fecha: "+moment(this.state.fecha).format("LL hh:mm a"), 5000);
      this.props.back();
   })
 }else{
@@ -475,7 +611,7 @@ submitCrearReto = () => {
                    <Icon name={"shield"}  size={40} color="#424242" />
               </View>
                <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} <Icon name="trophy" size={20} color="#FFB300" /></Text>
-              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:this.props.team})}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.props.team.nombre}</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:this.props.team})}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> {this.props.team.nombre}</Text></TouchableOpacity>
             </View>
             <View style={{flex:3}}>
               <ScrollView style={{flex:1}}>
@@ -607,8 +743,8 @@ submitCrearReto = () => {
      borderColor:'white'
    },
    profileImage2:{
-     height:90,
-      width:90,
+     height:100,
+      width:110,
      borderWidth:2,
      borderColor:'white'
    },
