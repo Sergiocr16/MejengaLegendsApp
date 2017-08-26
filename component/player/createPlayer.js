@@ -235,12 +235,12 @@ showCreateInfo = () => {
   <View style={{flex:1,padding:20}}>
   <ScrollView>
   <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',margin:15}}>
-  <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
-  {this.showImage()}
-  </View>
-  <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
-  <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
-  </TouchableOpacity>
+      <View style={{flex:4,alignItems:'center',justifyContent:'center'}}>
+      {this.showImage()}
+      </View>
+      <TouchableOpacity onPress={this._takePicture} style={{padding:5,borderRadius:5,backgroundColor:'#1565C0',margin:5,flex:1}}>
+      <Text style={{color:'white',textAlign:'center'}}>Subir imagen</Text>
+      </TouchableOpacity>
   </View>
   <View style={{flexDirection:'row',flex:3}}>
   <TextInput

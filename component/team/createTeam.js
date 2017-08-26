@@ -336,7 +336,7 @@ export default class CreateTeam extends Component {
    this.state.team.canton = this.state.canton;
    var equiposDelJugador = [];
    this.state.team.fundador = { nombre: this.props.user.nombre + ' ' + this.props.user.primerApellido,jugadorGUID:firebase.auth().currentUser.uid};
-  SoundManager.playPushBtn();
+
    this.setState({submitted:true})
    if(this.isValid()){
       this.setState({scene:'loading'})
@@ -345,6 +345,15 @@ export default class CreateTeam extends Component {
        equiposDelJugador = this.props.teams;
        equiposDelJugador.push(equipo);
        TeamService.newTeamsByPlayer(equiposDelJugador,firebase.auth().currentUser.uid);
+          var jugadoresDelEquipo = [];
+       TeamService.getPlayersByTeam(equipo.uid,(players)=>{
+         jugadoresDelEquipo = players;
+         jugadoresDelEquipo.push(this.props.user);
+         TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+       },()=>{
+          jugadoresDelEquipo.push(this.props.user);
+         TeamService.newPlayersByTeam(equipo.uid,jugadoresDelEquipo);
+       })
 
        Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
        this.props.back();

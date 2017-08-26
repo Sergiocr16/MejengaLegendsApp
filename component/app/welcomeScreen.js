@@ -73,6 +73,7 @@ _handleAppStateChange = (nextAppState) => {
 
   showWellcomeScreen = ()=>{
     return (
+
       <FadeInView style={{flex:1,backgroundColor:'black'}} duration={300}>
       <Image style={styles.bgImage} source={{uri: 'http://i.imgur.com/xbkH86U.jpg'}}>
      <View style={styles.centerItems}>
