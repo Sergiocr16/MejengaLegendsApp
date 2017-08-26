@@ -22,6 +22,8 @@ import BestTeams from '../team/bestTeams';
 import ComplejoDetail from '../complejo/complejoDetail';
 import MyTeamsReto from '../reto/myTeamsReto.js';
 import ArbitrosDeAdmin from '../arbitro/arbitrosDeAdmin';
+import NextMatches from '../partido/misProximosPartidos';
+import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
 import EncuentrosDeHoy from '../arbitro/encuentrosDeHoy';
 
@@ -89,6 +91,10 @@ export default class Menu extends Component {
   setSceneAllTeams = () => {
       SoundManager.playPushBtn();
    this.setState({scene:'allTeams'})
+  }
+  setSceneNextMatches= () => {
+    SoundManager.playPushBtn();
+ this.setState({scene:'nextMatches'})
   }
  //SCENES
 
@@ -170,6 +176,10 @@ export default class Menu extends Component {
 
 defineMainButtons = () => {
 
+  // <TouchableOpacity style={this.activeMainButton('contratos')}activeOpacity={1}   onPress={this.setSceneContratos}>
+  //  <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
+  // </TouchableOpacity>
+
   switch (this.props.user.rol) {
     case "player":
     return <View style={styles.mainButtonsContainer}>
@@ -181,9 +191,6 @@ defineMainButtons = () => {
     </TouchableOpacity>
     <TouchableOpacity style={this.activeMainButton('jugadores')} activeOpacity={1}   onPress={this.setSceneJugadores}>
      <Text style={this.activeMainText('jugadores')}>JUGADORES</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={this.activeMainButton('contratos')}activeOpacity={1}   onPress={this.setSceneContratos}>
-     <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
     </TouchableOpacity>
     </View>
       break;
@@ -544,30 +551,30 @@ defineMainButtons = () => {
                 </TouchableOpacity>
                 </View>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={styles.buttonMainMenu}>
+                <TouchableOpacity style={styles.buttonMainMenu} onPress={this.setSceneNextMatches}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://www.thestar.com/content/dam/thestar/sports/soccer/2017/05/29/team-canada-veteran-jose-blanger-retires-from-competitive-soccer/belanger-file.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"newspaper-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
-                    <Text style={styles.buttonSmallTitle}>Mis partidos</Text>
+                    <Text style={styles.buttonSmallTitle}>Mis próximos partidos</Text>
                     <Text style={styles.buttonSubtitle}>Visualiza tus partidos</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonMainMenu}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2016/07/03/sports/03EUROICELANDWEB6/03EUROICELANDWEB1-1467392458174-master768.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
-                    <Text style={styles.buttonSmallTitle}>RETO</Text>
-                    <Text style={styles.buttonSubtitle}>Tu equipo VS El mundo</Text>
+                    <Text style={styles.buttonSmallTitle}>Historial de partidos</Text>
+                    <Text style={styles.buttonSubtitle}>Visualiza tu partido</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonMainMenu}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://a.travel-assets.com/mediavault.le/media/722d0fb1d6456bd7e3ce7a8d184a6a1e4c3214d3.jpeg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
@@ -639,6 +646,9 @@ defineMainButtons = () => {
         break;
       case 'bestTeams':
         return <BestTeams back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'nextMatches':
+        return <NextMatches user={this.props.user} back={()=> this.setSceneButtons()}/>;
         break;
       case 'myTeamsReto':
         return <MyTeamsReto back={()=> this.setSceneButtons()}/>;
