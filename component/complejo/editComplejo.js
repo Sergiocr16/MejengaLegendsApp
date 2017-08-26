@@ -181,7 +181,7 @@ export default class EditComplejo extends Component {
        })
        .then((url) => {
            this.state.newComplejo.image = url;
-           ComplejoService.update(this.state.newComplejo)
+           ComplejoService.updateDirect(this.state.newComplejo)
            var updatedCanchas = [];
            getCanchasByComplejo(this.state.newComplejo.uid,(canchas)=>{
              canchas.map((val)=>{
@@ -486,7 +486,7 @@ export default class EditComplejo extends Component {
     if(this.isValid()){
         this.setState({scene:'loading'})
      if(this.state.source=='none'){
-      ComplejoService.update(this.state.newComplejo)
+      ComplejoService.updateDirect(this.state.newComplejo)
       var updatedCanchas = [];
       ComplejoService.getCanchasByComplejoOnce(this.state.newComplejo.uid,(canchas)=>{
         canchas.map((val)=>{

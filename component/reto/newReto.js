@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SoundManager from '../../services/soundManager';
 import Reto from '../../services/reto';
+import Team from '../../services/team';
 import Complejo from '../../services/complejo';
 import Cancha from '../../services/cancha';
 import Partido from '../../services/partido';
@@ -38,28 +39,70 @@ export default class NewReto extends Component {
       badTime:false,
       fecha:new Date(),
       definedDate: false,
-      hourSelected: 13,
+      hourSelected: new Date().getHours(),
       minuteSelected: 0,
+      retos:[],
       retosDisponibles: [],
       complejo: {}
     }
   }
 
   componentDidMount(){
+  Team.getTeamsByPlayer((teams)=>{
+    this.setState({complejo:this.props.complejos[0],teamsPlayer:teams})
+    setTimeout(()=>{this.createMatchesByCanchas()},200)
+  },()=>{
+    this.setState({complejo:this.props.complejos[0],teamsPlayer:[]})
+    setTimeout(()=>{this.createMatchesByCanchas()},200)
+  })
+}
 
-    setTimeout(()=>{
-      // Reto.getAll((retos)=>{
-      //   this.setState({retos})
-      // },()=>{
-      //   this.setState({retos:[]})
-      // })
-      this.setState({sceneIn:'retosDisponibles',complejo:this.props.complejos[0]})
-    },2000)
+  defineAllMatches = () => {
+    var allRetos = []
+      Reto.getRetosByCancha(this.state.complejo.uid,(retos)=>{
+        var recorrido = 0;
+        console.log(retos)
+        retos.map((reto)=>{
+          this.props.complejos.map((val)=>{
+            if(reto.complejoGUID==val.uid){
+              reto.complejo=val;
+            }
+          })
+          Team.getTeam(reto.equipo.equipoGUID,(team)=>{
+            recorrido++;
+            reto.equipo=team;
+            var existe = false;
+            this.state.teamsPlayer.map((teamPlayer)=>{
+              if(teamPlayer.uid==team.uid){
+                existe = true
+              }
+            })
+            if(!existe){
+                allRetos.push(reto)
+            }
+            if(recorrido==retos.length){
+                this.setState({retos:allRetos,sceneIn:'retosDisponibles'})
+            }
+          },()=>{
+          })
+        })
+      },()=>{
+        recorrido++;
+        if(recorrido==retos.length){
+            this.setState({retos:allRetos,sceneIn:'retosDisponibles'})
+        }
+      })
+
   }
  setSceneTeamDetail =()=>{
    SoundManager.playBackBtn();
    this.setState({scene:'teamDetail'})
  }
+  setSceneComplejoDetail =()=>{
+   SoundManager.playBackBtn();
+   this.setState({scene:'complejoDetail'})
+ }
+
  setSceneNewReto = ()=>{
    SoundManager.playPushBtn()
     this.setState({scene:'newReto'})
@@ -116,10 +159,10 @@ export default class NewReto extends Component {
         return this.showMainView()
         break;
       case 'teamDetail':
-        return <TeamDetail team={this.props.team}  showBackButton={true} back={()=>{this.setSceneNewReto()}} />
+        return <TeamDetail team={this.state.currentTeam}  showBackButton={true} back={()=>{this.setSceneNewReto()}} />
         break;
       case 'complejoDetail':
-        return <ComplejoDetail complejo={this.state.complejo}  showBackButton={true} back={()=>{this.setSceneNewReto()}} />
+        return <ComplejoDetail complejo={this.state.currentComplejo}  showBackButton={true} back={()=>{this.setSceneNewReto()}} />
         break;
       default:
 
@@ -151,7 +194,33 @@ export default class NewReto extends Component {
   }
 
  showRetosDisponibles = () => {
-   var retos = [];
+   let retos =  this.state.retos.map((val, key) => {
+         return <View key={key} style={{flex:1}}>
+         <View key={key} style={{flexDirection:'row', height:200,backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
+                 <View style={{flex:2,justifyContent:'center',alignItems:'center'}}>
+                <Image style={styles.imageVS} borderRadius={10} source={{uri: 'https://userscontent2.emaze.com/images/12385dc1-2370-4411-a3cd-4003f24a88cf/9bf191e90aa3928848849406d236da99.png'}}>
+                </Image>
+                </View>
+                 <View style={{flex:7,flexDirection:'row'}}>
+                  <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
+                  {this.showImage2(val.equipo)}
+                  <TouchableOpacity onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:val.equipo})}} ><Text style={styles.textButton,{padding:2,fontSize:20,color:'#1565C0'}}>{val.equipo.nombre}</Text></TouchableOpacity>
+                  </View>
+                  <View style={{flex:3,justifyContent:'center'}}>
+                  <View style={{flex:1,justifyContent:'center',padding:5}}>
+                  <Text style={{textAlign:'left'}}>Lugar:</Text>
+                    <TouchableOpacity onPress={()=>{this. setSceneComplejoDetail(); this.setState({currentComplejo:val.complejo})}} ><Text style={styles.textButton,{padding:2,fontSize:20,color:'#1565C0'}}>{val.complejoNombre}</Text></TouchableOpacity>
+                    <Text style={{textAlign:'left'}}>Fecha:</Text>
+                      <Text style={styles.textButton,{padding:2,fontSize:16}}>{moment(val.fecha).format('LL')}</Text>
+                    <Text style={{textAlign:'left'}}>Hora:</Text>
+                  <Text style={styles.textButton,{padding:2,fontSize:16}}>{moment(val.fecha).format("hh:mm a")}</Text>
+                  <TouchableOpacity style={{backgroundColor:'purple',padding:3,borderRadius:5,marginTop:10}}   onPress={()=>{this. setSceneComplejoDetail(); this.setState({currentComplejo:val.complejo})}} ><Text style={styles.textButton,{padding:2,fontSize:15,color:'white',textAlign:'center'}}>¡ACEPTO EL RETO!</Text></TouchableOpacity>
+                  </View>
+                  </View>
+                  </View>
+                </View>
+         </View>
+   });
    return <View style={{flex:1}}>
     {this.showResults(retos)}
    </View>
@@ -163,6 +232,16 @@ export default class NewReto extends Component {
        </Image>
     }else{
     return    <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
+      </Image>
+  }
+  }
+
+  showImage2 = (val) => {
+    if(val.image !== undefined){
+     return   <Image style={styles.profileImage2} borderRadius={10} source={{uri: val.image}}>
+       </Image>
+    }else{
+    return    <Image style={styles.profileImage2} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
       </Image>
   }
   }
@@ -183,7 +262,7 @@ export default class NewReto extends Component {
      </Picker>
      </View>
      <View style={{flex:1,justifyContent:'center'}}>
-    <TouchableOpacity style={[styles.buttonComplejoDetail]} onPress={()=>{this.setState({scene:'complejoDetail'}); SoundManager.playPushBtn()}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.state.complejo.nombre}</Text></TouchableOpacity>
+    <TouchableOpacity style={[styles.buttonComplejoDetail]} onPress={()=>{this.setState({currentComplejo:this.state.complejo});this.setSceneComplejoDetail()}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.state.complejo.nombre}</Text></TouchableOpacity>
       </View>
     </View>
    </View>
@@ -257,7 +336,7 @@ createMatchesByCanchas = () => {
         recorrido++;
         if(recorrido==canchas.length){
           this.setState({canchas:canchasFinal})
-            setTimeout(()=>{this.verificarPartidos()},200)
+          setTimeout(()=>{this.defineAllMatches()},200)
         }
       },()=>{
         cancha.matches = [];
@@ -265,10 +344,9 @@ createMatchesByCanchas = () => {
         recorrido++;
         if(recorrido==canchas.length){
           this.setState({canchas:canchasFinal})
-          setTimeout(()=>{this.verificarPartidos()},200)
+          setTimeout(()=>{this.defineAllMatches()},200)
         }
       })
-
     })
   },()=>{
     canchas:[];
@@ -292,19 +370,17 @@ creacionReto = () => {
   var canchaParaReto = this.obtenerCanchaMenosConcurrida()
   var reto = {equipo:{nombre:this.props.team.nombre,equipoGUID:this.props.team.uid},
               fecha:moment(this.state.fecha).format('LL hh:mm:ss'),
-              complejo:{nombre:this.state.complejo.nombre,complejoGUID:this.state.complejo.uid},
+              complejoNombre:this.state.complejo.nombre,complejoGUID:this.state.complejo.uid,
               cancha:{ numero: canchaParaReto.numero , canchaGUID: canchaParaReto.canchaGUID},
               uid: Date.now()}
   Reto.crearSolicitudReto(reto,()=>{
     var partidos = []
+    var partido = {equipo1:reto.equipo,equipo2:'ninguno',fecha:reto.fecha,complejoNombre:reto.complejoNombre,complejoGUID:reto.complejoGUID,cancha:reto.cancha,uid:reto.uid}
      Cancha.getMatchesByCanchaOnce(reto.cancha.canchaGUID,(partidosCancha)=>{
-         console.log(partidosCancha)
        partidos = partidosCancha;
-       partidos.push(reto)
        Partido.crearPartidoApartirDeReto(reto.cancha,partidos)
      },()=>{
-       console.log("ERROR")
-       partidos.push(reto)
+       partidos.push(partido)
       Partido.crearPartidoApartirDeReto(reto.cancha,partidos)
      })
      ToastAndroid.show("Se ha creado el reto en "+this.state.complejo.nombre+" en la siguiente fecha: "+moment(this.state.fecha).format("LL hh:mm a"), 4000);
@@ -321,7 +397,7 @@ submitCrearReto = () => {
      if(this.state.definedDate){
        if(this.validateDateInCommplejoSchedule()){
          this.setState({sceneIn:'loading'})
-         this.createMatchesByCanchas();
+         this.verificarPartidos();
    }
    }else{
      ToastAndroid.show("Debes seleccionar una fecha para tu reto", ToastAndroid.LONG);
@@ -376,6 +452,12 @@ submitCrearReto = () => {
     }
     return null;
   }
+  addHeight = () => {
+    if(this.state.sceneIn === 'loading'){
+      return {height:200,flex:1,paddingHorizontal:20,}
+    }
+    return {flex:1,paddingHorizontal:20,}
+  }
   showMainView = () => {
     return (
       <FadeInView style={styles.container} duration={600}>
@@ -384,7 +466,7 @@ submitCrearReto = () => {
               <Text style={styles.whiteFont}>Buscando reto para {this.props.team.nombre}</Text>
           </View>
           <View style={styles.subtitle}>
-              <Text style={styles.whiteFont2}>Configuración de busqueda</Text>
+              <Text style={styles.whiteFont2}>Complejos en {this.props.team.provincia}, {this.props.team.canton}</Text>
           </View>
          <View style={styles.basicInfo}>
             <View style={{flex:1,alignItems:'center'}}>
@@ -393,12 +475,11 @@ submitCrearReto = () => {
                    <Icon name={"shield"}  size={40} color="#424242" />
               </View>
                <Text style={[styles.boldFont,{marginTop:30,color:'#FFB300'}]}>{this.props.team.copas} <Icon name="trophy" size={20} color="#FFB300" /></Text>
-              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>this.setSceneTeamDetail()} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.props.team.nombre}</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.button,{marginTop:10, paddingVertical:7}]} onPress={()=>{this.setSceneTeamDetail(); this.setState({currentTeam:this.props.team})}} ><Text style={styles.textButton}><Icon name="eye" size={15} color="#FFFFFF"/> Ver {this.props.team.nombre}</Text></TouchableOpacity>
             </View>
             <View style={{flex:3}}>
               <ScrollView style={{flex:1}}>
-                  {this.showTitleSearching()}
-                  <View style={{flex:1,padding:20}}>
+                  <View style={this.addHeight()}>
                   {this.showSceneIn()}
                   </View>
                 </ScrollView>
@@ -524,6 +605,16 @@ submitCrearReto = () => {
       width:130,
      borderWidth:2,
      borderColor:'white'
+   },
+   profileImage2:{
+     height:90,
+      width:90,
+     borderWidth:2,
+     borderColor:'white'
+   },
+   imageVS:{
+    height:60,
+    width:60,
    },
    whiteFont:{
      color:'white',

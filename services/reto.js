@@ -12,6 +12,10 @@ class RetoService {
       FirebaseBasicService.getAll(Entities.CHALLENGES,callback,error);
     }
 
+    static getRetosByCancha(complejoGUID, callback,error){
+      FirebaseBasicService.filterByAttributeChallenges('challenges/active/','complejoGUID',complejoGUID,callback,error)
+    }
+
 }
 
 
