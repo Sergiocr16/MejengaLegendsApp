@@ -44,7 +44,6 @@ class ComplejoService {
     }
 
     static findComplejosByCanton(canton,callback,error){
-      console.log(canton)
       FirebaseBasicService.filterByAttribute('complejos/active/','canton',canton,callback,error)
     }
 

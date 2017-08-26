@@ -12,6 +12,9 @@ class PartidoService {
     static getPartidosByPlayer(idPlayer, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.MATCHESBYPLAYER,idPlayer,callback,error)
     }
+    static getPartidosByCurrentPlayer(idPlayer, callback,error){
+      FirebaseBasicService.findActiveById(Entities.MATCHESBYPLAYER,idPlayer,callback,error)
+    }
 
 
 }

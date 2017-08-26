@@ -15,6 +15,9 @@ class RetoService {
     static getRetosByComplejo(complejoGUID, callback,error){
       FirebaseBasicService.filterByAttributeChallenges('challenges/active/','complejoGUID',complejoGUID,callback,error)
     }
+    static getOne(retoGUID, callback,error){
+      FirebaseBasicService.filterByAttributeChallenges('matches/active/','uid',retoGUID,callback,error)
+    }
 
     static delete(retoGUID){
       FirebaseBasicService.deleteForever('challenges/active/',retoGUID)
