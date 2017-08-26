@@ -38,7 +38,11 @@ export default class SignUp extends Component {
   async signUp() {
       SoundManager.playPushBtn();
     try {
-      await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
+       console.log('uid',user.uid)
+      }).catch((error)=>{
+      });
+
       this.setState({
         response: 'account created!'
       })

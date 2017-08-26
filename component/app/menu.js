@@ -18,6 +18,7 @@ import BestPlayers from '../player/bestPlayers';
 import Players from '../player/players';
 import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
+import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
 import AdminMenuDeSuperAdmin from '../administrador/adminMenuDeSuperAdmin';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
@@ -46,6 +47,11 @@ export default class Menu extends Component {
   setSceneBestPlayers = () => {
       SoundManager.playPushBtn();
    this.setState({scene:'bestPlayers'})
+  }
+  setSceneMyTeamsReto = () => {
+    SoundManager.playPushBtn();
+    console.log("HOLAA")
+   this.setState({scene:'myTeamsReto'})
   }
 
   setSceneBestTeams = () => {
@@ -340,7 +346,7 @@ defineMainButtons = () => {
     return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeLeft={this.setScenePartido}  onSwipeRight={this.setSceneJugadores}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} >
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://insider.ticketmaster.com/wp-content/uploads/2014/06/soccer-play-ball.png'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -410,7 +416,7 @@ defineMainButtons = () => {
     return(<GestureRecognizer config={config} style={styles.partidoScene} onSwipeRight={this.setSceneContratos} onSwipeLeft={this.setSceneEquipos}>
               <View style={styles.row}>
                 <View style={styles.flex1}>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneMyTeamsReto}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://insider.ticketmaster.com/wp-content/uploads/2014/06/soccer-play-ball.png'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"globe"}  size={30} color="#1565C0" />
@@ -522,6 +528,9 @@ defineMainButtons = () => {
         break;
       case 'bestTeams':
         return <BestTeams back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'myTeamsReto':
+        return <MyTeamsReto back={()=> this.setSceneButtons()}/>;
         break;
       case 'complejos':
         return <ComplejoMenu back={()=> this.setSceneButtons()}/>;

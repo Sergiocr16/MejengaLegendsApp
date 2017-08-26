@@ -39,7 +39,7 @@ export default class MejengaLegendsApp extends Component {
       userLoaded: false
     }
     console.ignoredYellowBox = [ 'Setting a timer' ]
-    console.disableYellowBox = true;
+    // console.disableYellowBox = true;
     this.getInitialView = this.getInitialView.bind(this)
     this.showInitialView = this.showInitialView.bind(this)
     SoundManager.loadSounds();
