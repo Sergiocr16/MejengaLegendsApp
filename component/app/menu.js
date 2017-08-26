@@ -23,7 +23,6 @@ import ComplejoDetail from '../complejo/complejoDetail';
 import MyTeamsReto from '../reto/myTeamsReto.js';
 import ArbitrosDeAdmin from '../arbitro/arbitrosDeAdmin';
 import NextMatches from '../partido/misProximosPartidos';
-import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
 import ComplejosPartidos from '../complejo/complejoPartidos';
 import Ligas from '../team/ligas';
@@ -336,7 +335,7 @@ defineMainButtons = () => {
 
                   </View>
 
-                  
+
 
                 </View>
               </View>
@@ -550,7 +549,7 @@ defineMainButtons = () => {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://traveldigg.com/wp-content/uploads/2016/08/Camp-Nou-Photo.jpg'}}>
                     <View style={styles.circularIcon}>
                        <Icon name={"handshake-o"}  size={30} color="#1565C0" />
                    </View>
@@ -585,14 +584,14 @@ defineMainButtons = () => {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonMainMenu} onPress={this.setScenePartidosComplejos}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMpIb3Uboh7cdeTCS3c6GYYAL-_MuaEVh9v0w-NpkiECTkRXuO'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
                     <Text style={styles.buttonSmallTitle}>Complejos</Text>
-                    <Text style={styles.buttonSubtitle}>Mis escenarios de juego</Text>
+                    <Text style={styles.buttonSubtitle}>Escenarios de juego</Text>
                   </View>
                 </TouchableOpacity>
                 </View>
