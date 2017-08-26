@@ -52,7 +52,7 @@ export default class SignUp extends Component {
               console.log(error.message)
       switch (error.message) {
          case 'The email address is badly formatted.':
-ToastAndroid.show("La correo electrónico esta mal formateado.", ToastAndroid.LONG);
+ToastAndroid.show("El correo electrónico contiene un formato invalido.", ToastAndroid.LONG);
          break;
          case 'The password must be 6 characters long or more.':
 ToastAndroid.show("La contraseña debe de tener al menos 6 carácteres", ToastAndroid.LONG);

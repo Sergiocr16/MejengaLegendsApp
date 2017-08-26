@@ -138,7 +138,7 @@ export default class EditTeam extends Component {
        })
        .then((url) => {
            this.state.team.image = url;
-           TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
+        TeamService.updateTeam(this.props.team.uid,this.props.myTeams,this.state.team,0)
             this.props.back();
            resolve(url)
        })
@@ -321,7 +321,7 @@ export default class EditTeam extends Component {
    if(this.isValid()){
       this.setState({scene:'loading'})
    if(this.state.source=='none'){
-     TeamService.update(this.props.user.uid,this.props.team.uid,this.props.myTeams,this.state.team)
+            TeamService.updateTeam(this.props.team.uid,this.props.myTeams,this.state.team,0)
       this.props.back();
    }else{
    this.uploadImage(this.state.source)

@@ -15,16 +15,31 @@ class TeamService {
       FirebaseBasicService.newWithCallback(Entities.TEAMS,objeto,callback);
     }
 
-    static update(userKey,key,teams,team){
-      FirebaseBasicService.update(Entities.TEAMS,key, team);
-      var i = 0;
-     teams.map((val)=>{
-      if(val.uid===team.uid){
-          FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+userKey+"/",i, team)
-      }
-      i++;
-    })
+    static updateTeam(equipoID,teams,equipoModificado,option){
+      var cantidad = equipoModificado.cantidadJugadores+1;
+      FirebaseBasicService.update(Entities.TEAMS,equipoID, equipoModificado);
+      this.getPlayersByTeam(equipoID,(jugadores)=>{
+          jugadores.map( (value, key) => {
+          this.getTeamsByEspecificPlayer(value.uid,(equipos)=>{
+                  var i = 0;
+            equipos.map((val)=>{
+             if(val.uid===equipoModificado.uid){
+                 if(option==1){
+                   equipoModificado.cantidadJugadores = cantidad;
+                 }
+                  FirebaseBasicService.updateWithoutActive(Entities.TEAMSBYPLAYER+"/active/"+value.uid+"/",i, equipoModificado)
+             }
+             i++;
+           })
+
+          },()=>{})
+
+
+        });
+      },()=>{})
+
     }
+
 
     static new(objeto){
       FirebaseBasicService.newWithKey(Entities.TEAMS,objeto);
@@ -50,6 +65,9 @@ class TeamService {
     }
     static getTeamsByPlayer(callBack,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack,error)
+    }
+    static getTeamsByPlayerInMenu(callBack,error){
+      FirebaseBasicService.findActiveById(Entities.TEAMSBYPLAYER,firebase.auth().currentUser.uid,callBack,error)
     }
     static getTeamsByEspecificPlayer(jugadorGUID,callBack,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.TEAMSBYPLAYER,jugadorGUID,callBack,error)
