@@ -95,7 +95,14 @@ export default class App extends Component {
              this.setState({initView:"arbitro"})
              FirebaseBasicService.findActiveByIdOnce("users/arbitros",firebase.auth().currentUser.uid,(arbitro)=>{
                    this.setState({player:arbitro})
-                   setTimeout(()=>{this.setState({scene:"menu"})},200)
+                   ComplejoService.getComplejo(arbitro.complejoGUID,(complejo)=>{
+                     this.setState({complejo});
+                     setTimeout(()=>{this.setState({scene:"menu"})},200)
+
+                   },()=>{
+
+
+                   })
 
               },()=>{
 

@@ -315,30 +315,10 @@ defineMainButtons = () => {
                           <Text style={styles.buttonSubtitle}>Arbitra un partido</Text>
                         </View>
                       </TouchableOpacity>
-                      <TouchableOpacity style={[styles.buttonMainMenu,{flex:1}]} onPress={this.setSceneComplejos}>
-                        <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2017/02/16/sports/16ISRAELSOCCER3/16ISRAELSOCCER3-superJumbo.jpg'}}>
-                          <View style={styles.circularIcon}>
-                             <Icon name={"futbol-o"}  size={30} color="#1565C0" />
-                         </View>
-                        </Image>
-                        <View style={styles.textAreaButton}>
-                          <Text style={styles.buttonBigTitle}>Agenda</Text>
-                          <Text style={styles.buttonSubtitle}>Visualiza los futuros encuentros</Text>
-                        </View>
-                      </TouchableOpacity>
+
                   </View>
 
-                    <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneArbitros}>
-                      <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.bluemaize.net/im/mens-clothing/soccer-referee-0.jpg'}}>
-                        <View style={styles.circularIcon}>
-                           <Icon name={"flag"}  size={30} color="#1565C0" />
-                       </View>
-                      </Image>
-                      <View style={styles.textAreaButton}>
-                        <Text style={styles.buttonBigTitle}>Arbitros del complejo</Text>
-                        <Text style={styles.buttonSubtitle}>Visualiza todos los arbitros</Text>
-                      </View>
-                    </TouchableOpacity>
+                  
 
                 </View>
               </View>
@@ -630,8 +610,6 @@ defineMainButtons = () => {
     }
   }
   menuButtons(){
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-    console.log(this.state.menuScene)
     return(
       <View style={{flex:1}}>
         {this.mainButtons()}
@@ -641,8 +619,6 @@ defineMainButtons = () => {
 
 
   showScene(){
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-    console.log(this.state.scene)
     switch (this.state.scene) {
       case 'buttons':
         return this.menuButtons();
@@ -671,7 +647,7 @@ defineMainButtons = () => {
         return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
         break;
         case 'encuentrosHoy':
-        return (<EncuentrosDeHoy back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} />);
+        return (<EncuentrosDeHoy back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} complejo={this.props.complejo}/>);
           break;
         case 'miComplejo':
         return (<ComplejoDetail back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} complejo={this.props.complejo}/>);

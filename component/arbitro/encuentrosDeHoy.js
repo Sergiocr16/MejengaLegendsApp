@@ -16,42 +16,64 @@ import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Loader from '../app/loading';
 import SoundManager from '../../services/soundManager';
+import Team from '../../services/team';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AddPlayersToTeam from '../team/addPlayersToTeam';
-import TeamService from '../../services/team';
-import PlayerProfile from '../player/playerProfile';
+import CanchaService from '../../services/cancha';
+import ComplejoService from '../../services/complejo';
+import DetalleEncuentro from '../arbitro/detalleEncuentro';
 export default class EncuentrosDeHoy extends Component {
   constructor(props){
     super(props)
     this.state = {
+      encuentrosDeHoy:[],
       players:[],
-      scene: 'playersByTeam',
-      currentPlayer:''
+      scene: 'encuentrosDeHoy',
+      currentMatch:''
     }
   }
 
   componentDidMount() {
 
+
+    ComplejoService.getCanchasByComplejoOnce(this.props.complejo.uid, (canchas)=>{
+      canchas.map( (cancha, key) => {
+        var recorrido=0
+        CanchaService.getMatchesByCancha(cancha.uid,(matches)=>{
+          var newMatches = [];
+          matches.map((match)=>{
+           Team.getTeam(match.equipo1.equipoGUID,(equipo1)=>{
+             match.equipo1=equipo1;
+             Team.getTeam(match.equipo2.equipoGUID,(equipo2)=>{
+               match.equipo2=equipo2;
+               newMatches.push(match)
+               recorrido++;
+               if(recorrido===matches.length){
+                   this.setState({encuentrosDeHoy:newMatches})
+               }
+             },()=>{})
+           },()=>{})
+          })
+
+
+        },()=>{})
+      });
+
+    },()=>{})
   }
-  setScenePlayersByTeam =()=>{
+  setSceneEncuentrosDeHoy =()=>{
     SoundManager.playBackBtn();
-    this.setState({scene:'playersByTeam'})
+    this.setState({scene:'encuentrosDeHoy'})
   }
-  setSceneAddPlayerToTeam = ()=>{
-    SoundManager.playPushBtn()
-     this.setState({scene:'addPlayersToTeam'})
-  }
+
   showScene = () => {
     switch (this.state.scene) {
-      case 'playersByTeam':
-        return this.showPlayersByTeam()
+      case 'encuentrosDeHoy':
+        return this.showEncuentros()
         break;
-      case 'addPlayersToTeam':
-        return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.props.team}/>);
+      case 'detalleEncuentro':
+            return <DetalleEncuentro reto={this.state.currentMatch} back={()=>{this.setSceneEncuentrosDeHoy()}} user={this.state.currentMatch}/>
         break;
-        case 'playerProfile':
-          return <PlayerProfile back={()=>{this.setScenePlayersByTeam()}} showBackButton={true}  user={this.state.currentPlayer}/>
-          break;
+
       default:
 
     }
@@ -62,33 +84,40 @@ centerNoText = (jugadores) => {
   }
   return {flex:5,flexDirection:'row',paddingHorizontal:10}
 }
-showPlayersByTeam = () => {
-  let jugadores =  this.state.players.map( (val, key) => {
-        return <View key={key} style={{flex:1}}>
-        <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val,scene:'playerProfile'});SoundManager.playPushBtn();}}
-               key={key} style={{flexDirection:'row', height:80, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
-               <View style={{flex:1}}>
-                {this.showImage(val)}
-               </View>
-                  <View style={{flex:2,borderRightWidth:1,marginRight:1,borderColor:'#9E9E9E' }}>
-                      <Text style={{textAlign:'center',fontWeight:'bold'}}>Nombre: {val.nombre} {val.primerApellido}</Text>
-                  </View>
-                  <View style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' }}>
-                      <Text style={{textAlign:'center'}}>{val.pieDominante}</Text>
-                  </View>
-                  <Text style={{flex:1,textAlign:'center'}}>{val.liga}</Text>
-                  <Text style={styles.position}>{val.posicionPrincipal}</Text>
-               </TouchableOpacity>
-        </View>
-  });
+showEncuentros = () => {
+        let matches =  this.state.encuentrosDeHoy.map( (val, key) => {
+      // if(val.estaVacio!==true){
+      return <TouchableOpacity onPress={()=> { this.setState({currentMatch:val,scene:'detalleEncuentro'});SoundManager.playPushBtn()}}
+      key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5,height:120}}>
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+      {this.showImage(val.equipo1)}
+      <Text style={{fontSize:18}}>{val.equipo1.nombre}</Text>
+      </View>
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+      <Image style={styles.imageVS} borderRadius={10} source={{uri: 'https://userscontent2.emaze.com/images/12385dc1-2370-4411-a3cd-4003f24a88cf/9bf191e90aa3928848849406d236da99.png'}}>
+      </Image>
+      <Text>{val.complejoNombre}</Text>
+      <Text>{moment(val.fecha).format('LL hh:mm a')}</Text>
+      </View>
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+      {this.showImage(val.equipo2)}
+      <Text style={{fontSize:18}}>{val.equipo2.nombre}</Text>
+      </View>
+      </TouchableOpacity>
+      //  }
+      });
 
       return (
           <FadeInView style={styles.container}>
             <FadeInView style={styles.infoContainer} duration={300}>
-          <View style={styles.mainName}><Text style={styles.whiteFont}></Text></View>
-          <View style={styles.subtitle}><Text style={styles.whiteFont2}>Jugadores del equipo</Text></View>
+          <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.complejo.nombre}</Text></View>
+          <View style={styles.subtitle}><Text style={styles.whiteFont2}>Encuentros a disputar</Text></View>
             <View style={{flex:1,padding:10}}>
-              
+              <View style={this.centerNoText(matches)}>
+                 <ScrollView style={{flex:1}}>
+                 {this.showResults(matches)}
+                 </ScrollView>
+              </View>
               </View>
               </FadeInView>
               <View style={{flex:1,flexDirection:'row'}}>
@@ -101,9 +130,7 @@ showPlayersByTeam = () => {
                           </Text>
                       </View>
                   </TouchableOpacity>
-                  <View style={{flex:1, alignItems:'flex-end'}}>
-                  <TouchableOpacity style={styles.button} onPress={this.setSceneAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
-                  </View>
+
               </View>
               </FadeInView>
       )
@@ -122,15 +149,14 @@ showPlayersByTeam = () => {
 
 
   showImage = (val) => {
-    if(val.image !== undefined){
-      return <Image style={{flex:1,justifyContent:'flex-start',flexDirection:'row'}} borderRadius={5} source={{uri: val.image}}>
-            <Text style={[styles.score,{fontSize:12}]}>{val.score} <Icon name="trophy" size={12} color="yellow" /> </Text>
-      </Image>
-
-    }else{
-    return <Image style={{flex:1, alignItems:'center',marginRight:6,borderColor:'white'}} borderRadius={5}   source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
-  }
-}
+      if(val.image !== undefined){
+       return   <Image style={styles.profileImage2} borderRadius={10} source={{uri: val.image}}>
+         </Image>
+      }else{
+      return    <Image style={styles.profileImage2} borderRadius={10} source={{uri: 'http://www.dendrocopos.com/wp-content/themes/invictus/images/dummy-image.jpg'}}>
+        </Image>
+    }
+    }
 
 showResults = (jugadores) => {
   if(jugadores.length==0){
@@ -160,6 +186,16 @@ const styles = StyleSheet.create({
     backgroundColor:'#EEEEEE',
     borderRadius:100,
   },
+  imageVS:{
+    height:50,
+    width:50,
+   },
+   profileImage2:{
+     height:70,
+      width:80,
+     borderWidth:2,
+     borderColor:'white'
+   },
   inputText: {
     height: 31,
     paddingHorizontal: 20,
