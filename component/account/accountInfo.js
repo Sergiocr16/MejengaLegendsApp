@@ -51,6 +51,24 @@ export default class AccountInfo extends Component {
             <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
         </FadeInView>
       )
+    }else if(this.props.user.rol==="admin"){
+      return (
+        <FadeInView style={styles.container} duration={600}>
+         {this.showImage()}
+           <Text style={styles.title}>{this.props.user.nombre +" "+ this.props.user.primerApellido +" "+ this.props.user.segundoApellido}</Text>
+           <Text style={styles.subTitle}>Administrador</Text>
+            <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
+        </FadeInView>
+      )
+    }else if(this.props.user.rol==="arbitro"){
+      return (
+        <FadeInView style={styles.container} duration={600}>
+         {this.showImage()}
+           <Text style={styles.title}>{this.props.user.nombre +" "+ this.props.user.primerApellido +" "+ this.props.user.segundoApellido}</Text>
+           <Text style={styles.subTitle}>Arbitro</Text>
+            <TouchableOpacity style={styles.redButton} onPress={this.signOut}><Text style={styles.whiteFont}>Cerrar sesión</Text></TouchableOpacity>
+        </FadeInView>
+      )
     }
   }
       render(){

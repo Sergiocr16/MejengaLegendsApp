@@ -29,7 +29,9 @@ class CanchaService {
     static getMatchesByCanchaOnce(idCancha, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.MATCHES,idCancha,callback,error)
     }
-
+    static getPartidosByJugador(playerUID,partidos,callback,error){
+      FirebaseBasicService.findActiveByIdOnce(Entities.MATCHESBYPLAYER,playerUID,callback,error);
+    }
     static delete(canchas,cancha,complejoUID){
       updatedCanchas = [];
       canchas.map((val)=>{

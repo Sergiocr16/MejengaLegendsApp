@@ -37,7 +37,14 @@ export default class MyTeamsReto extends Component {
   componentDidMount() {
       TeamService.getTeamsByPlayer((teams)=>{
         if(teams){
-          this.setState({scene:"myTeams",teams})
+
+          var updatedTeams = [];
+          teams.map((team)=>{
+            if(team.fundador.jugadorGUID===firebase.auth().currentUser.uid){
+              updatedTeams.push(team)
+            }
+          })
+          this.setState({scene:"myTeams",teams:updatedTeams})
         }
       },()=>{
         this.setState({scene:"myTeams",teams:[]})

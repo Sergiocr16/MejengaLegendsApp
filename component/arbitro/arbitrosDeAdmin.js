@@ -11,36 +11,34 @@ import {
   DatePickerAndroid,
   Picker
 } from 'react-native'
-var moment = require('moment');
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import Loader from '../app/loading';
 import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Admin from '../../services/admin';
-import CreateAdministrador from '../administrador/createAdministrador';
-import AdminDetail from '../administrador/adminDetail';
-export default class AdminMenuDeSuperAdmin extends Component {
+import Arbitro from '../../services/arbitro';
+import CreateArbitro from '../arbitro/createArbitro';
+export default class ArbitrosDeAdmin extends Component {
   constructor(props){
     super(props)
     this.state = {
         scene:'loading',
-        admins : [],
+        arbitros : [],
         currentAdmin:{}
     }
   }
   componentDidMount() {
-    Admin.getAll((admins)=>{
-      this.setState({admins,scene:'showAdmins'})
-    },()=>{   this.setState({scene:'noPlayers'})})
+    Arbitro.getArbitrosByComplejo(this.props.complejo.uid,(arbitros)=>{
+      this.setState({arbitros,scene:'showArbitros'})
+    },()=>{   this.setState({scene:'noAbitros'})})
   }
-  setSceneAdminsMenu =()=>{
+  setSceneArbitrosMenu =()=>{
     SoundManager.playBackBtn();
-    this.setState({scene:'showAdmins'})
+    this.setState({scene:'showArbitros'})
   }
-  setSceneCreateAdmin = ()=>{
+  setSceneCreateArbitro = ()=>{
     SoundManager.playPushBtn()
-     this.setState({scene:'createAdmin'})
+     this.setState({scene:'createArbitro'})
   }
   setSceneAdminDetail = ()=>{
     SoundManager.playPushBtn()
@@ -52,14 +50,14 @@ export default class AdminMenuDeSuperAdmin extends Component {
       case 'loading':
         return <Loader/>
         break;
-      case 'showAdmins':
-        return this.allAdminstrators()
+      case 'showArbitros':
+        return this.allAbitros()
         break;
-        case 'noPlayers':
-          return this.noPlayers()
+        case 'noAbitros':
+          return this.noAbitros()
           break;
-        case 'createAdmin':
-          return <CreateAdministrador back={()=>{this.setSceneAdminsMenu()}} showBackButton={true}  />
+        case 'createArbitro':
+          return <CreateArbitro arbitros={this.state.arbitros} complejo={this.props.complejo} back={()=>{this.setSceneArbitrosMenu()}} showBackButton={true}  />
           break;
           case 'adminDetail':
             return <AdminDetail user={this.state.currentAdmin} back={()=>{this.setSceneAdminsMenu()}}  />
@@ -74,15 +72,15 @@ centerNoText = (jugadores) => {
   }
   return {flex:5,flexDirection:'row',paddingHorizontal:10}
 }
-noPlayers(){
+noAbitros(){
   return (
     <FadeInView style={styles.container}>
     <FadeInView style={styles.infoContainer} duration={300}>
-    <View style={styles.mainName}><Text style={styles.whiteFont}>Administradores de complejos</Text></View>
-    <View style={styles.subtitle}><Text style={[styles.blueFont,{textAlign:'center'}]}>Control de administradores</Text></View>
+    <View style={styles.mainName}><Text style={styles.whiteFont}>Arbitros del complejo</Text></View>
+    <View style={styles.subtitle}><Text style={[styles.blueFont,{textAlign:'center'}]}>Control de árbitros</Text></View>
      <View style={styles.basicInfo}>
      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-     <Text style={{textAlign:'center',fontSize:18}} >No existen administradores registrados aún</Text>
+     <Text style={{textAlign:'center',fontSize:18}} >No existen árbitros registrados aún</Text>
      </View>
     </View>
     </FadeInView>
@@ -96,20 +94,19 @@ noPlayers(){
         </View>
      </TouchableOpacity>
      <View style={{flex:1, alignItems:'flex-end'}}>
-     <TouchableOpacity style={styles.button} onPress={this.setSceneCreateAdmin} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear administrador</Text></TouchableOpacity>
+     <TouchableOpacity style={styles.button} onPress={this.setSceneCreateArbitro} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear árbitro</Text></TouchableOpacity>
      </View>
     </View>
     </FadeInView>
   )
 }
-allAdminstrators = () => {
-  let administradores =  this.state.admins.map( (val, key) => {
+allAbitros = () => {
+  let administradores =  this.state.arbitros.map( (val, key) => {
     if(val.nombre!==undefined){
           return <TouchableOpacity onPress={()=> { this.setState({currentAdmin:val}); this.setSceneAdminDetail();   }}
                  key={key} style={{flexDirection:'row', justifyContent:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
                   <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.nombre +" "+val.primerApellido}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.cedula}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' ,textAlign:'center'}}>{val.telefono}</Text>
+                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' ,textAlign:'center'}}>{val.cedula}</Text>
                   <Text style={{flex:1,textAlign:'center'}}>{val.complejoNombre}</Text>
                  </TouchableOpacity>
                }
@@ -117,11 +114,10 @@ allAdminstrators = () => {
       return (
           <FadeInView style={styles.container}>
             <FadeInView style={styles.infoContainer} duration={300}>
-          <View style={styles.mainName}><Text style={styles.whiteFont}>Administradores de complejos</Text></View>
+          <View style={styles.mainName}><Text style={styles.whiteFont}>Árbitros del complejo</Text></View>
           <View style={[styles.subtitle,{flexDirection:'row'}]}>
                 <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Nombre completo</Text>
                 <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Cédula</Text>
-                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Teléfono</Text>
                 <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Complejo</Text>
           </View>
             <View style={{flex:1,padding:10}}>
@@ -141,7 +137,7 @@ allAdminstrators = () => {
                       </View>
                   </TouchableOpacity>
                   <View style={{flex:1, alignItems:'flex-end'}}>
-                  <TouchableOpacity style={styles.button} onPress={this.setSceneCreateAdmin} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear administrador</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={this.setSceneCreateArbitro} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear árbitro</Text></TouchableOpacity>
                   </View>
               </View>
               </FadeInView>

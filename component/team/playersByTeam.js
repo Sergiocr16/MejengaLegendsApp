@@ -112,12 +112,20 @@ showPlayersByTeam = () => {
                       </View>
                   </TouchableOpacity>
                   <View style={{flex:1, alignItems:'flex-end'}}>
-                  <TouchableOpacity style={styles.button} onPress={this.setSceneAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
+                  {this.showAddPlayers()}
                   </View>
               </View>
               </FadeInView>
       )
 }
+
+showAddPlayers = () => {
+  if(this.props.team.fundador.jugadorGUID === firebase.auth().currentUser.uid){
+  return   <TouchableOpacity style={styles.button} onPress={this.setSceneAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
+  }
+  return null;
+}
+
   isEmpty = (val) => {
     if(this.state.submitted){
       if(val===""){

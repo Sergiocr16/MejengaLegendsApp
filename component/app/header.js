@@ -89,6 +89,40 @@ defineHeader = () =>{
         </View>
       </View>
     )
+  } else if(this.props.user.rol === "admin"){
+    return (
+      <View style={{flex:1}}>
+      <View style={styles.row}>
+        <View style={styles.ligaBar}>
+         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="bar-chart" size={16} color="white" /> ADMINISTRADOR</Text>
+         <Text style={styles.ligaBarText}><AnimatedIcon animation="rotate" iterationCount="infinite" name="futbol-o" size={16} color="yellow" ></AnimatedIcon>   Mejenga Legends</Text>
+        </View>
+        <View style={styles.accountnfoBox}>
+         <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
+         <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
+         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
+         </TouchableOpacity>
+        </View>
+        </View>
+      </View>
+    )
+  }else if(this.props.user.rol === "arbitro"){
+    return (
+      <View style={{flex:1}}>
+      <View style={styles.row}>
+        <View style={styles.ligaBar}>
+         <Text style={[styles.ligaBarText,{borderWidth:1}]}> <Icon name="bar-chart" size={16} color="white" /> ARBITRO</Text>
+         <Text style={styles.ligaBarText}><AnimatedIcon animation="rotate" iterationCount="infinite" name="futbol-o" size={16} color="yellow" ></AnimatedIcon>   Mejenga Legends</Text>
+        </View>
+        <View style={styles.accountnfoBox}>
+         <TouchableOpacity  style={styles.home} onPress={this.props.setSceneMenu}><Icon name="home" size={22} color="#BDBDBD" /></TouchableOpacity>
+         <TouchableOpacity style={styles.accountButton} onPress={this.props.setSceneAccount}>
+         <Text style={styles.accountButtonText}><Icon name="user" size={15} color="#FFFFFF"/> {this.props.user.nombre}</Text>
+         </TouchableOpacity>
+        </View>
+        </View>
+      </View>
+    )
   }
   return null;
 

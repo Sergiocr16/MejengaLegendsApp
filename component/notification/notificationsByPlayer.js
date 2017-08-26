@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import RenderIf from '../app/renderIf';
 import Notification from '../../services/notification';
 import AddToTeamNotificationDetail from '../notification/addToTeamNotificationDetail';
-
+import NextMatches from '../partido/misProximosPartidos';
 export default class NotificationsByPlayer extends Component {
   constructor(props){
     super(props)
@@ -58,6 +58,21 @@ export default class NotificationsByPlayer extends Component {
                             </TouchableOpacity>
 
                        )}
+                       {RenderIf(val.tipo==2,
+                         <TouchableOpacity onPress={()=>{this.setState({scene:'matchDetail',currentNotification:val,notificationKey:key});this.deleteNotification()}}
+                             key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,borderWidth:1,borderColor:'purple',marginBottom:5,paddingVertical:8,paddingHorizontal:15}}>
+                             <View style={{flex:1}}>
+                               <Icon name="futbol-o" color="purple" size={50}  />
+                             </View>
+                             <View style={{flex:4}}>
+                                 <Text style={{fontSize:22,fontWeight:'bold',marginBottom:10}}>{val.titulo}</Text>
+                                  <Text style={{flex:6}}>{val.message}</Text>
+                             </View>
+                               <Text style={{flex:2,fontSize:17}}>{val.fecha}</Text>
+                               <Text><Icon name="chevron-right" size={20} color={'purple'} /> </Text>
+                             </TouchableOpacity>
+
+                        )}
                    </View>
               )
           });
@@ -118,7 +133,9 @@ export default class NotificationsByPlayer extends Component {
         case 'notificationDetail':
           return  (<AddToTeamNotificationDetail user={this.props.user} deleteNotification={()=>{this.deleteNotification()}}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
           break;
-
+          case 'matchDetail':
+            return  (<NextMatches user={this.props.user}  redirect={true} selectedMatch={this.state.currentNotification}  back={()=> this.setSceneMyNotifications()} notification={this.state.currentNotification}/>);
+            break;
         default:
 
       }

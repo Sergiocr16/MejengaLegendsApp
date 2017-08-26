@@ -18,6 +18,7 @@ import NotificationsByPlayer from '../notification/notificationsByPlayer';
 import Account from '../account/account'
 import TeamService from '../../services/team';
 import Notification from '../../services/notification';
+import ComplejoService from '../../services/complejo';
 import Header from './header'
 import Loader from './loading'
 import Menu from './menu'
@@ -31,6 +32,7 @@ export default class App extends Component {
       user: {},
       scene:'loading',
       notifications:[],
+      complejo:{},
       backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg',
       player:{},
       appState: AppState.currentState
@@ -74,11 +76,40 @@ export default class App extends Component {
 
      },()=>{
        this.setState({initView:"superAdmin"})
-       FirebaseBasicService.findActiveById("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
+       FirebaseBasicService.findActiveByIdOnce("users/superAdmin",firebase.auth().currentUser.uid,(superAdmin)=>{
              this.setState({scene:"menu"})
              this.setState({player:superAdmin})
         },()=>{
+          this.setState({initView:"admin"})
+          FirebaseBasicService.findActiveByIdOnce("users/admins",firebase.auth().currentUser.uid,(admin)=>{
+                this.setState({player:admin})
+                ComplejoService.getComplejo(admin.complejoGUID,(complejo)=>{
+                  this.setState({complejo});
+                  setTimeout(()=>{this.setState({scene:"menu"})},200)
 
+                },()=>{
+
+
+                })
+           },()=>{
+             this.setState({initView:"arbitro"})
+             FirebaseBasicService.findActiveByIdOnce("users/arbitros",firebase.auth().currentUser.uid,(arbitro)=>{
+                   this.setState({player:arbitro})
+                   ComplejoService.getComplejo(arbitro.complejoGUID,(complejo)=>{
+                     this.setState({complejo});
+                     setTimeout(()=>{this.setState({scene:"menu"})},200)
+
+                   },()=>{
+
+
+                   })
+
+              },()=>{
+
+
+              })
+
+           })
         })
      })
      Notification.getMyNotifications((notifications)=>{
@@ -100,7 +131,7 @@ export default class App extends Component {
 
   setSceneMenu = () =>{
     SoundManager.playSwitchClick();
-   this.setState({scene:'menu'})
+    this.setState({scene:'menu'})
   }
   setSceneNotifications = () =>{
    this.setState({scene:'notifications'})
@@ -113,7 +144,7 @@ export default class App extends Component {
       return(<CreatePlayer/>)
       break;
     case 'menu':
-      return(<Menu user={this.state.player} initView={this.state.initView} showFieldViewImg={()=>this.setState({backImg:'https://previews.123rf.com/images/darrenwhi/darrenwhi1005/darrenwhi100500047/6931190-Ilustraci-n-de-una-cancha-de-f-tbol-desde-arriba--Foto-de-archivo.jpg'})} hideFieldViewImg={()=>this.setState({backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'})} sceneParent={this.state.scene} user={this.state.player}/>)
+      return(<Menu complejo={this.state.complejo} user={this.state.player} initView={this.state.initView} showFieldViewImg={()=>this.setState({backImg:'https://previews.123rf.com/images/darrenwhi/darrenwhi1005/darrenwhi100500047/6931190-Ilustraci-n-de-una-cancha-de-f-tbol-desde-arriba--Foto-de-archivo.jpg'})} hideFieldViewImg={()=>this.setState({backImg:'http://madisonvasoccer.com/wordpress/media/soccer-field-grass.jpg'})} sceneParent={this.state.scene} user={this.state.player}/>)
       break;
     case 'loading':
         return(<Loader/>)

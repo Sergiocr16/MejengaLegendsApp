@@ -81,6 +81,9 @@ class TeamService {
     static getNotificationsByPlayer(uid,callBack,error){
       FirebaseBasicService.findActiveById(Entities.PLAYERNOTIFICATIONS,uid,callBack,error)
     }
+    static getNotificationsByPlayerOnce(uid,callBack,error){
+      FirebaseBasicService.findActiveByIdOnce(Entities.PLAYERNOTIFICATIONS,uid,callBack,error)
+    }
     static sendNotificationToPlayers(uid,notifications){
        FirebaseBasicService.newWithKey(Entities.PLAYERNOTIFICATIONS,uid,notifications);
     }

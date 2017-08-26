@@ -20,6 +20,9 @@ class ComplejoService {
     static update(key,complejo){
         FirebaseBasicService.update(Entities.COMPLEJOS,key, complejo)
     }
+    static updateDirect(complejo){
+        FirebaseBasicService.update(Entities.COMPLEJOS,complejo.uid, complejo)
+    }
     static delete(key){
       FirebaseBasicService.deleteForever(Entities.COMPLEJOS + '/active/',key)
       FirebaseBasicService.deleteForever(Entities.CANCHASBYCOMPLEJO + '/active/',key)
@@ -41,7 +44,6 @@ class ComplejoService {
     }
 
     static findComplejosByCanton(canton,callback,error){
-      console.log(canton)
       FirebaseBasicService.filterByAttribute('complejos/active/','canton',canton,callback,error)
     }
 
@@ -51,6 +53,7 @@ class ComplejoService {
     static getCanchasByComplejoOnce(idComplejo, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
     }
+
 
     static getVotosByComplejo(idComplejo, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.VOTOSBYCOMPLEJO,idComplejo,callback,error)
@@ -67,6 +70,11 @@ class ComplejoService {
     static deleteVoto(key){
       FirebaseBasicService.deleteForever(Entities.VOTOSBYCOMPLEJO + '/active/',key)
     }
+
+    static getComplejo(complejoGUID,callBack,error){
+    FirebaseBasicService.findActiveByIdOnce(Entities.COMPLEJOS,complejoGUID,callBack,error)
+    }
+
 }
 
 
