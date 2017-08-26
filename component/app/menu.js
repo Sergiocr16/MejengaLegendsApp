@@ -19,6 +19,7 @@ import Players from '../player/players';
 import Teams from '../team/teams';
 import BestTeams from '../team/bestTeams';
 import ComplejoMenu from '../complejo/complejoMenu';
+import ComplejosPartidos from '../complejo/complejoPartidos';
 
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SoundManager from '../../services/soundManager'
@@ -99,6 +100,10 @@ export default class Menu extends Component {
   setSceneMenuMisEquipos = () => {
       SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
+  }
+  setScenePartidosComplejos = () => {
+    SoundManager.playSwitchClick()
+    this.setState({scene:'partidosComplejos'})
   }
   activeMainButton(option) {
     switch (this.state.menuScene) {
@@ -456,21 +461,22 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Tu equipo VS El mundo</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonMainMenu}>
+                <TouchableOpacity style={styles.buttonMainMenu} onPress={this.setScenePartidosComplejos}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
-                    <Text style={styles.buttonSmallTitle}>RETO</Text>
-                    <Text style={styles.buttonSubtitle}>Tu equipo VS El mundo</Text>
+                    <Text style={styles.buttonSmallTitle}>Complejos</Text>
+                    <Text style={styles.buttonSubtitle}>Mis escenarios de juego</Text>
                   </View>
                 </TouchableOpacity>
                 </View>
               </View>
           </GestureRecognizer>)
   }
+
   showMenuScene(){
     switch (this.state.menuScene) {
       case 'partido':
@@ -488,6 +494,9 @@ defineMainButtons = () => {
        case 'superAdmin':
          return(this.menuComplejosScene())
         break;
+      case 'partidosComplejos':
+      return(this.menuComplejosScene())
+      break;
       default:
         return(this.menuPartidoScene())
     }
@@ -524,7 +533,10 @@ defineMainButtons = () => {
         return <BestTeams back={()=> this.setSceneButtons()}/>;
         break;
       case 'complejos':
-        return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
+        return <ComplejoMenu user={this.props.user} back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'partidosComplejos':
+        return <ComplejosPartidos user={this.props.user} back={()=> this.setSceneButtons()}/>;
         break;
       default:
         return this.menuButtons();

@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  ToastAndroid
+  ToastAndroid,
+  Alert
 } from 'react-native'
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
@@ -17,6 +18,8 @@ import EditComplejo from '../complejo/editComplejo';
 import CanchasMenu from '../cancha/canchasMenu'
 import ComplejoService from '../../services/complejo';
 import SoundManager from '../../services/soundManager';
+import RenderIf from '../app/renderIf';
+
 export default class ComplejoDetail extends Component {
   constructor(props){
     super(props)
@@ -24,8 +27,48 @@ export default class ComplejoDetail extends Component {
       scene: 'complejoInformation',
       currentCancha: null,
       wantToDelete:false,
-      canchas:[]
+      canchas:[],
+      createButtonVisibility: false,
+      editButtonVisibility: false,
+      deleteButtonVisibility: false,
+      ptsComplejo: 0,
+      objVoto: {
+        idComplejo: 0,
+        votos: [],
+        uid: null
+      },
+      votoExistente: false,
+      puntaje: 0,
+      checkedStar: "yellow",
+      voidStar: "grey",
+      starIcons: {1:false, 2:false, 3:false, 4:false, 5:false},
+      ptsComp: 0
     }
+    
+  }
+
+  componentDidMount() {
+    if(this.props.user.rol == "superAdmin"){
+        this.setState({editButtonVisibility:true})
+        this.setState({deleteButtonVisibility:true})
+    }else
+    if(this.props.user.rol == "admin"){
+      this.setState({editButtonVisibility:true})
+    } 
+    else{
+        this.setState({editButtonVisibility:false})
+        this.setState({deleteButtonVisibility:false})
+    }
+
+    return ComplejoService.getVotosByComplejo(this.props.complejo.uid,(loaded)=>{   
+      if(loaded != null || loaded == undefined){this.setState({objVoto:loaded,function(){ }
+      });}
+      },()=>{
+ 
+      }
+    )  
+    
+    this.setStars(0)
   }
 
   setWantToDelete = () =>{
@@ -33,35 +76,39 @@ export default class ComplejoDetail extends Component {
   }
   showButtonOptions = () => {
     if(!this.state.wantToDelete){
-  return  <View style={{flex:1,flexDirection:'row'}}>
-    <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+      return  <View style={{flex:1,flexDirection:'row'}}>
+        {RenderIf(this.state.deleteButtonVisibility === true,
+          <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+            SoundManager.playPushBtn();
+            this.setWantToDelete();
+            }}><Text style={styles.textButton}>
+            <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
+          </TouchableOpacity>
+        )}
+        {RenderIf(this.state.editButtonVisibility === true,
+          <TouchableOpacity style={styles.button} onPress={()=>{
+            SoundManager.playPushBtn();
+            this.setState({scene:'editComplejo'})}}><Text style={styles.textButton}>
+            <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    }else{
+    return <View style={{flex:1,flexDirection:'row'}}>
+      <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
+        SoundManager.playPushBtn();
+        this.delete()
+      }}><Text style={styles.textButton}>
+        <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
       SoundManager.playPushBtn();
       this.setWantToDelete();
       }}><Text style={styles.textButton}>
-      <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
-   </TouchableOpacity>
-   <TouchableOpacity style={styles.button} onPress={()=>{
-     SoundManager.playPushBtn();
-     this.setState({scene:'editComplejo'})}}><Text style={styles.textButton}>
-     <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
-  </TouchableOpacity>
-  </View>
-}else{
-  return <View style={{flex:1,flexDirection:'row'}}>
-    <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
-      SoundManager.playPushBtn();
-      this.delete()
-     }}><Text style={styles.textButton}>
-      <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
-   </TouchableOpacity>
-   <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
-     SoundManager.playPushBtn();
-     this.setWantToDelete();
-    }}><Text style={styles.textButton}>
-      <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
-  </TouchableOpacity>
-  </View>
-}
+        <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
+    </TouchableOpacity>
+    </View>
+    }
   }
   delete = () => {
     ComplejoService.delete(this.props.complejo.uid);
@@ -95,18 +142,21 @@ export default class ComplejoDetail extends Component {
         return (<Loader/>)
         break;
       case 'menuCanchas':
-       return (<CanchasMenu canchas={this.state.canchas} back={()=>{this.setComplejoInformationScene()}} complejo={this.props.complejo}/>)
+       return (<CanchasMenu  user={this.props.user} canchas={this.state.canchas} back={()=>{this.setComplejoInformationScene()}} complejo={this.props.complejo}/>)
       break;
-          case 'editComplejo':
-          return (<EditComplejo complejo={this.props.complejo} back={()=> this.setSceneComplejoDetail()} style={{flex:1}}/>);
-            break;
+        case 'editComplejo':
+        return (<EditComplejo complejo={this.props.complejo} back={()=> this.setSceneComplejoDetail()} style={{flex:1}}/>);
+        break;
+      case 'noVotar':
+      return this.showNoVotar();
+      break;
       default:
     }
   }
- setSceneComplejoDetail = () => {
-   this.setState({scene:'complejoInformation'});
-   SoundManager.playBackBtn();
- }
+  setSceneComplejoDetail = () => {
+    this.setState({scene:'complejoInformation'});
+    SoundManager.playBackBtn();
+  }
   showComodidades = () => {
     if(this.props.complejo.comodidades!==undefined){
     return this.props.complejo.comodidades.map( (val, key) => {
@@ -125,11 +175,11 @@ export default class ComplejoDetail extends Component {
     </View>
   }
   }
-
+  
   showBackButton= () =>{
     if(true){
       return (
-<View style={{flex:1,flexDirection:'row'}}>
+      <View style={{flex:1,flexDirection:'row'}}>
       <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
         <View style={styles.buttonBackPadre}>
           <View style={styles.buttonBackHijo}/>
@@ -154,7 +204,7 @@ export default class ComplejoDetail extends Component {
                 <Text style={styles.whiteFont}>{this.props.complejo.nombre.toUpperCase()}</Text>
             </View>
             <View style={styles.subtitle}>
-                <Text style={styles.whiteFont2}>Información básica</Text>
+                <Text style={styles.whiteFont2}>Calificación: {this.calcularPuntajeComplejo()}</Text>
             </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
@@ -184,7 +234,7 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexEnd}>{this.props.complejo.canton}</Text>
                       </View>
                       </View>
-                      <View style={{flex:0.7}}>
+                      <View style={{flex:0.9}}>
                          <Text style={{marginBottom:5}}>Comodidades</Text>
                          <View style={{flex:1,flexDirection:'column'}}>
                          <ScrollView horizontal={true}>
@@ -192,7 +242,25 @@ export default class ComplejoDetail extends Component {
                          </ScrollView>
                          </View>
                       </View>
+                      
                     </View>
+                    <View style={{flex:0.7}}>
+                         <View style={{flex:1,flexDirection:'column'}}>
+                         {RenderIf(this.props.user.rol === "player",
+                            <View style={{margin:0.5,padding:0.5,backgroundColor:"transparent",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
+                            <ScrollView horizontal={true}>
+                                  <Icon name="minus" size={20} onPress={this.setStars.bind(this,0)} color={this.state.voidStar} /><Text> </Text>                
+                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,1)} color={this.state.starIcons['1'] ? this.state.checkedStar : this.state.voidStar} />
+                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,2)} color={this.state.starIcons['2'] ? this.state.checkedStar : this.state.voidStar} />
+                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,3)} color={this.state.starIcons['3'] ? this.state.checkedStar : this.state.voidStar} />
+                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,4)} color={this.state.starIcons['4'] ? this.state.checkedStar : this.state.voidStar} />
+                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,5)} color={this.state.starIcons['5'] ? this.state.checkedStar : this.state.voidStar} />
+                                  <TouchableOpacity style={[styles.buttonCalificar,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.calificarComplejo.bind(this,this.props)} ><Text> </Text><Text style={styles.textButton}> Calificar</Text></TouchableOpacity> 
+                              </ScrollView>
+                            </View>
+                         )}
+                         </View>
+                      </View>
                   </View>
               </View>
           </View>
@@ -200,23 +268,116 @@ export default class ComplejoDetail extends Component {
           </FadeInView>
         )
       }
+      showNoVotar = () => {
+        return (
+          <FadeInView style={styles.container}>
+          <FadeInView style={styles.infoContainer} duration={300}>
+           <View style={styles.basicInfo}>
+           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+           <Text style={{textAlign:'center',fontSize:18}} >Lo sentimos!</Text>
+           <Text style={{textAlign:'center',fontSize:18}} >Hemos verificado que ya existe una califición de su parte,</Text>
+           <Text style={{textAlign:'center',fontSize:18}} >para este complejo deportivo</Text>
+           </View>
+          </View>
+          </FadeInView>
+          <View style={{flex:1,flexDirection:'row'}}>
+            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+              <View style={styles.buttonBackPadre}>
+                <View style={styles.buttonBackHijo}/>
+                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+                  </Text>
+              </View>
+           </TouchableOpacity>
+          </View>
+          </FadeInView>
+        )
+    }
+      setStars(val){
+        this.state.starIcons = {1:false, 2:false, 3:false, 4:false, 5:false}
+        if(val >= 1){
+          for(let i = 1; i <= val; i++){
+            if(i <= val){
+              this.state.starIcons[i]=true
+            }
+            if(i > val && this.state.starIcons[String(i)]==true){
+              this.state.starIcons[i]=false
+            }
+          }
+        } else {
+          this.state.starIcons = {1:false, 2:false, 3:false, 4:false, 5:false}
+        }
+        this.setState({ptsComplejo:val})  
+      }
+
+      getPuntaje(){
+        
+        return this.state.ptsComplejo;
+      }
+
+      calcularPuntajeComplejo(){
+        var div = this.state.objVoto.votos.length
+        var pts  = 0;
+        for(let i = 0; i < this.state.objVoto.votos.length; i++){
+          pts = pts + this.state.objVoto.votos[i].puntaje;  
+        }
+        pts = pts/div
+        return parseFloat(pts)
+      }
+
+      calificarComplejo(data){
+            
+        var newVoto = {idUsuario: this.props.user.uid, puntaje:this.getPuntaje(), fecha: new Date().getTime()}
+        var usr = 0;
+        var votoNuevo = {};
+        var votosDb = [];
+        
+          if(this.state.objVoto.idComplejo == 0 || this.state.objVoto.idComplejo == undefined){       
+            this.state.objVoto.uid = this.props.complejo.uid;
+            this.state.objVoto.idComplejo = this.props.complejo.uid;
+            this.state.objVoto.votos.push(newVoto,);
+
+            ComplejoService.calificarComplejo(this.state.objVoto)
+          } else{
+          
+            votosDb = this.state.objVoto.votos;
+
+            for(let i = 0; i < this.state.objVoto.votos.length; i++){
+              usr = this.state.objVoto.votos[i].idUsuario;   
+              if(usr == this.props.user.uid){
+                this.state.votoExistente = true
+              }
+            }
+          
+            if(this.state.votoExistente == false && this.state.objVoto.idComplejo != 0){
+              votosDb.push(newVoto);
+              this.state.objVoto.votos = null
+              this.state.objVoto.votos = votosDb
+              ComplejoService.updateVoto(this.props.complejo.uid,this.state.objVoto) 
+                        
+            }else{
+              this.setState({scene:"noVotar"})
+            }
+
+          }
+      }
 
       delete(){
         ComplejoService.deleteComplejo(this.props.complejo.uid);
         this.props.back();
-     }
+      }
 
-     editComplejo(){
+    editComplejo(){
       this.setState({scene:'editComplejo'})
-   }
+    }
 
-      render(){
-        return (
-        <FadeInView style={{flex:1}} duration={30}>
-            {this.props.children}
-            {this.showScene()}
-        </FadeInView>
-        )
+    render(){
+      return (
+      <FadeInView style={{flex:1}} duration={30}>
+          {this.props.children}
+          {this.showScene()}
+      </FadeInView>
+      )
     }
 
 }
@@ -413,5 +574,25 @@ export default class ComplejoDetail extends Component {
     fontSize: 10,
     alignSelf: 'center',
     color: 'black'
+  },
+  puntajeImage:{
+    alignSelf: 'center',
+    width:10,
+    height:10,
+    margin:0.5,
+    paddingVertical:1,
+    paddingHorizontal:1
+  },
+  buttonCalificar:{
+    marginLeft: 5,
+    backgroundColor:'red',
+    paddingBottom: 23,
+    borderRadius:5,
+    width:75,
+    height:25,
+    fontWeight:'bold',
+    textAlign:'center',
+    alignItems:'center',
+    justifyContent:'center',
   }
     })

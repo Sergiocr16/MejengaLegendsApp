@@ -59,8 +59,7 @@ export default class CreateComplejo extends Component {
           provincia: '',
           canton: '',
           comodidades: [],
-          noAdmin:true,
-          administrador: {nombre:null, jugadorGUID:null}
+          noAdmin:true
       },
       imagePath: null,
       imageHeight: null,
@@ -341,7 +340,7 @@ export default class CreateComplejo extends Component {
    this.state.newComplejo.provincia = this.state.provincia;
    this.state.newComplejo.canton = this.state.canton;
    this.state.newComplejo.comodidades = this.defineComodidades();
-   this.state.newComplejo.administrador = {};
+
    SoundManager.playPushBtn();
    this.setState({submitted:true})
     if(this.isValid()){
