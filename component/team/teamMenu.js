@@ -112,7 +112,6 @@ teamNameFontSize = (option) =>{
 
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
-      console.log(val.cantidadJugadores)
             return <TouchableOpacity onPress={()=>{
                 SoundManager.playPushBtn()
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>

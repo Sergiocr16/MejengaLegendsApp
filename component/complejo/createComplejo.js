@@ -333,7 +333,9 @@ export default class CreateComplejo extends Component {
         <View style={{flex:1}}>
         <Text style={styles.bold,{marginBottom:8}}>Selecciona las comodidades</Text>
           <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+          <ScrollView horizontal={true}>
             {this.showComodidades()}
+          </ScrollView>
           </View>
         </View>
 
@@ -455,6 +457,7 @@ export default class CreateComplejo extends Component {
    this.state.newComplejo.canton = this.state.canton;
    this.state.newComplejo.comodidades = this.defineComodidades();
    this.state.newComplejo.administrador = {};
+   this.state.newComplejo.cantidadCanchas = 0;
    this.state.newComplejo.numeroTelefono = this.state.numeroTelefono;
    this.state.newComplejo.horario = {diaAbre:this.state.diaInicial,diaCierra:this.state.diaFinal,horaAbre:this.state.horaInicial,horaCierra:this.state.horaFinal}
    SoundManager.playPushBtn();

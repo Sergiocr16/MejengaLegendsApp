@@ -72,7 +72,19 @@ export default class EditComplejo extends Component {
     }
   }
 
-
+  onChangedOnlyNumbers(text){
+     var newText = '';
+     var numbers = '0123456789';
+     if(text.length < 1){
+       this.setState({ numeroTelefono: '' });
+     }
+     for (var i=0; i < text.length; i++) {
+          if(numbers.indexOf(text[i]) > -1 ) {
+               newText = newText + text[i];
+          }
+          this.setState({ numeroTelefono: newText });
+      }
+  }
   defineSelectedComodidades = () => {
     var comodidadesDefault = [];
 
@@ -356,7 +368,9 @@ export default class EditComplejo extends Component {
         <View style={{flex:1}}>
         <Text style={styles.bold,{marginBottom:8}}>Selecciona las comodidades</Text>
           <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+          <ScrollView horizontal={true}>
             {this.showComodidades()}
+          </ScrollView>
           </View>
         </View>
       </View>

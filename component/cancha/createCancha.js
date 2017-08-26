@@ -17,6 +17,7 @@ import {
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
 import CanchaService from '../../services/cancha';
+import Complejo from '../../services/complejo';
 import Loader from '../app/loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -108,6 +109,9 @@ export default class CreateCancha extends Component {
            var nuevoEstado = this.props.canchas;
            nuevoEstado.push(this.state.cancha)
            CanchaService.createCancha(nuevoEstado,this.props.complejo.uid,(cancha)=>{
+             var complejoUpdated = this.props.complejo;
+             complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas + 1;
+             Complejo.update(complejoUpdated)
              this.props.back();
            });
            resolve(url)
@@ -265,6 +269,9 @@ export default class CreateCancha extends Component {
       CanchaService.createCancha(nuevoEstado,this.props.complejo.uid,(cancha)=>{
         this.props.back();
       });
+      var complejoUpdated = this.props.complejo;
+      complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas + 1;
+      Complejo.update(complejoUpdated)
     }else{
     this.uploadImage(this.state.source)
     }
