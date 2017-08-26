@@ -54,7 +54,7 @@ export default class BestPlayers extends Component {
         return this.noPlayers()
         break;
       case 'playerProfile':
-        return <PlayerProfile back={()=>{this.setScenePlayers()}} showBackButton={true}  user={this.state.currentPlayer}/>
+        return <PlayerProfile back={()=>{this.setScenePlayers()}} showBackButton={true} showTitle={true} user={this.state.currentPlayer}/>
         break;
       default:
 

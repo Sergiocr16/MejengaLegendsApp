@@ -9,22 +9,18 @@ import {
 } from 'react-native'
 var moment = require('moment');
 import * as firebase from 'firebase'
-import EditPlayer from './editPlayer';
 import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default class PlayerProfile extends Component {
+export default class AdminDetail extends Component {
   constructor(props){
     super(props)
-  var years = parseInt(moment(new Date()).format('YYYY')) - parseInt(moment(this.props.user.fechaNacimiento).format('YYYY'));
     this.state = {
-      years : years,
       scene: 'info'
     }
-    console.log(this.props.showBackButton)
   }
 
   showImage = () => {
-    if(this.props.user.image==undefined){
+    if(this.props.user.image==undefined ||this.props.user.image==""){
     return  <Image style={styles.profileImage} borderRadius={10} source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
     }else{
       return <Image style={styles.profileImage} borderRadius={10} source={{uri: this.props.user.image}}></Image>
@@ -32,26 +28,29 @@ export default class PlayerProfile extends Component {
   }
 
   showTitle = () =>{
-    if(this.props.showBackButton){
       return <View>
       <View style={styles.mainName}><Text style={styles.whiteFont}>{this.props.user.nombre.toUpperCase() +" "+ this.props.user.primerApellido.toUpperCase()}</Text></View>
       <View style={styles.subtitle}><Text style={styles.whiteFont2}>Información básica</Text></View>
       </View>
-   }
+
      return null;
   }
+
+
   showBackButton = () =>{
-    if(this.props.showBackButton==true){
-      return <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-        <View style={styles.buttonBackPadre}>
-          <View style={styles.buttonBackHijo}/>
-            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-            </Text>
+      return     <View style={{flex:1,flexDirection:'row'}}>
+            <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+              <View style={styles.buttonBackPadre}>
+                <View style={styles.buttonBackHijo}/>
+                  <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                      <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+                  </Text>
+              </View>
+           </TouchableOpacity>
+
         </View>
-     </TouchableOpacity>
-   }
-     return null;
+
+
   }
   showInfo(){
     return (
@@ -65,39 +64,28 @@ export default class PlayerProfile extends Component {
          <Text>{this.props.user.username}</Text>
        </View>
         <View style={{flex:2}}>
+        <View style={styles.info}>
+           <Text style={styles.flexStart}>Nombre completo</Text>
+           <Text style={styles.flexEnd}>{this.props.user.nombre +" "+ this.props.user.primerApellido+" "+ this.props.user.segundoApellido}</Text>
+        </View>
           <View style={styles.info}>
-             <Text style={styles.flexStart}>Altura [cm]/ Edad</Text>
-             <Text style={styles.flexEnd}>{this.props.user.altura} / {this.state.years}</Text>
+             <Text style={styles.flexStart}>Número de teléfono</Text>
+             <Text style={styles.flexEnd}>{this.props.user.telefono}</Text>
           </View>
           <View style={styles.info}>
-             <Text style={styles.flexStart}>Pie Dominante</Text>
-             <Text style={styles.flexEnd}>{this.props.user.pieDominante}</Text>
+             <Text style={styles.flexStart}>Correo electrónico</Text>
+             <Text style={styles.flexEnd}>{this.props.user.email}</Text>
           </View>
           <View style={styles.info}>
-             <Text style={styles.flexStart}>Copas</Text>
-             <Text style={styles.flexEnd}>{this.props.user.score}</Text>
+             <Text style={styles.flexStart}>Complejo administrado</Text>
+             <Text style={[styles.flexEnd]}>{this.props.user.complejo.nombre}</Text>
           </View>
-          <View style={styles.info}>
-             <Text style={styles.flexStart}>Liga actual</Text>
-             <Text style={styles.flexEnd}>{this.props.user.liga}</Text>
-          </View>
-          <View style={styles.info}>
-             <Text style={styles.flexStart}>Posición principal</Text>
-             <Text style={styles.flexEnd}>{this.props.user.posicionPrincipal}</Text>
-          </View>
-          <View style={styles.info}>
-             <Text style={styles.flexStart}>Posición secundaria</Text>
-             <Text style={styles.flexEnd}>{this.props.user.posicionSecundaria}</Text>
-          </View>
-          <View style={styles.info}>
-             <Text style={styles.flexStart}>Fichable</Text>
-             <Text style={styles.flexEnd}>{this.props.user.fichable}</Text>
-          </View>
+
         </View>
        </View>
       </FadeInView>
       <View style={{flex:1,flexDirection:'row'}}>
-    {this.showBackButton()}
+        {this.showBackButton()}
       </View>
       </FadeInView>
     )

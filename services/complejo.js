@@ -17,7 +17,9 @@ class ComplejoService {
     static update(complejo){
         FirebaseBasicService.update(Entities.COMPLEJOS,complejo.uid, complejo)
     }
-
+    static update(key,complejo){
+        FirebaseBasicService.update(Entities.COMPLEJOS,key, complejo)
+    }
     static delete(key){
       FirebaseBasicService.deleteForever(Entities.COMPLEJOS + '/active/',key)
       FirebaseBasicService.deleteForever(Entities.CANCHASBYCOMPLEJO + '/active/',key)
@@ -36,6 +38,11 @@ class ComplejoService {
     }
     static findTopComplejos(callback,error){
       FirebaseBasicService.orderByAttribute('complejos/active/','canton',callback,error)
+    }
+
+    static findComplejosByCanton(canton,callback,error){
+      console.log(canton)
+      FirebaseBasicService.filterByAttribute('complejos/active/','canton',canton,callback,error)
     }
 
     static getCanchasByComplejo(idComplejo, callback,error){

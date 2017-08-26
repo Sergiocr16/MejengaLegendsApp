@@ -35,7 +35,7 @@ export default class TeamMenu extends Component {
   }
   componentDidMount() {
 
-      TeamService.getTeamsByPlayer((teams)=>{
+      TeamService.getTeamsByPlayerInMenu((teams)=>{
         if(teams){
             SoundManager.playBackBtn()
           this.setState({scene:"myTeams",teams})
@@ -64,7 +64,7 @@ export default class TeamMenu extends Component {
                       </View>
                    </TouchableOpacity>
                    <View style={{flex:1, alignItems:'flex-end'}}>
-                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
                   </View>
                </View>
             </FadeInView>
@@ -112,7 +112,6 @@ teamNameFontSize = (option) =>{
 
   myTeams(){
     let equipos = this.state.teams.map((val, key) => {
-      console.log(val.cantidadJugadores)
             return <TouchableOpacity onPress={()=>{
                 SoundManager.playPushBtn()
                 this.setState({scene:'detalleEquipo',currentTeam:val})}} key={key} style={styles.teamContainer}>
@@ -157,7 +156,7 @@ teamNameFontSize = (option) =>{
               </View>
            </TouchableOpacity>
            <View style={{flex:1, alignItems:'flex-end'}}>
-               <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
+               <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarEquipo} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear equipo</Text></TouchableOpacity>
             </View>
        </View>
     </FadeInView>

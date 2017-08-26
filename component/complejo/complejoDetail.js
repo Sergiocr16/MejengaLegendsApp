@@ -220,10 +220,14 @@ export default class ComplejoDetail extends Component {
                 </View>
                 <View style={{flex:3,padding:10}}>
                   <View style={{flex:2}}>
-                      <View style={{flex:1}}>
+                      <ScrollView style={{flex:1}}>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Nombre</Text>
                          <Text style={[styles.flexEnd,{flex:5}]}>{this.props.complejo.nombre}</Text>
+                      </View>
+                      <View style={styles.info}>
+                         <Text style={styles.flexStart}>Número telefónico</Text>
+                         <Text style={styles.flexEnd}>{this.props.complejo.numeroTelefono}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Provincia</Text>
@@ -233,6 +237,12 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexStart}>Canton</Text>
                          <Text style={styles.flexEnd}>{this.props.complejo.canton}</Text>
                       </View>
+                      <View style={styles.info}>
+                         <Text style={styles.flexStart}>Horario</Text>
+                         <View style={{flex:1}}>
+                         <Text style={styles.flexEnd}>De {this.props.complejo.horario.diaAbre} a {this.props.complejo.horario.diaCierra}</Text>
+                         <Text style={styles.flexEnd}>{this.props.complejo.horario.horaAbre} hasta {this.props.complejo.horario.horaCierra}</Text>
+                         </View>
                       </View>
                       <View style={{flex:0.9}}>
                          <Text style={{marginBottom:5}}>Comodidades</Text>
@@ -242,7 +252,8 @@ export default class ComplejoDetail extends Component {
                          </ScrollView>
                          </View>
                       </View>
-                      
+                      </ScrollView>
+
                     </View>
                     <View style={{flex:0.7}}>
                          <View style={{flex:1,flexDirection:'column'}}>

@@ -18,9 +18,16 @@ class CanchaService {
       })
       FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,updatedCanchas);
     }
-    
+
     static replace(canchas,complejoUID){
       FirebaseBasicService.newWithKey(Entities.CANCHASBYCOMPLEJO,complejoUID,canchas);
+    }
+
+    static getMatchesByCancha(idCancha, callback,error){
+      FirebaseBasicService.findActiveById(Entities.MATCHES,idCancha,callback,error)
+    }
+    static getMatchesByCanchaOnce(idCancha, callback,error){
+      FirebaseBasicService.findActiveByIdOnce(Entities.MATCHES,idCancha,callback,error)
     }
 
     static delete(canchas,cancha,complejoUID){

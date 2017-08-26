@@ -118,6 +118,10 @@ export default class TeamDetail extends Component {
                      <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
                   </View>
                   <View style={styles.info}>
+                     <Text style={[styles.flexStart,{flex:3}]}>Fundador</Text>
+                     <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.fundador.nombre}</Text>
+                  </View>
+                  <View style={styles.info}>
                      <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
                      <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
                   </View>
@@ -148,6 +152,14 @@ export default class TeamDetail extends Component {
                   <View style={styles.info}>
                      <Text style={styles.flexStart}>Racha de victorias</Text>
                      <Text style={styles.flexEnd}>{this.props.team.rachaVictorias}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={styles.flexStart}>Provincia</Text>
+                     <Text style={styles.flexEnd}>{this.props.team.provincia}</Text>
+                  </View>
+                  <View style={styles.info}>
+                     <Text style={styles.flexStart}>Cantón</Text>
+                     <Text style={styles.flexEnd}>{this.props.team.canton}</Text>
                   </View>
                 </ScrollView>
               </View>

@@ -46,7 +46,7 @@ class SoundManager {
     }))
     ambienteEstadio = new Sound("sonidoambiente.mp3",Sound.MAIN_BUNDLE, (error) => {
     })
-
+    ambienteEstadio.setVolume(0.0)
     logoSound = new Sound("logosound.wav",Sound.MAIN_BUNDLE, (error) => {
     })
     // CLICKS
@@ -72,16 +72,17 @@ class SoundManager {
      if(newPosition === position){
        newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
-      songs[position].play((success)=>{
+      backgroundMusic.play((success)=>{
           if(success){
             playSong(newPosition)
           }else{
             console.log("error")
           }
         })
-        songs[position].setVolume(0.3);
+        backgroundMusic.setVolume(0.1);
       }
       playSong(Math.round(Math.random() * ((songsQuantity-1) - 0) + 0));
+        backgroundMusic.setVolume(0.1);
     }
   }
 
@@ -102,14 +103,14 @@ class SoundManager {
      if(newPosition === position){
        newPosition = Math.round(Math.random() * ((songsQuantity-1) - 0) + 0)
      }
-      songs[position].play((success)=>{
+      backgroundMusic.play((success)=>{
           if(success){
             playSong(newPosition)
           }else{
             console.log("error")
           }
         })
-        songs[position].setVolume(0.3);
+        backgroundMusic.setVolume(0.1);
       }
       backgroundMusic.play((success) => {
         if (success) {
@@ -118,6 +119,7 @@ class SoundManager {
           console.log('playback failed due to audio decoding errors');
         }
       });
+        backgroundMusic.setVolume(0.1);
     }
 
     static pauseBackgroundMusic(){
@@ -144,6 +146,7 @@ class SoundManager {
             console.log("AAA")
         }
         })
+        ambienteEstadio.setVolume(0.1)
       }
       playAmbiente();
       // ambienteEstadio.setNumberOfLoops(-1);
@@ -167,6 +170,7 @@ class SoundManager {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
   switchBtn.play();
+  switchBtn.setVolume(0.3)
 });
 
     }
@@ -175,6 +179,7 @@ class SoundManager {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
   pushBtn.play();
+    pushBtn.setVolume(0.3)
 });
     }
     static playBackBtn(){
@@ -182,6 +187,7 @@ class SoundManager {
   // Note: If you want to play a sound after stopping and rewinding it,
   // it is important to call play() in a callback.
   backBtn.play();
+  backBtn.setVolume(0.3)
 });
     }
 }

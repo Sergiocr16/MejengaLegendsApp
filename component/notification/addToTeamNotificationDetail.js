@@ -32,15 +32,19 @@ export default class AddToTeamNotificationDetail extends Component {
       this.state.ownTeams = [];
     })
     TeamService.getTeam(this.props.notification.equipoGUID,(team)=>{
+
          this.setState({team:team})
         this.showTeamDetail();
+        TeamService.getPlayersByTeam(team.uid,(players)=>{
+          if(players){
+            console.log('afafafddddddddddddddddddd')
+            console.log(players)
+          this.setState({players});
+          }
+        },()=>{
+        })
     },()=>{})
-    TeamService.getPlayersByTeam(this.state.team.uid,(players)=>{
-      if(players){
-      this.setState(players);
-      }
-    },()=>{
-    })
+
   }
   showImage = () => {
     if(this.state.team.image !== undefined){
@@ -75,8 +79,7 @@ export default class AddToTeamNotificationDetail extends Component {
           jugadoresDelEquipo.push(this.props.user);
           TeamService.newPlayersByTeam(this.state.team.uid,jugadoresDelEquipo);
           Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
-          this.state.team.cantidadJugadores = this.state.team.cantidadJugadores+1;
-          TeamService.update(this.props.user.uid,this.state.team.uid,jugadoresDelEquipo,this.state.team)
+          TeamService.updateTeam(this.state.team.uid,jugadoresDelEquipo,this.state.team,1)
           this.props.deleteNotification();
           this.props.back();
           ToastAndroid.show('¡Felicidades ahora eres parte del equipo ' + this.state.team.nombre +'!!', ToastAndroid.LONG);
@@ -117,11 +120,11 @@ export default class AddToTeamNotificationDetail extends Component {
                   <ScrollView>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:1}]}>Lema</Text>
-                         <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.props.team.lema)}</Text>
+                         <Text style={[styles.flexEnd,{flex:5}]}>{this.showLema(this.state.team.lema)}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={[styles.flexStart,{flex:3}]}>Cantidad jugadores</Text>
-                         <Text style={[styles.flexEnd,{flex:3}]}>{this.props.team.cantidadJugadores}</Text>
+                         <Text style={[styles.flexEnd,{flex:3}]}>{this.state.cantidadJugadores}</Text>
                       </View>
                       <View style={styles.info}>
                          <Text style={styles.flexStart}>Liga</Text>

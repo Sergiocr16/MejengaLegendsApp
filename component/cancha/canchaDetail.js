@@ -14,6 +14,7 @@ import FadeInView from 'react-native-fade-in-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EditCancha from './editCancha';
 import CanchaService from '../../services/cancha';
+import Complejo from '../../services/complejo';
 import SoundManager from '../../services/soundManager';
 import RenderIf from '../app/renderIf';
 
@@ -57,6 +58,9 @@ export default class CanchaDetail extends Component {
  }
  delete = () => {
    CanchaService.delete(this.props.canchas,this.props.cancha,this.props.complejo.uid);
+   var complejoUpdated = this.props.complejo;
+   complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas - 1;
+   Complejo.update(complejoUpdated)
    ToastAndroid.show('Cancha eliminada correctamente', ToastAndroid.LONG);
    this.props.back();
  }
