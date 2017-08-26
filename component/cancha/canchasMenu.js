@@ -20,6 +20,7 @@ import CanchaDetail from './canchaDetail';
 import Loader from '../app/loading';
 import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import RenderIf from '../app/renderIf';
 
 export default class CanchasMenu extends Component {
   constructor(props){
@@ -28,17 +29,24 @@ export default class CanchasMenu extends Component {
       complejo: this.props.complejo,
       canchas: [],
       currentField: '',
-      scene:"loading"
+      scene:"loading",
+      createButtonVisibility:false
     }
   }
 
 
 componentDidMount(){
-Complejo.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
-  this.setState({scene:'allFields',canchas})
-},()=>{
-  this.setState({scene:'allFields',canchas:[]})
-})
+  Complejo.getCanchasByComplejo(this.props.complejo.uid,(canchas)=>{
+    this.setState({scene:'allFields',canchas})
+  },()=>{
+    this.setState({scene:'allFields',canchas:[]})
+  })
+  
+  if(this.props.user.rol == "admin" || this.props.user.rol == "superAdmin"){
+      this.setState({createButtonVisibility:true})
+  }else{
+      this.setState({createButtonVisibility:false})
+  }
 }
 
 setSceneRegistrarCancha = () => {
@@ -60,7 +68,7 @@ showScene =() =>{
       return <Loader/>
       break;
     case 'canchaDetail':
-     return <CanchaDetail cancha={this.state.currentCancha} complejo={this.props.complejo} canchas={this.state.canchas} showEditButton={false} back={()=>{this.componentDidMount(); SoundManager.playBackBtn() }} showBackButton={true}/>
+     return <CanchaDetail user={this.props.user} cancha={this.state.currentCancha} complejo={this.props.complejo} canchas={this.state.canchas} showEditButton={false} back={()=>{this.componentDidMount(); SoundManager.playBackBtn() }} showBackButton={true}/>
       break;
       case 'createCancha':
        return <CreateCancha canchas={this.state.canchas} complejo={this.props.complejo} back={()=>{ this.setState({scene:"allFields"}); SoundManager.playBackBtn() }}/>
@@ -117,7 +125,10 @@ showSearchingScene = () => {
             </View>
         </TouchableOpacity>
         <View style={{flex:1, alignItems:'flex-end'}}>
-        <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarCancha} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear cancha</Text></TouchableOpacity>
+          {RenderIf(this.state.createButtonVisibility === true,
+            <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarCancha} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear cancha</Text></TouchableOpacity>
+          )}
+        
         </View>
     </View>
     </FadeInView>

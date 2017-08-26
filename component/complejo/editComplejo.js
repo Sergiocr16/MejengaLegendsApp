@@ -366,7 +366,7 @@ export default class EditComplejo extends Component {
           </Picker>
         </View>
         <View style={{flex:1}}>
-        <Text style={styles.bold,{marginBottom:8}}>Selecciona las comodidades</Text>
+        <Text style={styles.bold} style={{marginBottom:8}}>Selecciona las comodidades</Text>
           <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
           <ScrollView horizontal={true}>
             {this.showComodidades()}
@@ -503,7 +503,7 @@ export default class EditComplejo extends Component {
     this.uploadImage(this.state.source)
     }
   }
- }
+}
 
   render(){
       return(<View style={{flex:1}}>

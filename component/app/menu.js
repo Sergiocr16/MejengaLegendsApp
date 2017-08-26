@@ -25,6 +25,8 @@ import ArbitrosDeAdmin from '../arbitro/arbitrosDeAdmin';
 import NextMatches from '../partido/misProximosPartidos';
 import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
+import ComplejosPartidos from '../complejo/complejoPartidos';
+import Ligas from '../team/ligas';
 import EncuentrosDeHoy from '../arbitro/encuentrosDeHoy';
 
 import AdminMenuDeSuperAdmin from '../administrador/adminMenuDeSuperAdmin';
@@ -130,6 +132,15 @@ export default class Menu extends Component {
       SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
   }
+  setScenePartidosComplejos = () => {
+    SoundManager.playSwitchClick()
+    this.setState({scene:'partidosComplejos'})
+  }
+  setSceneLigas = () => {
+    SoundManager.playSwitchClick()
+    this.setState({scene:'ligas'})
+  }
+
   activeMainButton(option) {
     switch (this.state.menuScene) {
       case option: return {
@@ -350,7 +361,7 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Equipos de todo el mundo</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]} onPress={this.setSceneLigas}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://cdn-mf0.heartyhosting.com/sites/mensfitness.com/files/soccer-kick-strength-main-1280.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"shield"}  size={20} color="#1565C0" />
@@ -573,21 +584,22 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Visualiza tu partido</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonMainMenu}>
-                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://a.travel-assets.com/mediavault.le/media/722d0fb1d6456bd7e3ce7a8d184a6a1e4c3214d3.jpeg'}}>
+                <TouchableOpacity style={styles.buttonMainMenu} onPress={this.setScenePartidosComplejos}>
+                  <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.hdwallpaperspulse.com/wp-content/uploads/2017/04/09/soccer-field-night-image.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"futbol-o"}  size={20} color="#1565C0" />
                    </View>
                   </Image>
                   <View style={styles.textAreaButton}>
-                    <Text style={styles.buttonSmallTitle}>RETO</Text>
-                    <Text style={styles.buttonSubtitle}>Tu equipo VS El mundo</Text>
+                    <Text style={styles.buttonSmallTitle}>Complejos</Text>
+                    <Text style={styles.buttonSubtitle}>Mis escenarios de juego</Text>
                   </View>
                 </TouchableOpacity>
                 </View>
               </View>
           </GestureRecognizer>)
   }
+
   showMenuScene(){
     console.log(this.state.menuScene)
     switch (this.state.menuScene) {
@@ -606,6 +618,9 @@ defineMainButtons = () => {
        case 'superAdmin':
          return(this.menuComplejosScene())
         break;
+      case 'partidosComplejos':
+      return(this.menuComplejosScene())
+      break;
         case 'admin':
           return(this.menuAdminViewScene())
          break;
@@ -654,7 +669,10 @@ defineMainButtons = () => {
         return <MyTeamsReto back={()=> this.setSceneButtons()}/>;
         break;
       case 'complejos':
-        return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
+        return <ComplejoMenu user={this.props.user} back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'partidosComplejos':
+        return <ComplejosPartidos user={this.props.user} back={()=> this.setSceneButtons()}/>;
         break;
         case 'encuentrosHoy':
         return (<EncuentrosDeHoy back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} complejo={this.props.complejo}/>);
@@ -669,6 +687,9 @@ defineMainButtons = () => {
         return <ArbitrosDeAdmin complejo={this.props.complejo} back={()=> this.setSceneButtons()}/>;
         break;
       default:
+      case 'ligas':
+        return <Ligas back={()=> this.setSceneButtons()}/>;
+        break;
         return this.menuButtons();
     }
   }

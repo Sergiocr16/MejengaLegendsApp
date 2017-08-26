@@ -163,6 +163,45 @@ teamNameFontSize = (option) =>{
     )
   }
 
+  showLigas(){
+    let teams =  this.state.ligas.map( (val, key) => {
+      // if(val.estaVacio!==true){
+            return <TouchableOpacity onPress={()=> { this.setState({currentTeam:val,scene:'teamProfile'});SoundManager.playPushBtn()}}
+                   key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
+                   <View style={{flex:2}}>
+                   <Text style={this.positionColor(key+1)}>{key+1}</Text>
+                   </View>
+                    <Text style={{flex:6}}>{val.nombre}</Text>
+                      <Text style={{flex:3}}>{val.liga}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.copas} <Icon name="trophy" size={20} color="yellow" /> </Text>
+                   </TouchableOpacity>
+                //  }
+        });
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Mejores equipos</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Mejores equipos actualmente</Text></View>
+       <View style={styles.basicInfo}>
+       <ScrollView>
+       {teams}
+      </ScrollView>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
+
   setMyTeamsMenu = ()=>{
     SoundManager.playBackBtn()
      this.setState({scene:'myTeams'})
@@ -202,9 +241,12 @@ teamNameFontSize = (option) =>{
       case 'detalleEquipo':
         return (<TeamDetail showEditButton={true} myTeams={this.state.teams} back={()=> this.setMyTeamsMenu()} user={this.props.user} showBackButton={true} team={this.state.currentTeam}/>);
         break;
-        case 'teamPositions':
-          return (<TeamPositions showFieldViewImg={this.props.showFieldViewImg} hideFieldViewImg={this.props.hideFieldViewImg} back={()=> this.setScenePlayersByTeam()}  team={this.state.currentTeam}/>);
-          break;
+      case 'teamPositions':
+        return (<TeamPositions showFieldViewImg={this.props.showFieldViewImg} hideFieldViewImg={this.props.hideFieldViewImg} back={()=> this.setScenePlayersByTeam()}  team={this.state.currentTeam}/>);
+        break;
+      case 'ligas':
+      return this.showLigas()
+      break;
       default:
 
     }

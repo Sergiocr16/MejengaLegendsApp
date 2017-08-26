@@ -53,6 +53,24 @@ class ComplejoService {
     static getCanchasByComplejoOnce(idComplejo, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
     }
+
+
+    static getVotosByComplejo(idComplejo, callback,error){
+      FirebaseBasicService.findActiveByIdOnce(Entities.VOTOSBYCOMPLEJO,idComplejo,callback,error)
+    }
+
+    static calificarComplejo(objeto){
+      FirebaseBasicService.newWithKey(Entities.VOTOSBYCOMPLEJO, objeto.uid,objeto);
+    }
+
+    static updateVoto(key, voto){
+      FirebaseBasicService.update(Entities.VOTOSBYCOMPLEJO,key, voto)
+    }
+    
+    static deleteVoto(key){
+      FirebaseBasicService.deleteForever(Entities.VOTOSBYCOMPLEJO + '/active/',key)
+    }
+
     static getComplejo(complejoGUID,callBack,error){
     FirebaseBasicService.findActiveByIdOnce(Entities.COMPLEJOS,complejoGUID,callBack,error)
     }

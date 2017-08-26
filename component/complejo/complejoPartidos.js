@@ -19,7 +19,7 @@ import ComplejoDetail from '../complejo/complejoDetail';
 import SoundManager from '../../services/soundManager';
 import RenderIf from '../app/renderIf';
 
-export default class Complejo extends Component {
+export default class PartidosComplejos extends Component {
     constructor(props){
         super(props)
         this.state = {
@@ -32,7 +32,8 @@ export default class Complejo extends Component {
                 canton: '',
                 imagen: '',
                 comodidades: []
-            }
+            },
+            detailButtonVisibility: true
         }
     }
 
@@ -45,6 +46,12 @@ export default class Complejo extends Component {
                this.setState({scene:"noComplejos",complejosArray:[]})
             }
         )
+        //Analiza el rol del usuario para definir visibilidad de los botones crear, editar y eliminar
+        if(this.props.user.rol == "superAdmin"){
+            this.setState({detailButtonVisibility:true})
+        }else{
+            this.setState({detailButtonVisibility:false})
+        }
     }
 
     showNoComplejos = () => {
@@ -139,7 +146,7 @@ export default class Complejo extends Component {
         return (this.showNoComplejos())
             break;
         case 'registrarComplejo':
-            return (<CreateComplejo user={this.props.user} complejo={this.props.complejo} back={()=>{SoundManager.playBackBtn(); this.componentDidMount()}} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
+            return (<CreateComplejo complejo={this.props.complejo} back={()=>{SoundManager.playBackBtn(); this.componentDidMount()}} addCancha={()=> this.setAddCanchaToComplejo()} complejos={this.state.complejos} style={{marginTop:35,flex:1}}/>);
             break;
         case 'detalleComplejo':
             return (<ComplejoDetail  user={this.props.user} back={()=>{this.componentDidMount();SoundManager.playBackBtn()}} complejo={this.state.currentComplejo}/>);
@@ -190,7 +197,9 @@ export default class Complejo extends Component {
                   </View>
                </TouchableOpacity>
                <View style={{flex:1, alignItems:'flex-end'}}>
-                <TouchableOpacity style={styles.button} onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
+                {RenderIf(this.state.detailButtonVisibility === true,
+                    <TouchableOpacity style={styles.adminButton}  onPress={this.setSceneRegistrarComplejo} ><Text style={styles.textButton}><Icon name="pencil" size={15} color="#FFFFFF"/> Crear complejo</Text></TouchableOpacity>
+                )}
               </View>
            </View>
         </FadeInView>
@@ -305,6 +314,15 @@ const styles = StyleSheet.create({
      backgroundColor:'#F4511E',
      flex:3,
    },
+   adminButton:{
+    marginRight:5,
+    marginBottom:5,
+    paddingHorizontal:10,
+    paddingVertical:4,
+    borderRadius:9,
+    backgroundColor:'#F4511E',
+    flex:3
+  },
    textButton: {
      textAlign:'center',
      color:'white',

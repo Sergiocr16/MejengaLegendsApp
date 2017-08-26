@@ -65,8 +65,7 @@ export default class CreateComplejo extends Component {
           provincia: '',
           canton: '',
           comodidades: [],
-          noAdmin:true,
-          administrador: {nombre:null, jugadorGUID:null}
+          noAdmin:true
       },
       imagePath: null,
       imageHeight: null,

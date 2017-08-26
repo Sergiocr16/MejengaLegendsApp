@@ -16,6 +16,7 @@ import EditCancha from './editCancha';
 import CanchaService from '../../services/cancha';
 import Complejo from '../../services/complejo';
 import SoundManager from '../../services/soundManager';
+import RenderIf from '../app/renderIf';
 
 export default class CanchaDetail extends Component {
   constructor(props){
@@ -23,9 +24,17 @@ export default class CanchaDetail extends Component {
     this.state ={
       scene: 'canchaDetail',
       wantToDelete:false,
+      editButtonVisibility:false,
+      deleteButtonVisibility:false
     }
   }
-
+  componentDidMount(){
+    if(this.props.user.rol == "admin" || this.props.user.rol == "superAdmin"){
+        this.setState({editButtonVisibility:true,deleteButtonVisibility:true})
+    }else{
+      this.setState({editButtonVisibility:false,deleteButtonVisibility:false})
+    }
+  }
 
  setScenecanchaDetail =()=>{
    SoundManager.playBackBtn();
@@ -59,34 +68,38 @@ export default class CanchaDetail extends Component {
   showButtonOptions = () =>{
     if(!this.state.wantToDelete){
   return  <View style={{flex:1,flexDirection:'row'}}>
-    <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+    {RenderIf(this.state.deleteButtonVisibility === true,
+      <TouchableOpacity style={styles.buttonEliminar} onPress={()=>{
+        SoundManager.playPushBtn();
+        this.setWantToDelete();
+        }}><Text style={styles.textButton}>
+        <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
+    </TouchableOpacity>
+    )}
+    {RenderIf(this.state.editButtonVisibility === true,
+    <TouchableOpacity style={styles.button} onPress={()=>{
+      SoundManager.playPushBtn();
+      this.setState({scene:'editcancha'})}}><Text style={styles.textButton}>
+      <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
+    </TouchableOpacity>
+    )}
+  </View>
+  }else{
+    return <View style={{flex:1,flexDirection:'row'}}>
+      <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
+        SoundManager.playPushBtn();
+        this.delete()
+      }}><Text style={styles.textButton}>
+        <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
       SoundManager.playPushBtn();
       this.setWantToDelete();
       }}><Text style={styles.textButton}>
-      <Icon name="times" size={15} color="#FFFFFF"/> Eliminar</Text>
-   </TouchableOpacity>
-   <TouchableOpacity style={styles.button} onPress={()=>{
-     SoundManager.playPushBtn();
-     this.setState({scene:'editcancha'})}}><Text style={styles.textButton}>
-     <Icon name="pencil" size={15} color="#FFFFFF"/> Editar</Text>
-  </TouchableOpacity>
-  </View>
-}else{
-  return <View style={{flex:1,flexDirection:'row'}}>
-    <TouchableOpacity style={styles.buttonConfirm} onPress={()=>{
-      SoundManager.playPushBtn();
-      this.delete()
-     }}><Text style={styles.textButton}>
-      <Icon name="check" size={15} color="#FFFFFF"/> Eliminar</Text>
-   </TouchableOpacity>
-   <TouchableOpacity style={styles.buttonEliminarAccept} onPress={()=>{
-     SoundManager.playPushBtn();
-     this.setWantToDelete();
-    }}><Text style={styles.textButton}>
-      <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
-  </TouchableOpacity>
-  </View>
-}
+        <Icon name="times" size={15} color="#FFFFFF"/> Cancelar</Text>
+    </TouchableOpacity>
+    </View>
+  }
   }
 
   showImage = () => {
