@@ -20,9 +20,8 @@ export default class Ligas extends Component {
   constructor(props){
     super(props)
     this.state = {
-      ligas : [{nombre:"Amateur",tipo:"amateur",minimoNivel:100, maximoNivel:250},
-      {nombre:"Profesional;",tipo:"Profesional",minimoNivel:251, maximoNivel:400},
-      {nombre:"Leyenda",tipo:"leyenda",minimoNivel:401, maximoNivel:500}],
+      ligas : [{nombre:"Leyenda",tipo:"leyenda",minimoNivel:401, maximoNivel:500},{nombre:"Profesional",tipo:"Profesional",minimoNivel:251, maximoNivel:400},{nombre:"Amateur",tipo:"amateur",minimoNivel:100, maximoNivel:250},
+      ],
       scene: 'loading',
       currentLiga:{}
     }
@@ -34,9 +33,8 @@ export default class Ligas extends Component {
     },()=>{
       this.setState({scene:'noLigas'})
     })*/
-    this.setState({ligas:[{nombre:"Amateur",tipo:"aficionado",minimoNivel:100, maximoNivel:250},
-    {nombre:"Profesional",tipo:"semi profesional",minimoNivel:251, maximoNivel:400},
-    {nombre:"Leyenda",tipo:"Leyenda",minimoNivel:401, maximoNivel:500}] })
+    this.setState({ligas:[{nombre:"Leyenda",tipo:"Leyenda",minimoNivel:401, maximoNivel:500},{nombre:"Profesional",tipo:"Profesional",minimoNivel:251, maximoNivel:400},{nombre:"Amateur",tipo:"Amateur",minimoNivel:0, maximoNivel:250},
+    ]})
     this.setState({scene:'ligas'})
   }
 

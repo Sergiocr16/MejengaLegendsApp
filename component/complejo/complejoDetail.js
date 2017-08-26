@@ -39,12 +39,12 @@ export default class ComplejoDetail extends Component {
       },
       votoExistente: false,
       puntaje: 0,
-      checkedStar: "yellow",
-      voidStar: "grey",
+      checkedStar: "#FFA000",
+      voidStar: "#BDBDBD",
       starIcons: {1:false, 2:false, 3:false, 4:false, 5:false},
       ptsComp: 0
     }
-    
+
   }
 
   componentDidMount() {
@@ -54,20 +54,20 @@ export default class ComplejoDetail extends Component {
     }else
     if(this.props.user.rol == "admin"){
       this.setState({editButtonVisibility:true})
-    } 
+    }
     else{
         this.setState({editButtonVisibility:false})
         this.setState({deleteButtonVisibility:false})
     }
 
-    return ComplejoService.getVotosByComplejo(this.props.complejo.uid,(loaded)=>{   
+    return ComplejoService.getVotosByComplejo(this.props.complejo.uid,(loaded)=>{
       if(loaded != null || loaded == undefined){this.setState({objVoto:loaded,function(){ }
       });}
       },()=>{
- 
+
       }
-    )  
-    
+    )
+
     this.setStars(0)
   }
 
@@ -175,7 +175,7 @@ export default class ComplejoDetail extends Component {
     </View>
   }
   }
-  
+
   showBackButton= () =>{
     if(true){
       return (
@@ -204,7 +204,10 @@ export default class ComplejoDetail extends Component {
                 <Text style={styles.whiteFont}>{this.props.complejo.nombre.toUpperCase()}</Text>
             </View>
             <View style={styles.subtitle}>
-                <Text style={styles.whiteFont2}>Calificación: {this.calcularPuntajeComplejo()}</Text>
+               <View style={{flexDirection:'row'}}>
+                <Text style={[styles.whiteFont2]}>Información básica</Text>
+                <Text style={[styles.whiteFont2,{color:'white',textAlign:'right',flex:1,fontSize:20}]}>{this.calcularPuntajeComplejo()} <Text style={{color:'#FFC107',fontSize:15}}>/ 5</Text></Text>
+              </View>
             </View>
              <View style={styles.basicInfo}>
                 <View style={{flex:1,alignItems:'center'}}>
@@ -244,7 +247,8 @@ export default class ComplejoDetail extends Component {
                          <Text style={styles.flexEnd}>{this.props.complejo.horario.horaAbre} hasta {this.props.complejo.horario.horaCierra}</Text>
                          </View>
                       </View>
-                      <View style={{flex:0.9}}>
+
+                      <View style={{flex:0.9,marginTop:10}}>
                          <Text style={{marginBottom:5}}>Comodidades</Text>
                          <View style={{flex:1,flexDirection:'column'}}>
                          <ScrollView horizontal={true}>
@@ -252,26 +256,27 @@ export default class ComplejoDetail extends Component {
                          </ScrollView>
                          </View>
                       </View>
+                      <View style={{flex:0.7}}>
+                           <View style={{flex:1,flexDirection:'column'}}>
+                           {RenderIf(this.props.user.rol === "player",
+                              <View style={{margin:10,padding:0.5,height:50,backgroundColor:"transparent",borderRadius:5,justifyContent:'center',alignItems:'flex-start'}}>
+                              <ScrollView horizontal={true}>
+                                    <Icon name="minus" size={20} onPress={this.setStars.bind(this,0)} style={{margin:2.5}} color={this.state.voidStar} /><Text> </Text>
+                                    <Icon name="star" size={20} onPress={this.setStars.bind(this,1)} style={{margin:2.5}} color={this.state.starIcons['1'] ? this.state.checkedStar : this.state.voidStar} />
+                                    <Icon name="star" size={20} onPress={this.setStars.bind(this,2)} style={{margin:2.5}} color={this.state.starIcons['2'] ? this.state.checkedStar : this.state.voidStar} />
+                                    <Icon name="star" size={20} onPress={this.setStars.bind(this,3)} style={{margin:2.5}} color={this.state.starIcons['3'] ? this.state.checkedStar : this.state.voidStar} />
+                                    <Icon name="star" size={20} onPress={this.setStars.bind(this,4)} style={{margin:2.5}} color={this.state.starIcons['4'] ? this.state.checkedStar : this.state.voidStar} />
+                                    <Icon name="star" size={20} onPress={this.setStars.bind(this,5)} style={{margin:2.5}} color={this.state.starIcons['5'] ? this.state.checkedStar : this.state.voidStar} />
+                                    <TouchableOpacity style={[styles.buttonCalificar,{padding:5,alignItems:'center',justifyContent:'center'}]} onPress={this.calificarComplejo.bind(this,this.props)} ><Text> </Text><Text style={styles.textButton}> Calificar</Text></TouchableOpacity>
+                                </ScrollView>
+                              </View>
+                           )}
+                           </View>
+                        </View>
                       </ScrollView>
 
                     </View>
-                    <View style={{flex:0.7}}>
-                         <View style={{flex:1,flexDirection:'column'}}>
-                         {RenderIf(this.props.user.rol === "player",
-                            <View style={{margin:0.5,padding:0.5,backgroundColor:"transparent",borderRadius:5,justifyContent:'center',alignItems:'center'}}>
-                            <ScrollView horizontal={true}>
-                                  <Icon name="minus" size={20} onPress={this.setStars.bind(this,0)} color={this.state.voidStar} /><Text> </Text>                
-                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,1)} color={this.state.starIcons['1'] ? this.state.checkedStar : this.state.voidStar} />
-                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,2)} color={this.state.starIcons['2'] ? this.state.checkedStar : this.state.voidStar} />
-                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,3)} color={this.state.starIcons['3'] ? this.state.checkedStar : this.state.voidStar} />
-                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,4)} color={this.state.starIcons['4'] ? this.state.checkedStar : this.state.voidStar} />
-                                  <Icon name="star" size={20} onPress={this.setStars.bind(this,5)} color={this.state.starIcons['5'] ? this.state.checkedStar : this.state.voidStar} />
-                                  <TouchableOpacity style={[styles.buttonCalificar,{paddingVertical:7,alignItems:'center',justifyContent:'center'}]} onPress={this.calificarComplejo.bind(this,this.props)} ><Text> </Text><Text style={styles.textButton}> Calificar</Text></TouchableOpacity> 
-                              </ScrollView>
-                            </View>
-                         )}
-                         </View>
-                      </View>
+
                   </View>
               </View>
           </View>
@@ -318,11 +323,11 @@ export default class ComplejoDetail extends Component {
         } else {
           this.state.starIcons = {1:false, 2:false, 3:false, 4:false, 5:false}
         }
-        this.setState({ptsComplejo:val})  
+        this.setState({ptsComplejo:val})
       }
 
       getPuntaje(){
-        
+
         return this.state.ptsComplejo;
       }
 
@@ -330,42 +335,42 @@ export default class ComplejoDetail extends Component {
         var div = this.state.objVoto.votos.length
         var pts  = 0;
         for(let i = 0; i < this.state.objVoto.votos.length; i++){
-          pts = pts + this.state.objVoto.votos[i].puntaje;  
+          pts = pts + this.state.objVoto.votos[i].puntaje;
         }
         pts = pts/div
         return parseFloat(pts)
       }
 
       calificarComplejo(data){
-            
+
         var newVoto = {idUsuario: this.props.user.uid, puntaje:this.getPuntaje(), fecha: new Date().getTime()}
         var usr = 0;
         var votoNuevo = {};
         var votosDb = [];
-        
-          if(this.state.objVoto.idComplejo == 0 || this.state.objVoto.idComplejo == undefined){       
+
+          if(this.state.objVoto.idComplejo == 0 || this.state.objVoto.idComplejo == undefined){
             this.state.objVoto.uid = this.props.complejo.uid;
             this.state.objVoto.idComplejo = this.props.complejo.uid;
             this.state.objVoto.votos.push(newVoto,);
 
             ComplejoService.calificarComplejo(this.state.objVoto)
           } else{
-          
+
             votosDb = this.state.objVoto.votos;
 
             for(let i = 0; i < this.state.objVoto.votos.length; i++){
-              usr = this.state.objVoto.votos[i].idUsuario;   
+              usr = this.state.objVoto.votos[i].idUsuario;
               if(usr == this.props.user.uid){
                 this.state.votoExistente = true
               }
             }
-          
+
             if(this.state.votoExistente == false && this.state.objVoto.idComplejo != 0){
               votosDb.push(newVoto);
               this.state.objVoto.votos = null
               this.state.objVoto.votos = votosDb
-              ComplejoService.updateVoto(this.props.complejo.uid,this.state.objVoto) 
-                        
+              ComplejoService.updateVoto(this.props.complejo.uid,this.state.objVoto)
+
             }else{
               this.setState({scene:"noVotar"})
             }
