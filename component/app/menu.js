@@ -21,6 +21,7 @@ import BestTeams from '../team/bestTeams';
 import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
 import ComplejosPartidos from '../complejo/complejoPartidos';
+import Ligas from '../team/ligas';
 
 import AdminMenuDeSuperAdmin from '../administrador/adminMenuDeSuperAdmin';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
@@ -112,6 +113,11 @@ export default class Menu extends Component {
     SoundManager.playSwitchClick()
     this.setState({scene:'partidosComplejos'})
   }
+  setSceneLigas = () => {
+    SoundManager.playSwitchClick()
+    this.setState({scene:'ligas'})
+  }
+
   activeMainButton(option) {
     switch (this.state.menuScene) {
       case option: return {
@@ -245,7 +251,7 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Equipos de todo el mundo</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]}>
+                <TouchableOpacity style={[styles.buttonMainMenu,{flex:3}]} onPress={this.setSceneLigas}>
                   <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://cdn-mf0.heartyhosting.com/sites/mensfitness.com/files/soccer-kick-strength-main-1280.jpg'}}>
                     <View style={styles.circularSmallIcon}>
                        <Icon name={"shield"}  size={20} color="#1565C0" />
@@ -552,6 +558,9 @@ defineMainButtons = () => {
         return <AdminMenuDeSuperAdmin back={()=> this.setSceneButtons()}/>;
         break;
       default:
+      case 'ligas':
+        return <Ligas back={()=> this.setSceneButtons()}/>;
+        break;
         return this.menuButtons();
     }
   }

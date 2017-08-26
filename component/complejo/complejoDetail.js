@@ -601,7 +601,6 @@ export default class ComplejoDetail extends Component {
     borderRadius:5,
     width:75,
     height:25,
-    fontWeight:'bold',
     textAlign:'center',
     alignItems:'center',
     justifyContent:'center',

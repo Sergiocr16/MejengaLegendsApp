@@ -1,0 +1,325 @@
+import React, {Component} from 'react'
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView
+} from 'react-native'
+var moment = require('moment');
+import * as firebase from 'firebase';
+import Loader from '../app/loading';
+import FadeInView from 'react-native-fade-in-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SoundManager from '../../services/soundManager';
+import LigaServ from '../../services/liga';
+
+export default class Ligas extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      ligas : [{nombre:"Amateur",tipo:"amateur",minimoNivel:100, maximoNivel:250},
+      {nombre:"Profesional;",tipo:"Profesional",minimoNivel:251, maximoNivel:400},
+      {nombre:"Leyenda",tipo:"leyenda",minimoNivel:401, maximoNivel:500}],
+      scene: 'loading',
+      currentLiga:{}
+    }
+
+  }
+  componentDidMount() {
+    /*LigaServ.findTopLigas((ligasDb)=>{
+      this.setState({ligasDb,scene:'ligas'})
+    },()=>{
+      this.setState({scene:'noLigas'})
+    })*/
+    this.setState({ligas:[{nombre:"Amateur",tipo:"aficionado",minimoNivel:100, maximoNivel:250},
+    {nombre:"Profesional",tipo:"semi profesional",minimoNivel:251, maximoNivel:400},
+    {nombre:"Leyenda",tipo:"Leyenda",minimoNivel:401, maximoNivel:500}] })
+    this.setState({scene:'ligas'})
+  }
+
+  setSceneLigas = () => {
+    SoundManager.playBackBtn()
+    this.setState({scene:'ligas'})
+  }
+
+  showScene(){
+    switch (this.state.scene) {
+      case 'loading':
+        return <Loader/>
+        break;
+      case 'ligas':
+        return this.showLigas()
+        break;
+        case 'noLigas':
+          return this.noLigas()
+          break;
+      default:
+    }
+  }
+
+  textColor(option) {
+    switch (option) {
+      case 1: return {
+        color:'white'
+      }
+      case 2: return {
+        color:'white'
+      }
+      case 3: return {
+      color:'white'
+      }
+      break;
+      default: return {
+
+      }
+    }
+  }
+
+  positionColor(option) {
+    switch (option) {
+      case 1: return {
+        borderRadius:5,
+        paddingVertical:3,
+        paddingHorizontal:5,
+        textAlign:'center',
+        marginHorizontal:15,
+        backgroundColor:'#FFD700',
+        fontWeight:'bold',
+        color:'white',
+      }
+      case 2: return {
+        borderRadius:5,
+        paddingVertical:3,
+        paddingHorizontal:5,
+        textAlign:'center',
+        marginHorizontal:15,
+        backgroundColor:'#c0c0c0',
+        fontWeight:'bold',
+        color:'white',
+      }
+      case 3: return {
+        borderRadius:5,
+        paddingVertical:3,
+        paddingHorizontal:5,
+        textAlign:'center',
+        marginHorizontal:15,
+       backgroundColor:'#cd7f32',
+       fontWeight:'bold',
+       color:'white',
+      }
+      break;
+      default: return {
+        borderRadius:5,
+        paddingVertical:3,
+        paddingHorizontal:5,
+        textAlign:'center',
+        marginHorizontal:15,
+        fontWeight:'bold',
+        backgroundColor:'#E1F5FE'
+      }
+    }
+  }
+
+
+
+  noLigas(){
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Ligas</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}></Text></View>
+       <View style={styles.basicInfo}>
+       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+       <Text style={{textAlign:'center',fontSize:18}} >No existen ligas registradas aún</Text>
+       </View>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
+
+  showLigas(){
+    let ligas =  this.state.ligas.map( (val, key) => {
+      // if(val.estaVacio!==true){
+            return <TouchableOpacity onPress={()=> { this.setState({currentLiga:val,scene:'ligaProfile'});SoundManager.playPushBtn()}}
+                   key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
+                   <View style={{flex:2}}>
+                   <Text style={this.positionColor(key+1)}>{key+1}</Text>
+                   </View>
+                    <Text style={{flex:6}}>{val.nombre}</Text>
+                      <Text style={{flex:3}}>{val.tipo}</Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.minimoNivel} <Icon name="trophy" size={20} color="yellow" /> </Text>
+                    <Text style={[styles.score,{fontSize:17}]}>{val.maximoNivel} <Icon name="trophy" size={20} color="yellow" /> </Text>
+                   </TouchableOpacity>
+                //  }
+        });
+    return (
+      <FadeInView style={styles.container}>
+      <FadeInView style={styles.infoContainer} duration={300}>
+      <View style={styles.mainName}><Text style={styles.whiteFont}>Top 10</Text></View>
+      <View style={styles.subtitle}><Text style={styles.whiteFont2}>Principales ligas</Text></View>
+       <View style={styles.basicInfo}>
+       <ScrollView>
+       {ligas}
+      </ScrollView>
+      </View>
+      </FadeInView>
+      <View style={{flex:1,flexDirection:'row'}}>
+        <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
+          <View style={styles.buttonBackPadre}>
+            <View style={styles.buttonBackHijo}/>
+              <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
+                  <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
+              </Text>
+          </View>
+       </TouchableOpacity>
+      </View>
+      </FadeInView>
+    )
+  }
+      render(){
+        return (
+          <View style={{flex:1}}>
+          {this.showScene()}
+          </View>
+        )
+      }
+    }
+
+const styles = StyleSheet.create({
+    info:{
+     borderBottomWidth:1,
+     borderBottomColor:'#9E9E9E',
+     margin:5,
+     flexDirection:'row',
+   },
+   score:{
+     backgroundColor:'#FDD835',
+     padding:5,
+     borderRadius:5,
+     borderWidth:1,
+     borderColor:'white',
+     flex:2,
+     color:'white',
+     paddingHorizontal:10,
+     fontWeight:'bold',
+     textAlign:'center'
+   },
+   button:{
+     marginRight:20,
+     marginBottom:5,
+     paddingHorizontal:10,
+     paddingVertical:4,
+     borderRadius:9,
+     backgroundColor:'#F4511E',
+     flex:3,
+   },
+   textButton: {
+     textAlign:'center',
+     color:'white',
+     fontSize:15,
+   },
+   flexStart:{
+     textAlign:'left',
+     color:'black',
+     flex:1
+   },
+   flexEnd:{
+     textAlign:'right',
+     flex:1
+   },
+    buttonBackPadre: {
+    width: 150,
+    height: 50,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    position: 'relative',
+    paddingVertical:4,
+    paddingHorizontal:15,
+   },
+   buttonBackHijo:{
+     width: 120,
+     height: 140,
+     position: 'absolute',
+     right: 40,
+     top: -30,
+     backgroundColor: '#1565C0',
+     transform: [{
+       rotate: '138deg',
+     }]
+   },
+   boldFont:{
+     fontWeight:'bold'
+   },
+   basicInfo:{
+     flex:1,
+     flexDirection:'row',
+     padding:20
+   },
+   container:{
+     flex:1,
+     borderRadius:20,
+   },
+   mainName:{
+     backgroundColor:'#1565C0',
+     padding:7
+   },
+   subtitle:{
+     backgroundColor:'#BBDEFB',
+     padding:8
+   },
+   whiteFont2:{
+     color:'#1A237E',
+         textAlign:'center'
+   },
+   whiteFont:{
+     color:'white',
+     textAlign:'left'
+   },
+   infoContainer:{
+     flex:10,
+     backgroundColor:'white',
+     borderRadius:10,
+     margin:20
+   },
+   title:{
+     fontSize:20,
+     color:'white',
+     marginVertical:10
+   },
+   subTitle:{
+     fontSize:15,
+     color:'white',
+   },
+   profileImage:{
+     height:100,
+     width:100,
+     borderWidth:2,
+     borderColor:'white'
+   },
+   whiteFont:{
+     color:'white',
+     textAlign:'center'
+   },
+   redButton:{
+     margin:10,
+     backgroundColor:'red',
+     paddingVertical:5,
+     paddingHorizontal:10,
+     borderRadius:20
+   }
+
+    })
