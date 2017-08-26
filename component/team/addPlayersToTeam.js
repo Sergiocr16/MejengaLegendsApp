@@ -68,7 +68,7 @@ existeElIdEnEquipos = (id, list)=> {
     if(this.state.playersSelected.length==0){
           ToastAndroid.show('Debes seleccionar almenos un jugador', ToastAndroid.LONG);
     }else{
-    var fecha = moment().format('DD/MM/YYYY');
+    var fecha = moment().format('DD/MM/YYYY');Z
     var notificationsTemporal = {};
     this.state.playersSelected.map((val, key) => {
         var temporalNotification = {equipoGUID:this.props.team.uid,jugadorGUID:val.uid,nombreEquipo:this.props.team.nombre,message:'¡'+this.props.team.nombre + 'quiere que seas parte de su equipos!', titulo: "Invitación a unirte a equipo",tipo:1,fecha:fecha};

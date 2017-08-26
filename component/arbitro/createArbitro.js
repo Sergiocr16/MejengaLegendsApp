@@ -15,7 +15,7 @@ import {
 var moment = require('moment');
 import * as firebase from 'firebase'
 import FadeInView from 'react-native-fade-in-view';
-import Admin from '../../services/admin';
+import Arbitro from '../../services/arbitro';
 import Player from '../../services/player';
 import Loader from '../app/loading';
 import ComplejoService from '../../services/complejo';
@@ -31,33 +31,32 @@ window.Blob = Blob
 const fs = RNFetchBlob.fs
 
 var secondaryApp;
-export default class CreateAdministrador extends Component {
+export default class CreateArbitro extends Component {
   constructor(props){
     super(props)
     this.state = {
-      admin: {
+      arbitro: {
         nombre: '',
         primerApellido:'',
         segundoApellido:'',
-        cedula: '',
         email: '',
-        telefono: '',
         complejo:'',
         image:'',
-        rol:''
+        rol:'',
+        cedula:''
 
       },
       nombre: '',
       primerApellido:'',
       segundoApellido:'',
-      cedula: '',
       email: '',
+      cedula:'',
       complejo:'',
       password: '',
-      telefono: '',
       source:'none',
       scene:'createInfo',
       submitted:false,
+      disableButton:false,
       complejosArray:[],
     }
     this.signUp = this.signUp.bind(this)
@@ -68,20 +67,13 @@ export default class CreateAdministrador extends Component {
         databaseURL: "https://mejengalegends-c5146.firebaseio.com/"}
 
       secondaryApp  = firebase.initializeApp(config, "Secundary");
-      ComplejoService.getAll((complejos)=>{
-          this.setState({complejosArray:complejos,complejo:complejos[0]})
 
-          },()=>{
-             this.setState({scene:"noComplejos",complejosArray:[]})
-          }
-      )
   }
-
   componentWillUnmount(){
     secondaryApp.delete()
   }
   isValid = () => {
-    var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.cedula,this.state.telefono,this.state.email]
+    var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.telefono,this.state.email]
     var invalidItems = 0;
    toValidate.map((val)=>{
      if(val===""){
@@ -154,7 +146,7 @@ export default class CreateAdministrador extends Component {
          return imageRef.getDownloadURL()
        })
        .then((url) => {
-           this.state.admin.image = url;
+           this.state.arbitro.image = url;
            this.signUp();
            resolve(url)
        })
@@ -216,16 +208,15 @@ export default class CreateAdministrador extends Component {
    }
 
  submit = () =>{
-   this.state.admin.nombre = this.state.nombre;
-   this.state.admin.primerApellido = this.state.primerApellido;
-   this.state.admin.segundoApellido = this.state.segundoApellido;
-   this.state.admin.username = this.state.email.split("@")[0]
-   this.state.admin.cedula = this.state.cedula;
-   this.state.admin.telefono = this.state.telefono;
-   this.state.admin.rol = 'admin'
-   this.state.admin.email = this.state.email;
-   this.state.admin.complejoNombre = this.state.complejo.nombre;
-    this.state.admin.complejoGUID = this.state.complejo.uid;
+   this.state.arbitro.nombre = this.state.nombre;
+   this.state.arbitro.primerApellido = this.state.primerApellido;
+   this.state.arbitro.segundoApellido = this.state.segundoApellido;
+   this.state.arbitro.username = this.state.email.split("@")[0]
+   this.state.arbitro.rol = 'arbitro'
+   this.state.arbitro.email = this.state.email;
+   this.state.arbitro.cedula = this.state.cedula;
+   this.state.arbitro.complejoNombre = this.props.complejo.nombre;
+   this.state.arbitro.complejoGUID = this.props.complejo.uid;
    this.setState({submitted:true})
    if(this.isValid()){
    if(this.state.source=='none'){
@@ -252,14 +243,17 @@ export default class CreateAdministrador extends Component {
      SoundManager.playPushBtn();
      await secondaryApp.auth().createUserWithEmailAndPassword(this.state.email.trim(), this.state.cedula).then((user)=>{
        this.setState({scene:'loading'})
-       var admin = this.state.admin;
-       admin.uid = user.uid;
-       Admin.new(user.uid,admin)
-       if(this.state.complejo.noAdmin){
-         ComplejoService.update(this.state.complejo.uid,{noAdmin:false})
-       }
-       this.sendVerification(user)
-        secondaryApp.auth().signOut();
+        this.setState({disableButton:true})
+       var arbitro = this.state.arbitro;
+       arbitro.uid = user.uid;
+       Arbitro.newWithCallback(user.uid,arbitro,(arbitro)=>{
+         arbitrosDelComplejo = this.props.arbitros;
+         arbitrosDelComplejo.push(arbitro);
+         Arbitro.newArbitrosByComplejo(arbitrosDelComplejo,this.props.complejo.uid);
+        this.sendVerification(user)
+          secondaryApp.auth().signOut();
+           this.props.back();
+       });
 
       }).catch((error)=>{
         console.log(error.message)
@@ -293,7 +287,7 @@ showCreateInfo = () => {
     <FadeInView style={styles.container} duration={600}>
       <View style={styles.infoContainer}>
         <View style={styles.mainName}>
-            <Text style={styles.whiteFont}>Crear un administrador</Text>
+            <Text style={styles.whiteFont}>Crear un árbitro</Text>
         </View>
         <View style={styles.subtitle}>
             <Text style={styles.whiteFont2}>Información básica</Text>
@@ -329,6 +323,7 @@ showCreateInfo = () => {
 
       </View>
       <View style={{flexDirection:'row',flex:3,marginVertical:20}}>
+
       <TextInput
       underlineColorAndroid={this.isEmpty(this.state.segundoApellido)}
       placeholderTextColor="grey"
@@ -337,52 +332,34 @@ showCreateInfo = () => {
       style={[styles.inputText,{flex:1}]}
       onChangeText={(segundoApellido) => this.setState({segundoApellido})}
       />
+
       <TextInput
-      underlineColorAndroid={this.isEmpty(this.state.cedula)}
+      underlineColorAndroid={this.isEmpty(this.state.email)}
       placeholderTextColor="grey"
-      placeholder="Número cédula"
+      placeholder="Correo electrónico"
       autocapitalize={true}
       disableFullscreenUI={true}
       style={[styles.inputText,{flex:1}]}
-      onChangeText={(cedula) => this.onChangedOnlyNumbersCedula(cedula)}
+        onChangeText={(email) => this.setState({email})}
       />
-
-
      </View>
      <View style={{flexDirection:'row',flex:3,marginVertical:20}}>
      <TextInput
-     underlineColorAndroid={this.isEmpty(this.state.telefono)}
+     underlineColorAndroid={this.isEmpty(this.state.cedula)}
      placeholderTextColor="grey"
-     placeholder="Número teléfono"
-     disableFullscreenUI={true}
-     style={[styles.inputText,{flex:1}]}
-     onChangeText={(telefono) => this.onChangedOnlyNumbersTelefono(telefono)}
-     />
-     <TextInput
-     underlineColorAndroid={this.isEmpty(this.state.email)}
-     placeholderTextColor="grey"
-     placeholder="Correo electrónico"
+     placeholder="Número cédula"
      autocapitalize={true}
      disableFullscreenUI={true}
      style={[styles.inputText,{flex:1}]}
-       onChangeText={(email) => this.setState({email})}
+     onChangeText={(cedula) => this.onChangedOnlyNumbersCedula(cedula)}
      />
-
-
     </View>
-     <View style={{flexDirection:'column',marginVertical:20}}>
-         <View style={{flex:1,marginBottom:25}}>
-          <Text style={styles.bold}>Selecciona el complejo deportivo</Text>
-         <Picker style={styles.androidPicker} selectedValue={this.state.complejo}
-           onValueChange={ (complejo) => (this.setState({complejo}))}>
-           {complejos}
-           </Picker>
 
-         </View>
-      </View>
+
        <TouchableOpacity style={styles.button2}  onPress={this.submit} underlayColor='#99d9f4'>
            <Text style={styles.buttonText2}>¡Listo!</Text>
        </TouchableOpacity>
+
      </ScrollView>
         </View>
     </View>

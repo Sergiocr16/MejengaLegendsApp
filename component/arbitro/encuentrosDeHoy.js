@@ -17,53 +17,41 @@ import FadeInView from 'react-native-fade-in-view';
 import Loader from '../app/loading';
 import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Admin from '../../services/admin';
-import CreateAdministrador from '../administrador/createAdministrador';
-import AdminDetail from '../administrador/adminDetail';
-export default class AdminMenuDeSuperAdmin extends Component {
+import AddPlayersToTeam from '../team/addPlayersToTeam';
+import TeamService from '../../services/team';
+import PlayerProfile from '../player/playerProfile';
+export default class EncuentrosDeHoy extends Component {
   constructor(props){
     super(props)
     this.state = {
-        scene:'loading',
-        admins : [],
-        currentAdmin:{}
+      players:[],
+      scene: 'playersByTeam',
+      currentPlayer:''
     }
   }
-  componentDidMount() {
-    Admin.getAll((admins)=>{
-      this.setState({admins,scene:'showAdmins'})
-    },()=>{   this.setState({scene:'noPlayers'})})
-  }
-  setSceneAdminsMenu =()=>{
-    SoundManager.playBackBtn();
-    this.setState({scene:'showAdmins'})
-  }
-  setSceneCreateAdmin = ()=>{
-    SoundManager.playPushBtn()
-     this.setState({scene:'createAdmin'})
-  }
-  setSceneAdminDetail = ()=>{
-    SoundManager.playPushBtn()
-     this.setState({scene:'adminDetail'})
-  }
 
+  componentDidMount() {
+
+  }
+  setScenePlayersByTeam =()=>{
+    SoundManager.playBackBtn();
+    this.setState({scene:'playersByTeam'})
+  }
+  setSceneAddPlayerToTeam = ()=>{
+    SoundManager.playPushBtn()
+     this.setState({scene:'addPlayersToTeam'})
+  }
   showScene = () => {
     switch (this.state.scene) {
-      case 'loading':
-        return <Loader/>
+      case 'playersByTeam':
+        return this.showPlayersByTeam()
         break;
-      case 'showAdmins':
-        return this.allAdminstrators()
+      case 'addPlayersToTeam':
+        return (<AddPlayersToTeam back={()=> this.setScenePlayersByTeam()} team={this.props.team}/>);
         break;
-        case 'noPlayers':
-          return this.noPlayers()
+        case 'playerProfile':
+          return <PlayerProfile back={()=>{this.setScenePlayersByTeam()}} showBackButton={true}  user={this.state.currentPlayer}/>
           break;
-        case 'createAdmin':
-          return <CreateAdministrador back={()=>{this.setSceneAdminsMenu()}} showBackButton={true}  />
-          break;
-          case 'adminDetail':
-            return <AdminDetail user={this.state.currentAdmin} back={()=>{this.setSceneAdminsMenu()}}  />
-            break;
       default:
 
     }
@@ -74,60 +62,33 @@ centerNoText = (jugadores) => {
   }
   return {flex:5,flexDirection:'row',paddingHorizontal:10}
 }
-noPlayers(){
-  return (
-    <FadeInView style={styles.container}>
-    <FadeInView style={styles.infoContainer} duration={300}>
-    <View style={styles.mainName}><Text style={styles.whiteFont}>Administradores de complejos</Text></View>
-    <View style={styles.subtitle}><Text style={[styles.blueFont,{textAlign:'center'}]}>Control de administradores</Text></View>
-     <View style={styles.basicInfo}>
-     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-     <Text style={{textAlign:'center',fontSize:18}} >No existen administradores registrados aún</Text>
-     </View>
-    </View>
-    </FadeInView>
-    <View style={{flex:1,flexDirection:'row'}}>
-      <TouchableOpacity onPress={this.props.back} style={{flex:1, alignItems:'flex-start'}}>
-        <View style={styles.buttonBackPadre}>
-          <View style={styles.buttonBackHijo}/>
-            <Text style={{ backgroundColor: 'transparent',fontSize: 16,color:'white'}}>
-                <Icon name="chevron-left" size={15} color="#FFFFFF"/> Atrás
-            </Text>
+showPlayersByTeam = () => {
+  let jugadores =  this.state.players.map( (val, key) => {
+        return <View key={key} style={{flex:1}}>
+        <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val,scene:'playerProfile'});SoundManager.playPushBtn();}}
+               key={key} style={{flexDirection:'row', height:80, justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:4,marginBottom:5,padding:5}}>
+               <View style={{flex:1}}>
+                {this.showImage(val)}
+               </View>
+                  <View style={{flex:2,borderRightWidth:1,marginRight:1,borderColor:'#9E9E9E' }}>
+                      <Text style={{textAlign:'center',fontWeight:'bold'}}>Nombre: {val.nombre} {val.primerApellido}</Text>
+                  </View>
+                  <View style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' }}>
+                      <Text style={{textAlign:'center'}}>{val.pieDominante}</Text>
+                  </View>
+                  <Text style={{flex:1,textAlign:'center'}}>{val.liga}</Text>
+                  <Text style={styles.position}>{val.posicionPrincipal}</Text>
+               </TouchableOpacity>
         </View>
-     </TouchableOpacity>
-     <View style={{flex:1, alignItems:'flex-end'}}>
-     <TouchableOpacity style={styles.button} onPress={this.setSceneCreateAdmin} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear administrador</Text></TouchableOpacity>
-     </View>
-    </View>
-    </FadeInView>
-  )
-}
-allAdminstrators = () => {
-  let administradores =  this.state.admins.map( (val, key) => {
-    if(val.nombre!==undefined){
-          return <TouchableOpacity onPress={()=> { this.setState({currentAdmin:val}); this.setSceneAdminDetail();   }}
-                 key={key} style={{flexDirection:'row', justifyContent:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
-                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.nombre +" "+val.primerApellido}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.cedula}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' ,textAlign:'center'}}>{val.telefono}</Text>
-                  <Text style={{flex:1,textAlign:'center'}}>{val.complejoNombre}</Text>
-                 </TouchableOpacity>
-               }
-      });
+  });
+
       return (
           <FadeInView style={styles.container}>
             <FadeInView style={styles.infoContainer} duration={300}>
-          <View style={styles.mainName}><Text style={styles.whiteFont}>Administradores de complejos</Text></View>
-          <View style={[styles.subtitle,{flexDirection:'row'}]}>
-                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Nombre completo</Text>
-                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Cédula</Text>
-                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Teléfono</Text>
-                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Complejo</Text>
-          </View>
+          <View style={styles.mainName}><Text style={styles.whiteFont}></Text></View>
+          <View style={styles.subtitle}><Text style={styles.whiteFont2}>Jugadores del equipo</Text></View>
             <View style={{flex:1,padding:10}}>
-                <ScrollView>
-                {administradores}
-               </ScrollView>
+              
               </View>
               </FadeInView>
               <View style={{flex:1,flexDirection:'row'}}>
@@ -141,7 +102,7 @@ allAdminstrators = () => {
                       </View>
                   </TouchableOpacity>
                   <View style={{flex:1, alignItems:'flex-end'}}>
-                  <TouchableOpacity style={styles.button} onPress={this.setSceneCreateAdmin} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Crear administrador</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={this.setSceneAddPlayerToTeam} ><Text style={styles.textButton}><Icon name="plus" size={15} color="#FFFFFF"/> Agregar jugadores</Text></TouchableOpacity>
                   </View>
               </View>
               </FadeInView>
@@ -160,9 +121,20 @@ allAdminstrators = () => {
   }
 
 
+  showImage = (val) => {
+    if(val.image !== undefined){
+      return <Image style={{flex:1,justifyContent:'flex-start',flexDirection:'row'}} borderRadius={5} source={{uri: val.image}}>
+            <Text style={[styles.score,{fontSize:12}]}>{val.score} <Icon name="trophy" size={12} color="yellow" /> </Text>
+      </Image>
+
+    }else{
+    return <Image style={{flex:1, alignItems:'center',marginRight:6,borderColor:'white'}} borderRadius={5}   source={{uri: 'http://www.regionlalibertad.gob.pe/ModuloGerencias/assets/img/unknown_person.jpg'}}></Image>
+  }
+}
+
 showResults = (jugadores) => {
   if(jugadores.length==0){
-    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No tiene ninguna cancha registrada.</Text></View>
+    return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text>No hay ningún jugador en este equipo</Text></View>
   }else{
     return jugadores;
   }
@@ -261,8 +233,9 @@ const styles = StyleSheet.create({
     backgroundColor:'#BBDEFB',
     padding:8
   },
-  blueFont:{
+  whiteFont2:{
     color:'#1A237E',
+    textAlign:'center'
   },
   whiteFont:{
     color:'white',
@@ -288,11 +261,6 @@ const styles = StyleSheet.create({
    transform: [{
      rotate: '138deg',
    }]
- },
- basicInfo:{
-   flex:1,
-   flexDirection:'row',
-   padding:20
  },
  container:{
    flex:1,
