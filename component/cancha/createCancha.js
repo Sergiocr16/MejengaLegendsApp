@@ -109,11 +109,10 @@ export default class CreateCancha extends Component {
            var nuevoEstado = this.props.canchas;
            nuevoEstado.push(this.state.cancha)
            CanchaService.createCancha(nuevoEstado,this.props.complejo.uid,(cancha)=>{
-             var complejoUpdated = this.props.complejo;
-             complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas + 1;
-             Complejo.update(complejoUpdated)
-             this.props.back();
            });
+           var complejoUpdated = this.props.complejo;
+           complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas + 1;
+           Complejo.updateDirect(complejoUpdated)
            resolve(url)
        })
        .catch((error) => {
@@ -271,7 +270,7 @@ export default class CreateCancha extends Component {
       });
       var complejoUpdated = this.props.complejo;
       complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas + 1;
-      Complejo.update(complejoUpdated)
+      Complejo.updateDirect(complejoUpdated)
     }else{
     this.uploadImage(this.state.source)
     }

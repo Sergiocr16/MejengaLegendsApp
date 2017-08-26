@@ -20,6 +20,9 @@ class ComplejoService {
     static update(key,complejo){
         FirebaseBasicService.update(Entities.COMPLEJOS,key, complejo)
     }
+    static updateDirect(complejo){
+        FirebaseBasicService.update(Entities.COMPLEJOS,complejo.uid, complejo)
+    }
     static delete(key){
       FirebaseBasicService.deleteForever(Entities.COMPLEJOS + '/active/',key)
       FirebaseBasicService.deleteForever(Entities.CANCHASBYCOMPLEJO + '/active/',key)

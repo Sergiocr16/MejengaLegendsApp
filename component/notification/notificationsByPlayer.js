@@ -58,6 +58,21 @@ export default class NotificationsByPlayer extends Component {
                             </TouchableOpacity>
 
                        )}
+                       {RenderIf(val.tipo==2,
+                         <TouchableOpacity onPress={()=>this.setState({scene:'notificationDetail',currentNotification:val,notificationKey:key})}
+                             key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,borderWidth:1,borderColor:'purple',marginBottom:5,paddingVertical:8,paddingHorizontal:15}}>
+                             <View style={{flex:1}}>
+                               <Icon name="futbol-o" color="purple" size={50}  />
+                             </View>
+                             <View style={{flex:4}}>
+                                 <Text style={{fontSize:22,fontWeight:'bold',marginBottom:10}}>{val.titulo}</Text>
+                                  <Text style={{flex:6}}>{val.message}</Text>
+                             </View>
+                               <Text style={{flex:2,fontSize:17}}>{val.fecha}</Text>
+                               <Text><Icon name="chevron-right" size={20} color={'purple'} /> </Text>
+                             </TouchableOpacity>
+
+                        )}
                    </View>
               )
           });

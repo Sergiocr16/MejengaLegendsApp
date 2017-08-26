@@ -51,7 +51,7 @@ export default class CanchaDetail extends Component {
    CanchaService.delete(this.props.canchas,this.props.cancha,this.props.complejo.uid);
    var complejoUpdated = this.props.complejo;
    complejoUpdated.cantidadCanchas = complejoUpdated.cantidadCanchas - 1;
-   Complejo.update(complejoUpdated)
+   Complejo.updateDirect(complejoUpdated)
    ToastAndroid.show('Cancha eliminada correctamente', ToastAndroid.LONG);
    this.props.back();
  }
