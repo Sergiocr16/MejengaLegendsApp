@@ -29,6 +29,8 @@ var ImagePicker = require('react-native-image-picker')
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 const fs = RNFetchBlob.fs
+
+var secondaryApp;
 export default class CreateAdministrador extends Component {
   constructor(props){
     super(props)
@@ -40,31 +42,43 @@ export default class CreateAdministrador extends Component {
         cedula: '',
         email: '',
         telefono: '',
+        complejo:'',
+        image:'',
+        rol:''
+
       },
       nombre: '',
       primerApellido:'',
       segundoApellido:'',
       cedula: '',
       email: '',
+      complejo:'',
       password: '116140419',
       telefono: '',
-      complejo:'Selecciona una opción',
-      genders:['Masculino','Femenino'],
       source:'none',
       scene:'createInfo',
       submitted:false,
-        complejosArray:[],
+      complejosArray:[],
     }
     this.signUp = this.signUp.bind(this)
   }
   componentDidMount() {
+    var config = {apiKey: "AIzaSyC57BGCDLISl9FLkuFqeokqnMUeuLzdjEw",
+        authDomain: "mejengalegends-c5146.firebaseapp.com/",
+        databaseURL: "https://mejengalegends-c5146.firebaseio.com/"}
+
+      secondaryApp  = firebase.initializeApp(config, "Secundary");
       ComplejoService.getAll((complejos)=>{
-        console.log(complejos)
-          this.setState({complejosArray:complejos})
+          this.setState({complejosArray:complejos,complejo:complejos[0]})
+
           },()=>{
              this.setState({scene:"noComplejos",complejosArray:[]})
           }
       )
+  }
+
+  componentWillUnmount(){
+    secondaryApp.delete()
   }
   isValid = () => {
     var toValidate = [this.state.nombre,this.state.primerApellido,this.state.segundoApellido,this.state.cedula,this.state.telefono,this.state.email]
@@ -140,8 +154,8 @@ export default class CreateAdministrador extends Component {
          return imageRef.getDownloadURL()
        })
        .then((url) => {
-           this.state.player.image = url;
-           Player.update(firebase.auth().currentUser.uid,this.state.player)
+           this.state.admin.image = url;
+           this.signUp();
            resolve(url)
        })
        .catch((error) => {
@@ -208,10 +222,11 @@ export default class CreateAdministrador extends Component {
    this.state.admin.username = this.state.email.split("@")[0]
    this.state.admin.cedula = this.state.cedula;
    this.state.admin.telefono = this.state.telefono;
-   this.state.admin.email = this.state.email;
+   this.state.admin.rol = 'admin'
+   this.state.admin.email = this.state.email.trim();
+   this.state.admin.complejo = { nombre: this.state.complejo.nombre ,complejoGUID:this.state.complejo.uid};
    this.setState({submitted:true})
    if(this.isValid()){
-   this.setState({scene:'loading'})
    if(this.state.source=='none'){
      this.signUp();
    }else{
@@ -220,36 +235,54 @@ export default class CreateAdministrador extends Component {
 }
 
  }
-
+ async sendVerification(user) {
+   try {
+     user.sendEmailVerification().then(function() {
+     }, function(error) {
+       // An error happened.
+     });
+   } catch(error){
+     this.setState({
+       response: error.toString()
+     })
+   }
+ }
  async signUp() {
      SoundManager.playPushBtn();
-   try {
-     var config = {apiKey: "AIzaSyC57BGCDLISl9FLkuFqeokqnMUeuLzdjEw",
-         authDomain: "mejengalegends-c5146.firebaseapp.com/",
-         databaseURL: "https://mejengalegends-c5146.firebaseio.com/"}
-     var secondaryApp = firebase.initializeApp(config, "Secondary");
-
      await secondaryApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.cedula).then((user)=>{
+       this.setState({scene:'loading'})
        var admin = this.state.admin;
+       admin.uid = user.uid;
        Admin.new(user.uid,admin)
+       if(this.state.complejo.noAdmin){
+         ComplejoService.update(this.state.complejo.uid,{noAdmin:false})
+       }
+       this.sendVerification(user)
         secondaryApp.auth().signOut();
-      }).catch((error)=>{
-      });
-   } catch(error){
-     switch (error.message) {
-        case 'The email address is badly formatted.':
-        ToastAndroid.show("La correo electrónico esta mal formateado.", ToastAndroid.LONG);
-        break;
-        case 'The password must be 6 characters long or more.':
-        ToastAndroid.show("La contraseña debe de tener al menos 6 carácteres", ToastAndroid.LONG);
-        break;
-        case 'The email address is already in use by another account.':
-        ToastAndroid.show("El correo electrónico ya está en uso por otra cuenta.", ToastAndroid.LONG);
-        break;
-       default:
 
-     }
-   }
+      }).catch((error)=>{
+        console.log(error.message)
+        switch (error.message) {
+
+           case 'The email address is badly formatted.':
+           ToastAndroid.show("El correo electrónico contiene un formato invalido.", ToastAndroid.LONG);
+           break;
+           case 'The password must be 6 characters long or more.':
+            ToastAndroid.show("La contraseña debe de tener al menos 6 carácteres", ToastAndroid.LONG);
+           break;
+           case 'The email address is already in use by another account.':
+            ToastAndroid.show("El correo electrónico ya está en uso por otra cuenta.", ToastAndroid.LONG);
+           break;
+           break;
+           case 'Password should be at least 6 characters':
+            ToastAndroid.show("La contraseña debe de tener al menos 6 carácteres", ToastAndroid.LONG);
+           break;
+
+          default:
+
+        }
+      });
+
  }
 showCreateInfo = () => {
   let complejos = this.state.complejosArray.map( (complejo, key) => {
@@ -340,7 +373,7 @@ showCreateInfo = () => {
          <View style={{flex:1,marginBottom:25}}>
           <Text style={styles.bold}>Selecciona el complejo deportivo</Text>
          <Picker style={styles.androidPicker} selectedValue={this.state.complejo}
-           onValueChange={ (complejo) => (this.setState({complejo})) } >
+           onValueChange={ (complejo) => (this.setState({complejo}))}>
            {complejos}
            </Picker>
 

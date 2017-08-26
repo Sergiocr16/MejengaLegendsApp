@@ -65,6 +65,9 @@ existeElIdEnEquipos = (id, list)=> {
   return false;
 }
   sendRequestToPlayers = ()=>{
+    if(this.state.playersSelected.length==0){
+          ToastAndroid.show('Debes seleccionar almenos un jugador', ToastAndroid.LONG);
+    }else{
     var fecha = moment().format('DD/MM/YYYY');
     var notificationsTemporal = {};
     this.state.playersSelected.map((val, key) => {
@@ -82,7 +85,7 @@ existeElIdEnEquipos = (id, list)=> {
             ToastAndroid.show('Se ha enviado una invitación de unión a los jugadores seleccionados', ToastAndroid.LONG);
         }
     })
-
+  }
 
   }
 

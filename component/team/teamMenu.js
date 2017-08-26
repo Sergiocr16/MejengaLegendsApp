@@ -35,7 +35,7 @@ export default class TeamMenu extends Component {
   }
   componentDidMount() {
 
-      TeamService.getTeamsByPlayer((teams)=>{
+      TeamService.getTeamsByPlayerInMenu((teams)=>{
         if(teams){
             SoundManager.playBackBtn()
           this.setState({scene:"myTeams",teams})

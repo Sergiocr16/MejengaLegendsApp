@@ -79,8 +79,7 @@ export default class AddToTeamNotificationDetail extends Component {
           jugadoresDelEquipo.push(this.props.user);
           TeamService.newPlayersByTeam(this.state.team.uid,jugadoresDelEquipo);
           Player.update(this.props.user.uid,{cantidadEquipos:this.props.user.cantidadEquipos+1})
-          this.state.team.cantidadJugadores = this.state.team.cantidadJugadores+1;
-          TeamService.update(this.props.user.uid,this.state.team.uid,jugadoresDelEquipo,this.state.team)
+          TeamService.updateTeam(this.state.team.uid,jugadoresDelEquipo,this.state.team,1)
           this.props.deleteNotification();
           this.props.back();
           ToastAndroid.show('¡Felicidades ahora eres parte del equipo ' + this.state.team.nombre +'!!', ToastAndroid.LONG);

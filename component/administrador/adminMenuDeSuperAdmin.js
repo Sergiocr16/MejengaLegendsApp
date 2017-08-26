@@ -19,7 +19,7 @@ import SoundManager from '../../services/soundManager';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Admin from '../../services/admin';
 import CreateAdministrador from '../administrador/createAdministrador';
-
+import AdminDetail from '../administrador/adminDetail';
 export default class AdminMenuDeSuperAdmin extends Component {
   constructor(props){
     super(props)
@@ -36,12 +36,17 @@ export default class AdminMenuDeSuperAdmin extends Component {
   }
   setSceneAdminsMenu =()=>{
     SoundManager.playBackBtn();
-    this.setState({scene:'administradoresMenu'})
+    this.setState({scene:'showAdmins'})
   }
   setSceneCreateAdmin = ()=>{
     SoundManager.playPushBtn()
      this.setState({scene:'createAdmin'})
   }
+  setSceneAdminDetail = ()=>{
+    SoundManager.playPushBtn()
+     this.setState({scene:'adminDetail'})
+  }
+
   showScene = () => {
     switch (this.state.scene) {
       case 'loading':
@@ -56,6 +61,9 @@ export default class AdminMenuDeSuperAdmin extends Component {
         case 'createAdmin':
           return <CreateAdministrador back={()=>{this.setSceneAdminsMenu()}} showBackButton={true}  />
           break;
+          case 'adminDetail':
+            return <AdminDetail user={this.state.currentAdmin} back={()=>{this.setSceneAdminsMenu()}}  />
+            break;
       default:
 
     }
@@ -97,12 +105,12 @@ noPlayers(){
 allAdminstrators = () => {
   let administradores =  this.state.admins.map( (val, key) => {
     if(val.nombre!==undefined){
-          return <TouchableOpacity onPress={()=> { this.setState({currentPlayer:val}); this.setScenePlayerProfile();   }}
-                 key={key} style={{flexDirection:'row', justifyContent:'center',alignItems:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
-                  <Text style={{flex:1,borderRightWidth:1,paddingHorizontal:4,borderColor:'#9E9E9E'}}>{val.nombre +" "+ val.primerApellido+" "+val.segundoApellido}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,paddingHorizontal:10,borderColor:'#9E9E9E'}}>{val.cedula}</Text>
-                  <Text style={{flex:1,borderRightWidth:1,paddingHorizontal:10,borderColor:'#9E9E9E' }}>{val.telefono}</Text>
-                  <Text style={{flex:1,paddingHorizontal:10 }}>{val.email}</Text>
+          return <TouchableOpacity onPress={()=> { this.setState({currentAdmin:val}); this.setSceneAdminDetail();   }}
+                 key={key} style={{flexDirection:'row', justifyContent:'center',backgroundColor:'#EEEEEE',borderRadius:5,marginBottom:5,padding:5}}>
+                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.nombre +" "+val.primerApellido}</Text>
+                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E',textAlign:'center'}}>{val.cedula}</Text>
+                  <Text style={{flex:1,borderRightWidth:1,borderColor:'#9E9E9E' ,textAlign:'center'}}>{val.telefono}</Text>
+                  <Text style={{flex:1,textAlign:'center'}}>{val.complejo.nombre}</Text>
                  </TouchableOpacity>
                }
       });
@@ -110,7 +118,12 @@ allAdminstrators = () => {
           <FadeInView style={styles.container}>
             <FadeInView style={styles.infoContainer} duration={300}>
           <View style={styles.mainName}><Text style={styles.whiteFont}>Administradores de complejos</Text></View>
-          <View style={[styles.subtitle,{flexDirection:'row'}]}><Text style={[styles.blueFont,{flex:1,marginHorizontal:4}]}>Nombre completo</Text><Text style={[styles.blueFont,{flex:1}]}>Cédula</Text><Text style={[styles.blueFont,{flex:1}]}>Teléfono</Text><Text style={[styles.blueFont,{flex:1}]}>Email</Text></View>
+          <View style={[styles.subtitle,{flexDirection:'row'}]}>
+                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Nombre completo</Text>
+                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Cédula</Text>
+                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Teléfono</Text>
+                <Text style={[styles.blueFont,{flex:1,textAlign:'center'}]}>Complejo</Text>
+          </View>
             <View style={{flex:1,padding:10}}>
                 <ScrollView>
                 {administradores}
