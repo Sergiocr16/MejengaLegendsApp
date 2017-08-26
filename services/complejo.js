@@ -53,6 +53,10 @@ class ComplejoService {
     static getCanchasByComplejoOnce(idComplejo, callback,error){
       FirebaseBasicService.findActiveByIdOnce(Entities.CANCHASBYCOMPLEJO,idComplejo,callback,error)
     }
+    static getComplejo(complejoGUID,callBack,error){
+    FirebaseBasicService.findActiveByIdOnce(Entities.COMPLEJOS,complejoGUID,callBack,error)
+    }
+
 }
 
 

@@ -17,10 +17,16 @@ import Profile from '../player/profile';
 import BestPlayers from '../player/bestPlayers';
 import Players from '../player/players';
 import Teams from '../team/teams';
+import ComplejoService from '../../services/complejo';
 import BestTeams from '../team/bestTeams';
+import ComplejoDetail from '../complejo/complejoDetail';
+import MyTeamsReto from '../reto/myTeamsReto.js';
+import ArbitrosDeAdmin from '../arbitro/arbitrosDeAdmin';
 import NextMatches from '../partido/misProximosPartidos';
 import MyTeamsReto from '../reto/myTeamsReto.js'
 import ComplejoMenu from '../complejo/complejoMenu';
+import EncuentrosDeHoy from '../arbitro/encuentrosDeHoy';
+
 import AdminMenuDeSuperAdmin from '../administrador/adminMenuDeSuperAdmin';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import SoundManager from '../../services/soundManager'
@@ -30,12 +36,11 @@ export default class Menu extends Component {
     this.state = {
       scene: 'buttons',
       gestureName: 'none',
-      menuScene: this.props.initView
+      menuScene: this.props.initView,
+      complejo: ''
     }
 
 }
-
-
 
   setSceneButtons = () => {
   SoundManager.playBackBtn();
@@ -51,7 +56,6 @@ export default class Menu extends Component {
   }
   setSceneMyTeamsReto = () => {
     SoundManager.playPushBtn();
-    console.log("HOLAA")
    this.setState({scene:'myTeamsReto'})
   }
 
@@ -64,9 +68,21 @@ export default class Menu extends Component {
     SoundManager.playPushBtn();
     this.setState({scene:'complejos'})
    }
+   setSceneMiComplejo = () => {
+     SoundManager.playPushBtn();
+     this.setState({scene:'miComplejo'})
+    }
+    setEncuentrosHoy = () => {
+      SoundManager.playPushBtn();
+      this.setState({scene:'encuentrosHoy'})
+     }
    setSceneAdministradores= () =>{
     SoundManager.playPushBtn()
     this.setState({scene:'administradores'})
+   }
+   setSceneArbitrosDeAdmin= () =>{
+    SoundManager.playPushBtn()
+    this.setState({scene:'arbitrosMenu'})
    }
   setSceneAllJugadores = () => {
       SoundManager.playPushBtn();
@@ -106,7 +122,10 @@ export default class Menu extends Component {
       SoundManager.playSwitchClick()
    this.setState({menuScene:'superAdmin'})
   }
-
+  setSceneArbitro= () =>{
+      SoundManager.playSwitchClick()
+   this.setState({menuScene:'arbitro'})
+  }
   setSceneMenuMisEquipos = () => {
       SoundManager.playPushBtn()
    this.setState({scene:'menuMisEquipos'})
@@ -156,9 +175,11 @@ export default class Menu extends Component {
 
 
 defineMainButtons = () => {
+
   // <TouchableOpacity style={this.activeMainButton('contratos')}activeOpacity={1}   onPress={this.setSceneContratos}>
   //  <Text style={this.activeMainText('contratos')}>CONTRATOS</Text>
   // </TouchableOpacity>
+
   switch (this.props.user.rol) {
     case "player":
     return <View style={styles.mainButtonsContainer}>
@@ -174,6 +195,11 @@ defineMainButtons = () => {
     </View>
       break;
     case "superAdmin":
+    break;
+    case "admin":
+    break;
+    case "arbitro":
+    break;
     return null
       break;
     default:
@@ -221,6 +247,86 @@ defineMainButtons = () => {
                     <Text style={styles.buttonSubtitle}>Visualiza todos los administradores</Text>
                   </View>
                 </TouchableOpacity>
+                </View>
+              </View>
+          </GestureRecognizer>)
+  }
+  menuAdminViewScene(){
+
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.superAdminScene}>
+              <View style={styles.row}>
+                <View style={styles.row}>
+                    <View style={{flex:6,flexDirection:'column'}}>
+                      <TouchableOpacity style={[styles.buttonMainMenu,{flex:1}]} onPress={this.setSceneMiComplejo}>
+                        <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://blog.anytimefitness.com/wp-content/uploads/2015/06/SoccerStadium.jpg'}}>
+                          <View style={styles.circularIcon}>
+                             <Icon name={"bank"}  size={30} color="#1565C0" />
+                         </View>
+                        </Image>
+                        <View style={styles.textAreaButton}>
+                          <Text style={styles.buttonBigTitle}>{this.props.user.complejoNombre}</Text>
+                          <Text style={styles.buttonSubtitle}>Tu complejo</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.buttonMainMenu,{flex:1}]} onPress={this.setSceneComplejos}>
+                        <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'https://static01.nyt.com/images/2017/02/16/sports/16ISRAELSOCCER3/16ISRAELSOCCER3-superJumbo.jpg'}}>
+                          <View style={styles.circularIcon}>
+                             <Icon name={"futbol-o"}  size={30} color="#1565C0" />
+                         </View>
+                        </Image>
+                        <View style={styles.textAreaButton}>
+                          <Text style={styles.buttonBigTitle}>Agenda</Text>
+                          <Text style={styles.buttonSubtitle}>Visualiza los futuros encuentros</Text>
+                        </View>
+                      </TouchableOpacity>
+                  </View>
+
+                    <TouchableOpacity style={[styles.buttonMainMenu,{flex:6}]} onPress={this.setSceneArbitrosDeAdmin}>
+                      <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://www.bluemaize.net/im/mens-clothing/soccer-referee-0.jpg'}}>
+                        <View style={styles.circularIcon}>
+                           <Icon name={"flag"}  size={30} color="#1565C0" />
+                       </View>
+                      </Image>
+                      <View style={styles.textAreaButton}>
+                        <Text style={styles.buttonBigTitle}>Arbitros del complejo</Text>
+                        <Text style={styles.buttonSubtitle}>Visualiza todos los arbitros</Text>
+                      </View>
+                    </TouchableOpacity>
+
+                </View>
+              </View>
+          </GestureRecognizer>)
+  }
+  menuArbitroViewScene(){
+
+    const config = {
+     velocityThreshold: 0.3,
+     directionalOffsetThreshold: 80
+   };
+    return(<GestureRecognizer config={config} style={styles.superAdminScene}>
+              <View style={styles.row}>
+                <View style={styles.row}>
+                    <View style={{flex:6,flexDirection:'column'}}>
+                      <TouchableOpacity style={[styles.buttonMainMenu,{flex:1}]} onPress={this.setEncuentrosHoy}>
+                        <Image style={styles.buttonImage} borderTopLeftRadius={20} borderBottomLeftRadius={20} source={{uri: 'http://blog.anytimefitness.com/wp-content/uploads/2015/06/SoccerStadium.jpg'}}>
+                          <View style={styles.circularIcon}>
+                             <Icon name={"bank"}  size={30} color="#1565C0" />
+                         </View>
+                        </Image>
+                        <View style={styles.textAreaButton}>
+                          <Text style={styles.buttonBigTitle}>Encuentros de hoy</Text>
+                          <Text style={styles.buttonSubtitle}>Arbitra un partido</Text>
+                        </View>
+                      </TouchableOpacity>
+
+                  </View>
+
+                  
+
                 </View>
               </View>
           </GestureRecognizer>)
@@ -483,6 +589,7 @@ defineMainButtons = () => {
           </GestureRecognizer>)
   }
   showMenuScene(){
+    console.log(this.state.menuScene)
     switch (this.state.menuScene) {
       case 'partido':
          return(this.menuPartidoScene())
@@ -499,6 +606,12 @@ defineMainButtons = () => {
        case 'superAdmin':
          return(this.menuComplejosScene())
         break;
+        case 'admin':
+          return(this.menuAdminViewScene())
+         break;
+         case 'arbitro':
+           return(this.menuArbitroViewScene())
+          break;
       default:
         return(this.menuPartidoScene())
     }
@@ -543,8 +656,17 @@ defineMainButtons = () => {
       case 'complejos':
         return <ComplejoMenu back={()=> this.setSceneButtons()}/>;
         break;
+        case 'encuentrosHoy':
+        return (<EncuentrosDeHoy back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} complejo={this.props.complejo}/>);
+          break;
+        case 'miComplejo':
+        return (<ComplejoDetail back={()=>{this.setSceneButtons(); SoundManager.playBackBtn()}} complejo={this.props.complejo}/>);
+          break;
       case 'administradores':
         return <AdminMenuDeSuperAdmin back={()=> this.setSceneButtons()}/>;
+        break;
+      case 'arbitrosMenu':
+        return <ArbitrosDeAdmin complejo={this.props.complejo} back={()=> this.setSceneButtons()}/>;
         break;
       default:
         return this.menuButtons();
